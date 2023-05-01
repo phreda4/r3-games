@@ -327,7 +327,6 @@
 :btni | n 'vecor 'i x y -- n
 	estado 0? ( drop btnd ; ) drop
 	213 118 guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -559,7 +558,6 @@
 :btnplay | n 'vecor 'i x y -- n
 	|435 95 guibox
 	pick2 @ SDLimagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;

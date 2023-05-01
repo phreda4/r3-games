@@ -494,7 +494,6 @@ $"
 	
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -502,7 +501,6 @@ $"
 :inicial
 	gui
 	0 0 sinicial SDLImage
-
 	[ pantalla1 ; ] 'sbtnj1 200 300 btni
 	[ exit ; ] 'sbtns1 400 300 btni
 	
@@ -529,7 +527,7 @@ $"
 	"r3/j2022/basura/font/ChakraPetch-Bold.ttf" 30 TTF_OpenFont 'font !		
 	
 	"r3/j2022/basura/mapa.map" loadtilemap 'mapajuego !
-	128 128 "r3/j2022/basura/img/sprites.png" loadts 'sprplayer !
+	128 128 "r3/j2022/basura/img/sprites.png" tsload 'sprplayer !
 	"r3/j2022/basura/img/btndia.png" loadimg 'sbtndia !
 	"r3/j2022/basura/img/btntiempo.png" loadimg 'sbtniempo !
 	"r3/j2022/basura/img/vida1.png" loadimg 'svida2 !
@@ -550,7 +548,6 @@ $"
 	SNDInit
 	"r3/j2022/basura/audio/Basuralu.mp3" Mix_LoadMUS 'musicplay !	
 	rerand
-	
 	principal
 	
 	SDLquit ;	

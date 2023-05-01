@@ -264,7 +264,6 @@
 |------------
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -290,7 +289,7 @@
 	bfont1 
 	|SDLfull
 	
-	8 8 "r3\j2022\troll\sprites.png" loadts 'sprj !
+	8 8 "r3\j2022\troll\sprites.png" tsload 'sprj !
 	"r3\j2022\troll\nivel.map" loadtilemap 'mapajuego !
 	"r3\j2022\troll\img\inicio.png" loadimg 'sinicio !		
 

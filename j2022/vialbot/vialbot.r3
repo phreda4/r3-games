@@ -593,7 +593,6 @@
 |--------------------------------------------------
 :boton | 'vecor "text" -- size
 	2over 2over guibox
-	SDLb SDLx SDLy guiIn	
 	$ffffff  [ $00ff00 nip ; ] guiI
 	SDLColor
 	2over 2over SDLFRect	
@@ -603,7 +602,6 @@
 	
 :btni | 'vecor 'ip 'i x y w h -- size
 	guibox
-	SDLb SDLx SDLy guiIn	
 	[ swap ; ] guiI nip
 	xr1 yr1 rot SDLImage
 	onCLick ;
@@ -677,10 +675,10 @@
 		
 	"r3\j2022\vialbot\img\mapa.png" loadimg 'mapajuego !
 	
-	128 128 "r3\j2022\vialbot\img\autos.png" loadts 'sprauto !
-	64 64 "r3\j2022\vialbot\img\robot.png" loadts 'sprplayer !
-	96 96 "r3\j2022\vialbot\img\semaforo.png" loadts 'sprsemaforo !
-	38 31 "r3\j2022\vialbot\img\vida.png" loadts 'sprvida !
+	128 128 "r3\j2022\vialbot\img\autos.png" tsload 'sprauto !
+	64 64 "r3\j2022\vialbot\img\robot.png" tsload 'sprplayer !
+	96 96 "r3\j2022\vialbot\img\semaforo.png" tsload 'sprsemaforo !
+	38 31 "r3\j2022\vialbot\img\vida.png" tsload 'sprvida !
 	"r3\j2022\vialbot\img\base1.png" loadimg 'base1 !
 	"r3\j2022\vialbot\img\base2.png" loadimg 'base2 !
 	

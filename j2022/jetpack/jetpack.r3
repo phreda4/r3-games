@@ -137,7 +137,6 @@
 |------------
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -192,7 +191,7 @@
 	"r3sdl" 800 600 SDLinit
 	bfont1 
 	|SDLfull
-	32 32 "r3\j2022\jetpack\img\jetpack.png" loadts 'sprplayer !
+	32 32 "r3\j2022\jetpack\img\jetpack.png" tsload 'sprplayer !
 	"r3\j2022\jetpack\mapa.map" loadtilemap 'mapajuego !
 	
 	"r3\j2022\jetpack\img\inicio.png" loadimg 'sinicio !		

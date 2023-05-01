@@ -141,7 +141,6 @@
 
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLimagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -214,7 +213,6 @@
 | 483,143
 :btnn | 'vec "text" x y -- 
 	2dup 280 65 guibox 
-	sdlb sdlx sdly guiIn
 	'sbtn1 [ 8 + rot 4 + rot 4 + rot ; ] guiI
 	@ pick2 pick2 rot SDLimage
 	swap 5 + swap 280 74 xywh64

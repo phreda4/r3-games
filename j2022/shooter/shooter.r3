@@ -194,7 +194,6 @@
 |---------------------------------------
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -225,7 +224,7 @@
 	100 'balas p.ini
 	100 'aliens p.ini
 	
-	90 90 "r3/j2022/shooter/shooter.png" loadts 'graficos !
+	90 90 "r3/j2022/shooter/shooter.png" tsload 'graficos !
 	"r3/j2022/shooter/inicio.png" loadimg 'sinicio	 !
 
 	"r3/j2022/shooter/btnj1.png" loadimg 'sbtnj1 ! 

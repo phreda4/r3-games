@@ -401,7 +401,6 @@
 |------------
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -458,7 +457,7 @@
 	|SDLfull
 	
 	"r3\j2022\manwithcap\nivel.map" loadtilemap 'mapajuego !
-	32 32 "r3\j2022\manwithcap\img\sprites.png" loadts 'sprj !
+	32 32 "r3\j2022\manwithcap\img\sprites.png" tsload 'sprj !
 	"r3\j2022\manwithcap\img\inicio.png" loadimg 'sinicio !		
 	"r3\j2022\manwithcap\img\ganaste.png" loadimg 'sganaste !		
 	"r3\j2022\manwithcap\img\perdiste.png" loadimg 'sperdiste !		

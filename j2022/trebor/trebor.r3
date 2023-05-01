@@ -348,7 +348,6 @@
 	
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
-	SDLb SDLx SDLy guiIn	
 	[ 8 + ; ] guiI 
 	@ xr1 yr1 rot SDLImage
 	onCLick ;
@@ -430,8 +429,8 @@
 	"r3/j2022/trebor/inicio.jpg" loadimg 'sinicio !
 	"r3/j2022/trebor/fin.png" loadimg 'sfin !
 
-	32 32 "r3\j2022\trebor\treborj.png" loadts 'sprj !
-	50 50 "r3\j2022\trebor\enemigos.png" loadts 'spre !
+	32 32 "r3\j2022\trebor\treborj.png" tsload 'sprj !
+	50 50 "r3\j2022\trebor\enemigos.png" tsload 'spre !
 	"r3\j2022\trebor\nivel.map" loadtilemap 'mapajuego !
 	
 	"r3\j2022\trebor\btnj1.png" loadimg 'sbtnj1 !		
