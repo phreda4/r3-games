@@ -2,7 +2,7 @@
 ^r3/win/sdl2image.r3
 ^r3/util/tilesheet.r3
 ^r3/util/arr16.r3
-
+^r3/lib/rand.r3
 
 #fondoa	| arco
 
@@ -14,6 +14,10 @@
 #obj 0 0
 
 #playerpad
+
+#planim1 [ $00004700 ]
+#planim2 [ $00404700 ]
+#planim3 [ $00000700 ]
 
 |.... time control
 #prevt
@@ -59,10 +63,18 @@
 	0? ( drop ; ) 
 	-? ( drop
 		0 over 64 + !
-		dup 72 + @ -0.8 *. over 72 + ! 
+		dup 72 + @ -0.7 *. 
+		over 72 + ! 
 		; )
 	over 64 + !
-	-0.3 over 72 + +!
+	-0.3 over 72 + +! ;
+	
+:patada
+	playerpad $10 nand? ( drop ; ) drop
+	
+	1.0 randmax 0.5 - over 40 + ! | vx
+	3.0 randmax 1.5 + neg over 48 + ! | vy
+	5.0 over 72 + ! 				
 	;
 	
 :pelota
@@ -72,17 +84,23 @@
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ time+ dup a!+ nanim 			| n
 	a@+ sspriterz
+	
 	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
+
+	dup 40 + dup @ 0.99 *. swap !
+	dup 48 + dup @ 0.99 *. swap !
+	
 	dup 56 + @ over 16 + +!
 	rebote	
-	playerpad $10 and? ( 6.0 pick2 72 + ! ) drop
+	patada
+
 	drop ;
 	
 :+pelota
 	'pelota 'obj p!+ >a 
 	400.0 a!+ 
-	300.0 a!+	| x y 
+	400.0 a!+	| x y 
 	1.0 a!+				| ang zoom
 	7 0 0 vni>anim | vel cnt ini 
 	a!+	sprpelota a!+	| anim sheet
@@ -99,8 +117,8 @@
 	
 :+npc
 	'npc 'obj p!+ >a 
-	200.0 a!+ 
-	400.0 a!+	| x y 
+	400.0 a!+ 
+	200.0 a!+	| x y 
 	2.0 a!+	| ang zoom
 	7 0 0 vni>anim | vel cnt ini 
 	a!+ sprarq a!+			| anim sheet
@@ -109,23 +127,28 @@
 	;
 
 |--------------------------------------
-
-
 :vel 
 	$1 and? ( -1.0 nip ; ) 
 	$2 and? ( 1.0 nip ; )
 	;
 	
+:cara
+	playerpad 
+	0? ( planim3 nip ; )
+	$8 and? ( planim2 nip ; ) 
+	planim1 nip ;
+	
 :jugador
 	objsprite
 	playerpad vel over 40 + ! 
 	playerpad 2 >> vel over 48 + ! 
+	cara over 28 + d!
 	drop ;
 	
 :+jugador
 	'jugador 'obj p!+ >a 
-	400.0 a!+ 
-	400.0 a!+	| x y 
+	300.0 a!+ 
+	500.0 a!+	| x y 
 	2.0 a!+	| ang zoom
 	7 0 0 vni>anim | vel cnt ini 
 	a!+	sprmessi a!+			| anim sheet
