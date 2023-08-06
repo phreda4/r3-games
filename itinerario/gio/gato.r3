@@ -3,53 +3,38 @@
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2image.r3
 ^r3/util/arr16.r3
-
-#fondo1
-#fondo2
-#fondo3
+^r3/win/sdl2mixer.r3
+^r3/util/sdlgui.r3
 
 #arcoiris 0 0 
 #frutas 0 0
+#estrellas 0 0
 
 #tsguy	| dibujo
 #xp 400.0 #yp 400.0		| posicion
 #xv #yv		| velocidad
 #animacion
-
-|.... time control
-#prevt
-#dtime
-
-:timeI msec 'prevt ! 0 'dtime ! ;
-:time. msec dup prevt - 'dtime ! 'prevt ! ;
-:time+ dtime + $ffffff7fffffffff and  ;
-
-| anima
-| $fff ( 4k sprites) $ff (256 movs) $f (vel) ffffffffff (time)
-
-:nanim | nanim -- n
-	dup $ffffffffff and 
-	over 40 >> $f and 48 + << 1 >>>
-	over 44 >> $ff and 63 *>>
-	swap 52 >>> + | ini
-	;
-	
-:vni>anim | vel cnt ini -- nanim 
-	$fff and 52 << swap
-	$ff and 44 << or swap
-	$f and 40 << or 
-	;
+#comiendo
 
 :objsprite | adr -- adr
 	dup >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ time+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
 	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
 	;
+
+:gatovuela
+	7 6 1 vci>anim 'animacion !	;
+	
+:gatocome
+	comiendo 1? ( drop ; ) drop
+	60 'comiendo !
+	7 7 7 vci>anim 'animacion !	;
+
 	
 |--------------- ARCOIRIS	
 |disparo
@@ -70,18 +55,18 @@
 	'estela 'arcoiris p!+ >a 
 	360.0 a!+ yp 10.0 + alterna + a!+	| x y 
 	1.0 a!+	| ang zoom
-	0 0 0 vni>anim | vel cnt ini 
+	0 0 0 vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
 	-2.0 a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
-	alterna 0? ( drop 5.0 'alterna ! ; ) drop
+	alterna 0? ( drop 4.0 'alterna ! ; ) drop
 	0 'alterna !
 	;
 	
 #ce
 :+est
 	1 'ce +!
-	ce 5 <? ( drop ; ) drop
+	ce 7 <? ( drop ; ) drop
 	0 'ce !
 	+estela ;
 
@@ -92,7 +77,7 @@
 	dup @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
-	50.0 <? ( 2drop 0 ; ) drop
+	50.0 <? ( 2drop 0 gatocome ; ) drop
 	drop
 	;
 
@@ -103,40 +88,65 @@
 	a!+	| x y 
 	1.0 a!+	| ang zoom
 	0 0 
-	8 randmax 9 +
-	vni>anim | vel cnt ini 
+	8 randmax 16 +
+	vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
-	-1.0 a!+
+	1.0 randmax neg 1.5 - a!+
 	2.0 randmax 1.0 - a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!			| vrz
 	;
 	
-#cf
 :+fru
-	1 'cf +!
-	cf 40 <? ( drop ; ) drop
-	0 'cf !
-	+fruta ;
-	
-#f1 
-|#f2 #f3
-:fondo	
-	f1 int. dup 0 fondo1 SDLImage 800 + 0 fondo1 SDLImage 
-|	f2 int. dup 0 fondo2 SDLImage 800 + 0 fondo2 SDLImage
-|	f3 int. dup 0 fondo3 SDLImage 800 + 0 fondo3 SDLImage
-	-0.8 'f1 +!
-|	-0.8 'f2 +!
-|	-1.2 'f3 +!
-	f1 -800.0 <? ( 800.0 'f1 +! ) drop	
-|	f2 -800.0 <? ( 800.0 'f2 +! ) drop
-|	f3 -800.0 <? ( 800.0 'f3 +! ) drop
+	100 randmax 
+	0? ( +fruta )
+	drop
 	;
 	
+|-------------------------- estrellas
+:estrella | v -- 
+	objsprite
+	dup @ -30.0 >? ( 2drop ; ) drop 
+	830.0 swap !
+	; 
+	
+:+estrella 
+	'estrella 'estrellas p!+ >a
+	860.0 randmax 30.0 - a!+
+	600.0 randmax a!+
+	1.0 a!+
+	6 3 24 vci>anim 
+	rand $fffffffff and or
+	a!+
+	tsguy a!+
+	0.5 randmax 1.0 - a!+
+	0 a!+ 
+	0 a!+ ;
+	
 |--------------- JUEGO	
+
 :jugador
 	xp int. yp int. 2.0 
-	animacion time+ dup 'animacion ! nanim 
+	animacion timer+ dup 'animacion ! nanim 
 	tsguy sspritez	
+	xv 'xp +!
+	yv 'yp +!
+	comiendo 0? ( drop ; ) 
+	1 -
+	0? ( gatovuela )
+	'comiendo !
+	;
+
+:juego
+	$252850 SDLcls
+	timer.
+	'estrellas p.draw
+	'arcoiris p.draw	
+	jugador
+	'frutas p.draw
+	SDLredraw
+
+	+est
+	+fru
 	SDLkey
 	>esc< =? ( exit )
 	<w> =? ( -2.0 'yv ! )
@@ -144,34 +154,42 @@
 	<s> =? ( 2.0 'yv ! )
 	>s< =? ( 0 'yv ! )	
 	drop 
-	xv 'xp +!
-	yv 'yp +!
 	;
+:jugar
+	'juego SDLshow
 
-:demo
-	$000065 SDLcls
-	fondo
-	time.
-	'arcoiris p.draw	
-	'frutas p.draw
-	jugador
-	SDLredraw
+:menu
+0 SDLcls
+Immgui
 
-	+est
-	+fru
-	;
-	
+0 100 immat
+800 immwidth
+"Nyan Fruit" IMMLABELC
+
+200 300 immat
+400 immwidth
+'jugar "juego" immbtn
+immdn
+'exit "salir" immbtn
+
+
+SDLredraw
+SDLkey
+>esc< =? ( exit )
+drop
+;
+
 :main
 	"r3sdl" 800 600 SDLinit
 	64 64 "r3/itinerario/gio/gato.png" ssload 'tsguy !
-	"r3/itinerario/gio/fondo1.png" loadimg 'fondo1 !
-|	"r3/itinerario/gio/fondo2.png" loadimg 'fondo2 !
-|	"r3/itinerario/gio/fondo3.png" loadimg 'fondo3 !
 	50 'arcoiris p.ini
+	"r3/itinerario/gio/Starborn.ttf" 30 ttf_OpenFont immsdL
 	200 'frutas p.ini
-	timeI
-	7 3 1 vni>anim 'animacion !
-	'demo SDLshow
+	200 'estrellas p.ini
+	100 ( 1? +estrella 1 - ) drop
+	timer<
+	7 3 1 vci>anim 'animacion !
+	'menu SDLshow
 	SDLquit ;	
 	
 : main ;

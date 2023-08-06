@@ -1,6 +1,7 @@
 ^r3/lib/rand.r3
 ^r3/win/sdl2gfx.r3
 ^r3/util/arr16.r3
+^r3/util/sdlgui.r3
 
 #sprnave	| dibujo
 #aninave
@@ -16,30 +17,6 @@
 #fondos 0 0
 #fx 0 0
 	
-|.... time control
-#prevt
-#dtime
-
-:timeI msec 'prevt ! 0 'dtime ! ;
-:time. msec dup prevt - 'dtime ! 'prevt ! ;
-:time+ dtime + $ffffff7fffffffff and  ;
-
-| anima
-| $fff ( 4k sprites) $ff (256 movs) $f (vel) ffffffffff (time)
-
-:nanim | nanim -- n
-	dup $ffffffffff and 
-	over 40 >> $f and 48 + << 1 >>>
-	over 44 >> $ff and 63 *>>
-	swap 52 >>> + | ini
-	;
-	
-:vni>anim | vel cnt ini -- nanim 
-	$fff and 52 << swap
-	$ff and 44 << or swap
-	$f and 40 << or 
-	;
-
 | x y ang anim ss vx vy ar
 | 0 8 16  24   32 40 48 56
 
@@ -47,7 +24,7 @@
 	dup >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ time+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
 	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
@@ -65,7 +42,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	2.0 a!+	| ang zoom
-	6 19 2 vni>anim | vel cnt ini 
+	6 19 2 vci>anim | vel cnt ini 
 	a!+	sprene a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << 
@@ -104,7 +81,7 @@
 	'bala 'disparos p!+ >a 
 	xp 40.0 + a!+ yp 3.0 + a!+	| x y 
 	2.0 a!+	| ang zoom
-	9 4 0 vni>anim | vel cnt ini 
+	9 4 0 vci>anim | vel cnt ini 
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -126,7 +103,7 @@
 	820.0 a!+
 	400.0 randmax 100.0 + a!+  |alien  x y 
 	2.0 a!+	| ang zoom
-	7 2 0 vni>anim | vel cnt ini 
+	7 2 0 vci>anim | vel cnt ini 
 	a!+	sprene a!+			| anim sheet
 	0.5 randmax 2.0 - a!+ 
 	0.2 randmax 0.1 - a!+ 	| vx vy
@@ -153,7 +130,7 @@
 	4 randmax 0.25 * 32 <<	| rotacion
 	3.0 or a!+			| zoom
 	0 0 4 randmax		| animacion nro sprite
-	vni>anim | vel cnt ini 
+	vci>anim | vel cnt ini 
 	a!+ sprislas a!+	| anim sheet
 	-0.6 a!+ 			| vx
 	0 a!+ 0 a!			| vy vr
@@ -175,7 +152,7 @@
 	
 	xp int. yp int. 
 	2.0
-	aninave time+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! nanim
 	sprnave
 	sspritez 
 	
@@ -189,8 +166,8 @@
 	drop ;
 
 	
-:demo
-	time.
+:juego
+	timer.
 	horda
 	
 	fondo
@@ -201,19 +178,46 @@
 	SDLredraw
 	;
 	
+:jugar
+	'juego sdlshow
+;
+:menu
+	0 sdlcls
+	immgui | ini INMGUI
+	
+	fondo
+	800 immwidth
+	$ffffff 'immcolortex !	
+	
+	120 50 immat
+	"guar para FRIDOM" immlabel
+	
+	200 300 immat
+	400 immwidth
+	
+	'jugar "jugar" immbtn
+	immdn
+	'exit "salir" immbtn
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+;
+
 :main
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/itinerario/viggo/sana.png" ssload 'sprnave !
 	32 32 "r3/itinerario/viggo/nave enemigo.png" ssload 'sprene !
 	32 32 "r3/itinerario/viggo/disparo.png" ssload 'sprdis !
 	128 128 "r3/itinerario/viggo/islas.png" ssload 'sprislas !
-	8 3 0 vni>anim 'aninave !
-	timeI
+	"r3/itinerario/viggo/Revamped.otf" 50 TTF_OpenFont immSDL
+	8 3 0 vci>anim 'aninave !
+	timer<
 	100 'enemigos p.ini
 	100 'disparos p.ini
 	100 'fondos p.ini
 	100 'fx p.ini	
-	'demo SDLshow
+	'menu SDLshow
 	SDLquit ;	
 	
 : main ;

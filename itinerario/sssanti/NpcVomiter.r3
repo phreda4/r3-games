@@ -3,6 +3,7 @@
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2image.r3
 ^r3/util/arr16.r3
+^r3/util/sdlgui.r3
 
 #fondo
 #npc 0 0
@@ -13,30 +14,6 @@
 #xv #yv		| velocidad
 #anima 0	| frame maximo
 
-|.... time control
-#prevt
-#dtime
-
-:timeI msec 'prevt ! 0 'dtime ! ;
-:time. msec dup prevt - 'dtime ! 'prevt ! ;
-:time+ dtime + $ffffff7fffffffff and  ;
-
-| anima
-| $fff ( 4k sprites) $ff (256 movs) $f (vel) ffffffffff (time)
-
-:nanim | nanim -- n
-	dup $ffffffffff and 
-	over 40 >> $f and 48 + << 1 >>>
-	over 44 >> $ff and 63 *>>
-	swap 52 >>> + | ini
-	;
-	
-:vni>anim | vel cnt ini -- nanim 
-	$fff and 52 << swap
-	$ff and 44 << or swap
-	$f and 40 << or 
-	;
-
 | x y ang anim ss vx vy ar
 | 0 8 16  24   32 40 48 56
 
@@ -44,7 +21,7 @@
 	dup >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ time+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
 	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
@@ -82,7 +59,7 @@
 	'vomito 'disparos p!+ >a 
 	xp a!+ yp 32.0 + a!+	| x y 
 	2.0 a!+	| ang zoom
-	4 8 40 vni>anim | vel cnt ini 
+	4 8 40 vci>anim | vel cnt ini 
 	a!+	sprjuego a!+			| anim sheet
 	0 a!+ 2.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -105,7 +82,7 @@
 	2.5 a!+	| ang zoom
 	7 4
 	4 randmax 3 << 12 +
-	vni>anim | vel cnt ini 
+	vci>anim | vel cnt ini 
 	a!+	sprjuego a!+			| anim sheet
 	-0.7 0.2 randmax - a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -119,7 +96,7 @@
 	2.5 a!+	| ang zoom
 	7 4
 	4 randmax 3 << 8 +
-	vni>anim | vel cnt ini 
+	vci>anim | vel cnt ini 
 	a!+	sprjuego a!+			| anim sheet
 	0.7 0.2 randmax + a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -132,20 +109,20 @@
 	
 #disp 0	
 :normal
-	8 2 0 vni>anim 'anima !	;	
+	8 2 0 vci>anim 'anima !	;	
 :lanza
 	disp 1? ( drop ; ) drop
 	1 'disp !
-	7 6 2 vni>anim 'anima !	;
+	7 6 2 vci>anim 'anima !	;
 :lanzav
 	0 'disp !
 	+disparo
-	8 2 0 vni>anim 'anima !	;
+	8 2 0 vci>anim 'anima !	;
 
 		
 :jugador
 	xp int. yp int. 3.0 
-	anima time+ dup 'anima ! nanim
+	anima timer+ dup 'anima ! nanim
 	sprjuego sspritez	
 
 	anima nanim 7 =? ( lanzav ) drop
@@ -168,7 +145,7 @@
 
 :demo
 	0 0 fondo SDLImage 
-	time.
+	timer.
 	jugador
 	'npc p.draw	
 	2 'npc p.sort
@@ -176,17 +153,42 @@
 	horda
 	SDLredraw
 	;
+
+:jugar
+	'demo sdlshow
+;
+:menu
+	0 SDLcls
+	immgui 	| ini immgui
+	
+	800 immwidth
+	0 50 immat
+	"Sick In Town" immlabelc
+	
+	400 immwidth
+	200 300 immat
+
+	'jugar "Jugar" immbtn
+	immdn
+	'exit "Salir" immbtn
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+;
+	
 	
 :main
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/itinerario/sssanti/hojajuego.png" ssload 'sprjuego !
 	"r3/itinerario/sssanti/fondo.png" loadimg 'fondo !
+	"r3/itinerario/sssanti/04B_30__.TTF" 50 TTF_OpenFont immSDL
 	100 'disparos p.ini
 	100 'npc p.ini
 	normal
-	timeI
+	timer<
 
-	'demo SDLshow
+	'menu SDLshow
 	SDLquit ;	
 	
 : main ;
