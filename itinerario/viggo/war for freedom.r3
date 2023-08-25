@@ -2,6 +2,7 @@
 ^r3/win/sdl2gfx.r3
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
+^r3/win/sdl2mixer.r3
 
 #sprnave	| dibujo
 #aninave
@@ -11,6 +12,13 @@
 #sprene
 #sprdis
 #sprislas
+
+#puntos 0
+
+#musicamenu
+#musicaj
+#sonidodis
+#explosionx
 
 #disparos 0 0 
 #enemigos 0 0
@@ -60,7 +68,7 @@
 	distfast 20.0 >? ( drop ; )	drop
 	dup 8 + @+ swap @ +fx
 	dup 'enemigos p.del
-|	1 'puntos +!
+	1 'puntos +!
 |	1 playsnd
 	0 'hit !
 	;
@@ -85,6 +93,7 @@
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
+	sonidodis sndplay
 	;
 
 |--------------------- ALIEN
@@ -175,6 +184,13 @@
 	jugador
 	'enemigos p.draw
 	'fx p.draw
+	$0 ttcolor
+	14 14 ttat
+	puntos "%d" ttprint
+	$ffffff ttcolor
+	10 10 ttat
+	puntos "%d" ttprint
+	
 	SDLredraw
 	;
 	
@@ -190,7 +206,7 @@
 	$ffffff 'immcolortex !	
 	
 	120 50 immat
-	"guar para FRIDOM" immlabel
+	"WAR FOR FREEDOM" immlabel
 	
 	200 300 immat
 	400 immwidth
@@ -210,6 +226,10 @@
 	32 32 "r3/itinerario/viggo/nave enemigo.png" ssload 'sprene !
 	32 32 "r3/itinerario/viggo/disparo.png" ssload 'sprdis !
 	128 128 "r3/itinerario/viggo/islas.png" ssload 'sprislas !
+	"r3/itinerario/viggo/musica menu.mp3" mix_loadmus 'musicaj !
+	"r3/itinerario/viggo/musica.mp3" mix_loadmus 'musicamenu !
+	"r3/itinerario/viggo/disparo.mp3" mix_loadwav 'sonidodis !
+	"r3/itinerario/viggo/explosion.mp3" mix_loadwav 'explosionx !
 	"r3/itinerario/viggo/Revamped.otf" 50 TTF_OpenFont immSDL
 	8 3 0 vci>anim 'aninave !
 	timer<
@@ -217,6 +237,7 @@
 	100 'disparos p.ini
 	100 'fondos p.ini
 	100 'fx p.ini	
+	musicamenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	
 	

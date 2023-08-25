@@ -17,6 +17,8 @@
 #exploplo
 #menumusica
 #musicafondo
+#puntos 0
+#puntajevx 0
 :objsprite | adr -- adr
 	dup >a
 	a@+ int. a@+ int.	| x y
@@ -73,7 +75,8 @@
 	distfast 20.0 >? ( drop ; )	drop
 	dup 'enemis p.del
 |	pick4 pick4 +fx
-|	1 'puntos +!
+	5 'puntos +!
+	puntajevx puntos max 'puntajevx !
 |	1 playsnd
 	0 'hit !
 	pick4 pick4 +explo
@@ -125,7 +128,7 @@
 	7 2 20 vci>anim | vel cnt ini 
 	a!+	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - 
-	a!+ 3.0 a!+ 	| vx vy
+	a!+ 6.0 a!+ 	| vx vy
 	0 a!		
 	;
 
@@ -151,7 +154,7 @@
 	;
 	
 :horda
-	50 randmax 1? ( drop ; ) drop
+	10 randmax 1? ( drop ; ) drop
 	+marciano
 	;
 	
@@ -162,7 +165,18 @@
 	jugador	
 	'enemis p.draw	
 	'fx p.draw
-	
+	$00 ttcolor
+	14 14 ttat
+	puntos "%d0" ttprint
+	$FF6A00 ttcolor
+	10 10 ttat
+	puntos "%d0" ttprint
+		$00 ttcolor
+	614 14 ttat
+	puntajevx "%d0" ttprint
+	$FF6A00 ttcolor
+	610 10 ttat
+	puntajevx "%d0" ttprint
 	SDLredraw
 	horda
 	;
@@ -175,6 +189,7 @@
 	560.0 'yp !
 	8 4 0 vci>anim 'aninave !
 	0 'muerte !
+	0 'puntos !
 ;
 :jugando
 reset 
@@ -185,10 +200,16 @@ menumusica -1 mix_playmusic
 :menu
 SDLredraw
 0 0 fondo2 SDLImage
+		$00 ttcolor
+	360 14 ttat
+	puntajevx "puntaje maximo %d0" ttprint
+	$4CFF00 ttcolor
+	356 10 ttat
+	puntajevx "puntaje maximo %d0" ttprint
 immgui
 0 150 immat
 800 immwidth
-$0000ff 'immcolortex !
+$FF6A00 'immcolortex !
 "Aliens Malditos" immlabelc
 300 350 immat
 200 immwidth
@@ -219,6 +240,8 @@ drop
 	8 4 0 vci>anim 'aninave !
 	menumusica -1 mix_playmusic
 	timer<
+	'puntajevx "r3/itinerario/vladi/puntaje.mem" load drop
 	'menu SDLshow
+	'puntajevx 8 "r3/itinerario/vladi/puntaje.mem" save
 	SDLquit ;	
 : main ;

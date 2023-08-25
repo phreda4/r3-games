@@ -10,7 +10,7 @@
 #tsguy	| dibujo
 #xp 100.0 #yp 460.0		| posicion
 #xv #yv		| velocidad
-
+#puntos
 #enemigos 0 0 
 #disparos 0 0 
 #fx 0 0
@@ -54,8 +54,7 @@
 	distfast 20.0 >? ( drop ; )	drop
 	dup 'enemigos p.del
 	pick4 pick4 +explo
-|	1 'puntos +!
-|	1 playsnd
+	5 'puntos +!
 	0 'hit !
 	;
  
@@ -167,7 +166,7 @@
 	swap @ dup -20.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
 	30.0 <? ( exit ) drop
-
+    
 	
 	90 randmax 0? ( over 40 + dup @ neg swap ! ) drop
 	
@@ -185,7 +184,7 @@
 	7 2 24 vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
 	6.0 randmax 1.0 - a!+	| vx
-	1.0 randmax 0.8 + a!+ 	| vy
+	1.0 randmax 2.0 + a!+ 	| vy
 	0.000 32 << a!			| vrz
 	;
 	
@@ -218,6 +217,13 @@
 	'fx p.draw
 	xp int. yp int. 3.0 0 tsguy sspritez	
 	
+	$00 ttcolor
+	14 14 ttat
+	puntos "%d0" ttprint
+	$ffff ttcolor
+	10 10 ttat
+	puntos "%d0" ttprint
+
 	SDLredraw
 	
 	xv 'xp +!
@@ -226,17 +232,17 @@
 	teclado
 	horda
 	;
-;
 
 :reset
- 'disparos p.clear
- 'enemigos p.clear
- 'fx p.clear
-  100.0 'xp !
-  460.0 'yp !
+	'disparos p.clear
+	'enemigos p.clear
+	'fx p.clear
+	100.0 'xp !
+	460.0 'yp !
   |8 4 0 vci>anim 'anima !
-  0 'muerte !
- ; 
+	0 'muerte !
+	0 'puntos !
+	; 
  
 :jugar
 	reset 

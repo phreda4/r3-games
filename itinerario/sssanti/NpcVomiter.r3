@@ -3,6 +3,7 @@
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2image.r3
 ^r3/util/arr16.r3
+^r3/win/sdl2mixer.r3
 ^r3/util/sdlgui.r3
 
 #fondo

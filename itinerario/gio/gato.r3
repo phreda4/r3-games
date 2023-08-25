@@ -10,11 +10,17 @@
 #frutas 0 0
 #estrellas 0 0
 
+#sndcomiento
+#musmenu
+#musjuego
+
 #tsguy	| dibujo
 #xp 400.0 #yp 400.0		| posicion
 #xv #yv		| velocidad
 #animacion
 #comiendo
+
+#puntos 0
 
 :objsprite | adr -- adr
 	dup >a
@@ -70,6 +76,11 @@
 	0 'ce !
 	+estela ;
 
+:comefruta
+	0 gatocome 1 'puntos +!
+	sndcomiento sndplay
+	;
+	
 |--------------- FRUTAS
 :fruta | v -- 
 	objsprite
@@ -77,7 +88,7 @@
 	dup @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
-	50.0 <? ( 2drop 0 gatocome ; ) drop
+	50.0 <? ( 2drop comefruta ; ) drop
 	drop
 	;
 
@@ -143,6 +154,13 @@
 	'arcoiris p.draw	
 	jugador
 	'frutas p.draw
+	$0 ttcolor
+	14 14 ttat
+	puntos "%d" ttprint
+	$FFFFFF ttcolor
+	10 10 ttat
+	puntos "%d" ttprint
+
 	SDLredraw
 
 	+est
@@ -155,8 +173,13 @@
 	>s< =? ( 0 'yv ! )	
 	drop 
 	;
+	
 :jugar
+	32 Mix_VolumeMusic 	
+	musjuego -1 mix_playmusic
 	'juego SDLshow
+	128 Mix_VolumeMusic 
+	musmenu -1 mix_playmusic ;
 
 :menu
 0 SDLcls
@@ -184,11 +207,16 @@ drop
 	64 64 "r3/itinerario/gio/gato.png" ssload 'tsguy !
 	50 'arcoiris p.ini
 	"r3/itinerario/gio/Starborn.ttf" 30 ttf_OpenFont immsdL
+	"r3/itinerario/gio/comiendo.mp3" mix_loadwav 'sndcomiento !
+	"r3/itinerario/gio/Gatito kawaii.mp3" mix_loadmus 'musmenu !
+	"r3/itinerario/gio/Nyan Cat.mp3" mix_loadmus 'musjuego !
+
 	200 'frutas p.ini
-	200 'estrellas p.ini
+	100 'estrellas p.ini
 	100 ( 1? +estrella 1 - ) drop
 	timer<
 	7 3 1 vci>anim 'animacion !
+	musmenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	
 	
