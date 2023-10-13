@@ -15,8 +15,8 @@
 #musjuego
 
 #tsguy	| dibujo
-#xp 400.0 #yp 400.0		| posicion
-#xv #yv		| velocidad
+#xp 200.0 #yp 400.0		| posicion
+|#xv #yv		| velocidad
 #animacion
 #comiendo
 
@@ -59,7 +59,7 @@
 #alterna 
 :+estela
 	'estela 'arcoiris p!+ >a 
-	360.0 a!+ yp 10.0 + alterna + a!+	| x y 
+	160.0 a!+ yp 10.0 + alterna + a!+	| x y 
 	1.0 a!+	| ang zoom
 	0 0 0 vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
@@ -92,7 +92,27 @@
 	drop
 	;
 
-:+fruta
+:+fruta | fruta y --
+	'fruta 'frutas p!+ >a 
+	810.0 a!+
+	|500.0 randmax 100.0 +
+	| YYY
+	a!+	| x y 
+	1.0 a!+	| ang zoom
+	0 0 
+	|8 randmax 
+	rot 16 + | fruta
+	vci>anim | vel cnt ini 
+	a!+	tsguy a!+			| anim sheet
+	1.0 randmax neg 1.5 - a!+
+	|2.0 randmax 1.0 - 
+	0
+	a!+ 	| vx vy
+	0.01 randmax 0.005 - 32 << a!			| vrz
+	;
+
+	
+:+frutarand
 	'fruta 'frutas p!+ >a 
 	810.0 a!+
 	500.0 randmax 100.0 +
@@ -109,7 +129,7 @@
 	
 :+fru
 	100 randmax 
-	0? ( +fruta )
+	0? ( +frutarand )
 	drop
 	;
 	
@@ -134,19 +154,29 @@
 	0 a!+ ;
 	
 |--------------- JUEGO	
-
 :jugador
+
 	xp int. yp int. 2.0 
 	animacion timer+ dup 'animacion ! nanim 
 	tsguy sspritez	
-	xv 'xp +!
-	yv 'yp +!
+|	xv 'xp +! yv 'yp +!
+	msec 3 << sin 250 * 300.0 + 'yp !
+
 	comiendo 0? ( drop ; ) 
 	1 -
 	0? ( gatovuela )
 	'comiendo !
 	;
 
+:puntaje
+	$0 ttcolor
+	314 14 ttat
+	puntos "%d" ttprint
+	$FFFFFF ttcolor
+	310 10 ttat
+	puntos "%d" ttprint
+	;
+	
 :juego
 	$252850 SDLcls
 	timer.
@@ -154,69 +184,80 @@
 	'arcoiris p.draw	
 	jugador
 	'frutas p.draw
-	$0 ttcolor
-	14 14 ttat
-	puntos "%d" ttprint
-	$FFFFFF ttcolor
-	10 10 ttat
-	puntos "%d" ttprint
-
+	
+	puntaje
 	SDLredraw
 
 	+est
-	+fru
+|	+fru
+		
 	SDLkey
 	>esc< =? ( exit )
-	<w> =? ( -2.0 'yv ! )
-	>w< =? ( 0 'yv ! )
-	<s> =? ( 2.0 'yv ! )
-	>s< =? ( 0 'yv ! )	
+	<a> =? ( 1 100.0 +fruta ) 
+	<s> =? ( 2 300.0 +fruta ) 
+	<d>  =? ( 3 500.0 +fruta ) 
+|	<w> =? ( -2.0 'yv ! )
+|	>w< =? ( 0 'yv ! )
+|	<s> =? ( 2.0 'yv ! )
+|	>s< =? ( 0 'yv ! )	
 	drop 
 	;
 	
+
+:juegoreset
+	'arcoiris p.clear
+	'frutas p.clear
+	timer<
+	7 3 1 vci>anim 'animacion !
+	;
+
 :jugar
-	32 Mix_VolumeMusic 	
-	musjuego -1 mix_playmusic
+	juegoreset
+|	32 Mix_VolumeMusic 	
+|	musjuego -1 mix_playmusic
 	'juego SDLshow
-	128 Mix_VolumeMusic 
-	musmenu -1 mix_playmusic ;
+|	128 Mix_VolumeMusic 
+|	musmenu -1 mix_playmusic 
+	;
 
 :menu
-0 SDLcls
-Immgui
+	$252850 SDLcls
+	Immgui
+	timer.
+	'estrellas p.draw
 
-0 100 immat
-800 immwidth
-"Nyan Fruit" IMMLABELC
+	0 100 immat
+	800 immwidth
+	"Nyan Fruit" immlabelc
 
-200 300 immat
-400 immwidth
-'jugar "juego" immbtn
-immdn
-'exit "salir" immbtn
+	200 300 immat
+	400 immwidth
+	'jugar "jugar" immbtn
+	immdn
+	'exit "salir" immbtn
 
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	drop
+	;
 
-SDLredraw
-SDLkey
->esc< =? ( exit )
-drop
-;
-
+	
 :main
 	"r3sdl" 800 600 SDLinit
 	64 64 "r3/itinerario/gio/gato.png" ssload 'tsguy !
-	50 'arcoiris p.ini
-	"r3/itinerario/gio/Starborn.ttf" 30 ttf_OpenFont immsdL
+	"r3/itinerario/gio/Starborn.ttf" 38 ttf_OpenFont immsdL
 	"r3/itinerario/gio/comiendo.mp3" mix_loadwav 'sndcomiento !
 	"r3/itinerario/gio/Gatito kawaii.mp3" mix_loadmus 'musmenu !
 	"r3/itinerario/gio/Nyan Cat.mp3" mix_loadmus 'musjuego !
-
+	50 'arcoiris p.ini
 	200 'frutas p.ini
+	
 	100 'estrellas p.ini
 	100 ( 1? +estrella 1 - ) drop
-	timer<
-	7 3 1 vci>anim 'animacion !
-	musmenu -1 mix_playmusic
+	
+|	musmenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	
 	
