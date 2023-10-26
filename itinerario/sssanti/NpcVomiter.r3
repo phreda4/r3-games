@@ -29,8 +29,6 @@
 	dup 56 + @ over 16 + +!
 	;
 	
-#fondo
-
 #hit
 :choque  | x y i n p -- x y p
 	dup 8 + >a 

@@ -232,8 +232,8 @@ drop
 	sndinit
 	"r3/itinerario/vladi/laser-gun.mp3" mix_loadWAV 'dispaparo !
 	"r3/itinerario/vladi/explosion.mp3" mix_loadWAV	'exploplo !
-	"r3/itinerario/vladi/Nogkii - Wii Menu  (Bass Boosted) (Trap Remixed).mp3" mix_loadmus 'menumusica !
-	"r3/itinerario/vladi/y2mate.com - Sonic the Werehog Monster.mp3" mix_loadmus 'musicafondo !
+	"r3/itinerario/vladi/Nogkii - Wii Menu.mp3" mix_loadmus 'menumusica !
+	"r3/itinerario/vladi/Sonic the Werehog Monster.mp3" mix_loadmus 'musicafondo !
 	200 'disparos p.ini
 	100 'enemis p.ini
 	200 'fx p.ini 
