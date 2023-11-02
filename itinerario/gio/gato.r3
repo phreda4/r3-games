@@ -11,6 +11,7 @@
 #estrellas 0 0
 
 #sndcomiento
+#sndnocome
 #musmenu
 #musjuego
 
@@ -89,7 +90,7 @@
 
 :nocomefruta
 	gatonocome
-	|sndcomiento sndplay	
+	sndnocome sndplay	
 	-1 'puntos +!
 	;
 	
@@ -206,7 +207,7 @@
 	animacion timer+ dup 'animacion ! nanim 
 	tsguy sspritez	
 |	xv 'xp +! yv 'yp +!
-	msec 3 << sin 250 * 300.0 + 'yp !
+	msec 4 << sin 250 * 300.0 + 'yp !
 
 	comiendo 0? ( drop ; ) 
 	1 -
@@ -270,9 +271,12 @@
 
 :jugar
 	juegoreset
+	|Mix_HaltMusic
 |	32 Mix_VolumeMusic 	
 |	musjuego -1 mix_playmusic
+	
 	'juego SDLshow
+|	Mix_HaltMusic
 |	128 Mix_VolumeMusic 
 |	musmenu -1 mix_playmusic 
 	;
@@ -303,9 +307,11 @@
 	
 :main
 	"r3sdl" 800 600 SDLinit
+	sdlfull
 	64 64 "r3/itinerario/gio/gato.png" ssload 'tsguy !
 	"r3/itinerario/gio/Starborn.ttf" 38 ttf_OpenFont immsdL
 	"r3/itinerario/gio/comiendo.mp3" mix_loadwav 'sndcomiento !
+	"r3/itinerario/gio/nocome.mp3" mix_loadwav 'sndnocome !
 	"r3/itinerario/gio/Gatito kawaii.mp3" mix_loadmus 'musmenu !
 	"r3/itinerario/gio/Nyan Cat.mp3" mix_loadmus 'musjuego !
 	50 'arcoiris p.ini
