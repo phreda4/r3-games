@@ -6,6 +6,7 @@
 ^r3/util/sdlgui.r3
 
 #tsnave	| dibujo
+
 #aninave 0	| frame maximo
 #xp 400.0 #yp 560.0		| posicion
 #xv #yv		| velocidad
@@ -18,6 +19,7 @@
 #exploplo
 #menumusica
 #musicafondo
+
 #puntos 0
 #puntajevx 0
 
@@ -48,7 +50,7 @@
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!	
-	exploplo SNDplay	| vrz
+	|exploplo SNDplay	| vrz
 	;
 
 :exploplayer
@@ -67,7 +69,7 @@
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!		
-	exploplo SNDplay | vrz
+|	exploplo SNDplay | vrz
 	;
 
 #hit
@@ -108,7 +110,7 @@
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ -3.0 a!+ 	| vx vy
 	0.1 32 << a!			| vrz
-	dispaparo SNDplay
+|	dispaparo SNDplay
 	;
 
 	
@@ -130,7 +132,7 @@
 	7 2 20 vci>anim | vel cnt ini 
 	a!+	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - 
-	a!+ 6.0 a!+ 	| vx vy
+	a!+ 2.0 1.0 randmax + a!+ 	| vx vy
 	0 a!		
 	;
 
@@ -156,7 +158,7 @@
 	;
 	
 :horda
-	10 randmax 1? ( drop ; ) drop
+	40 randmax 1? ( drop ; ) drop
 	+marciano
 	;
 	
@@ -193,7 +195,7 @@
 	0 150 immat
 	800 immwidth
 	$FF6A00 'immcolortex !
-	"Aliens Malditos" immlabelc
+	"Flores" immlabelc
 	300 350 immat
 	200 immwidth
 	$ffffff 'immcolortex !
@@ -210,8 +212,9 @@
 
 :main
 	"r3sdl" 800 600 SDLinit
-	32 32 "r3/itinerario/vladi/nave y alien.png" ssload 'tsnave !
-	sndinit
+	"r3/itinerario/vladi/fondo.png" loadimg 'fondo !
+	32 32 "r3/itinerario/enzo/sprite 1.png" ssload 'tsnave !
+	"r3/itinerario/enzo/godofwar.ttf" 50 TTF_OpenFont immSDL 	
 	200 'disparos p.ini
 	100 'enemis p.ini
 	200 'fx p.ini 
