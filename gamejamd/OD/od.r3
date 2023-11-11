@@ -4,7 +4,8 @@
 ^r3/util/bfont.r3
 ^r3/util/arr16.r3
 				
-#sprites		| hoja de sprites
+#nubes		| hoja de sprites
+#explo		| hoja de sprites
 
 #spravion
 #sprbomba
@@ -26,21 +27,52 @@
 	;
 
 |--------------- fx	
-:explosion
-	objsprite	
-	24 + @ nanim 10 =? ( drop 0 ; )
+:nube
+	dup >a
+	a@+ int. a@+ int.	| x y
+	a@+ 				| n
+	nubes ssprite
+	dup 24 + @ over +!		| vx
+	dup 32 + @ over 8 + +!	| vy
+	
+	dup @ -400.0 <? ( 1400.0 pick2 ! ) drop
 	drop
 	;
 
-:+explo	| y x --
-	'explosion 'listfx p!+ >a 
+:+nube	| vx vy n x y --
+	'nube 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
-	2.0 a!+			| zoom
-	7 5 6 vci>anim | vel cnt ini 
-	a!+	sprites a!+			| anim sheet
-	0 a!+ 0 a!+ 	| vx vy	
+	a!+ 
+	swap a!+ a!+
 	;
 
+:cielo
+	50 ( 1? 1 -
+		0.5 randmax 0.7 -
+		0.1 randmax 0.05 -
+		25 randmax 
+		1800.0 randmax 400.0 -
+		600.0 randmax 
+		+nube
+		) drop ;
+		
+:nuke
+	dup >a
+	a@+ int. a@+ int.	| x y
+	a@+ int.			| n
+	explo ssprite
+	0.05 over 16 + +!
+	dup 16 + @ int. 4 =? ( 2drop 0 ; )
+	2drop
+	;
+	
+:+explo | x y --
+	'nuke 'listfx p!+ >a 
+	swap a!+ 150.0 - a!+	| x y 
+	0 a!
+	;
+
+		
 |--------------- Jugador
 :jugador
 	x int. y int. 0 1.0 spravion SDLspriteRZ 
@@ -48,23 +80,25 @@
 	;
 
 |-------------- Disparo	
-:bala | v -- 
+:bomba | v -- 
 	dup >a
 	a@+ int. a@+ int.	| x y
 	a@+ a@+				| zoom
 	sprbomba SDLspriteRZ 
 	dup 40 + @ over +!		| vx
 	dup 48 + @ over 8 + +!	| vy
-	0.02 over 48 + +!
-	0.001 over 16 + +!
-	drop
+	0.02 over 48 + +!		| gravedad
+	0.001 over 16 + +!		| rotacion
+	
+	dup 8 + @ 700.0 >? ( drop @+ swap @ +explo 0 ; ) 
+	2drop
 	;
 
 :+disparo
-	'bala 'listshoot p!+ >a 
+	'bomba 'listshoot p!+ >a 
 	x 30.0 + a!+ y 60.0 + a!+	| x y 
-	0 a!+ 1.0 a!+	| zoom
-	0 a!+
+	0 a!+ 1.0 a!+	| rotacion zoom
+	0 a!+			|
 	0 a!+ 0.0 a!+ 	| vx vy
 	;
 	
@@ -72,8 +106,8 @@
 :juego
 	$f0f3f SDLcls
 	timer.
-	'listshoot p.draw
 	'listfx p.draw
+	'listshoot p.draw	
 	jugador	
 	SDLredraw
 
@@ -91,11 +125,13 @@
 	'listshoot p.clear
 	'listfx p.clear
 	500.0 'x ! 100.0 'y !
+	cielo
 	'juego SDLShow ;
 
 :main
 	"od" 1024 600 SDLinit
-|	16 16 "media/img/manual.png" ssload 'sprites !	
+	384 237 "r3/gamejamd/od/nubes.png" ssload 'nubes !	
+	384 360 "r3/gamejamd/od/explo.png" ssload 'explo !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
 	"r3/gamejamd/od/bomba.png" loadimg 'sprbomba !
 
