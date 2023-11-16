@@ -93,10 +93,17 @@
 |--------------------	
 :resetjuego
 	'places p.clear
-	0 80 110 151 188 +place
-	1 80 110 281 188 +place
-	2 80 110 412 188 +place
-	3 80 110 548 188 +place
+	40 ( 1? 1 -
+		4 randmax
+		over 0.5 * 150.0 +
+		pick2 0.7 * 200.0 +
+		+card	
+		) drop
+		
+|	0 80 110 151 188 +place
+|	1 80 110 281 188 +place
+|	2 80 110 412 188 +place
+|	3 80 110 548 188 +place
 	
 	4 220 120 700 470 +place
 	
@@ -110,9 +117,10 @@
 	
 :game
 	gui
-|	0 0 fondo SDLImage 	
+	|0 0 fondo SDLImage 	
 	$666666 sdlcls
 	0 0 mesa SDLImage 	
+	
 	
 	'places p.draw
 	manocursor
