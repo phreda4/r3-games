@@ -4,6 +4,10 @@
 ^r3/util/arr16.r3
 ^r3/win/sdl2mixer.r3
 ^r3/util/sdlgui.r3
+^r3/util/boxtext.r3
+^r3/util/sort.r3
+
+#font
 
 #tsnave	| dibujo
 #aninave 0	| frame maximo
@@ -18,8 +22,38 @@
 #exploplo
 #menumusica
 #musicafondo
+
 #puntos 0
-#puntajevx 0
+#tiempo 0
+
+#puntosm 0
+#tiempom 0
+
+#puntajevx * 160 | 10 * 2
+#puntajetxt * 1024
+
+#line * 33
+:eline
+	'line 32 32 cfill 0 'line 32 + c! ;
+:,line | str nro --
+	'line + swap ( c@+ 1? rot c!+ swap ) 3drop ;
+:,line< | str nro --
+	swap count rot swap - ,line ;
+:buildhs
+	11 'puntajevx shellsort
+	mark
+	'puntajetxt 'here !
+	'puntajevx >a
+	eline
+	0 ( 5 <? 1 +
+		dup "%d. " sprint 0 ,line
+		a@+ neg "%d" sprint 10 ,line< 
+		a@+ dup $ff and swap 8 >> swap "%d:%d" sprint 25 ,line< 
+		'line ,s ,cr eline 
+		) drop
+	,eol
+	empty ;
+
 :objsprite | adr -- adr
 	dup >a
 	a@+ int. a@+ int.	| x y
@@ -76,8 +110,8 @@
 	distfast 20.0 >? ( drop ; )	drop
 	dup 'enemis p.del
 |	pick4 pick4 +fx
-	5 'puntos +!
-	puntajevx puntos max 'puntajevx !
+	50 'puntos +!
+|	puntajevx puntos max 'puntajevx !
 |	1 playsnd
 	0 'hit !
 	pick4 pick4 +explo
@@ -162,19 +196,42 @@
 	+marciano
 	;
 	
-:demo
+:puntaje	
+	mark
+	puntos "%d" ,print ,cr
+	tiempo 1000 / 60 /mod swap "%d:%d" ,print
+	,eol
+	empty 
+
+	$01 here
+	20 5 760 100 xywh64 
+	$2000000ffffff font
+	textboxo | $vh str box color font --
+
+	mark
+	puntosm "%d" ,print ,cr
+	tiempom dup $ff and swap 8 >> swap "%d:%d" ,print
+	,eol
+	empty 
+
+	$21 here
+	20 5 760 100 xywh64 
+	$2000000ffffff font
+	textboxo | $vh str box color font --
+	;
+	
+:juego
 	0 0 fondo SDLImage 
 	timer.
+	deltatime 'tiempo +!
+	
 	-1 'timedisparo +! 
 	'disparos p.draw
 	jugador	
 	'enemis p.draw	
 	'fx p.draw
-	$00 ttcolor 14 14 ttat puntos "%d0" ttprint
-	$FF6A00 ttcolor 10 10 ttat puntos "%d0" ttprint
-	
-	$00 ttcolor 614 14 ttat puntajevx "%d0" ttprint
-	$FF6A00 ttcolor 610 10 ttat puntajevx "%d0" ttprint
+	puntaje
+
 	SDLredraw
 	horda
 	;
@@ -188,44 +245,69 @@
 	8 4 0 vci>anim 'aninave !
 	0 'muerte !
 	0 'puntos !
+	0 'tiempo !
 	;
 
 :jugando
 	reset 
+	'puntajevx @+ neg 'puntosm ! @ 'tiempom !
+	
 	musicafondo -1 mix_playmusic
-	'demo Sdlshow
+	'juego Sdlshow
 	menumusica -1 mix_playmusic
+	
+	tiempo 1000 / 60 /mod 8 << or 
+	puntos neg
+	'puntajevx 9 4 << + !+ !
+	buildhs
 	;
 
 :menu
 	0 0 fondo2 SDLImage
-	$00 ttcolor 360 14 ttat puntajevx "puntaje maximo %d0" ttprint
-	$4CFF00 ttcolor 356 10 ttat puntajevx "puntaje maximo %d0" ttprint
 	immgui
-	0 150 immat
+	0 50 immat
 	800 immwidth
 	$FF6A00 'immcolortex !
 	"Aliens Extintion" immlabelc
-	300 350 immat
+	300 150 immat
 	200 immwidth
 	$ffffff 'immcolortex !
 	'jugando "Jugar" immbtn
 	immdn
 	'exit "Salir" immbtn
+	
+	$00 'puntajetxt 
+	200 260 600 300 xywh64 
+	$2000000ffffff
+	font
+	textboxo | $vh str box color font --
+
+	timer.
+	400 500 5.0 
+	aninave timer+ dup 'aninave ! nanim
+	tsnave sspritez	
+	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( reset 'demo SDLshow )
+	<f1> =? ( jugando )
 	drop
 	;
+	
+:loadhs
+	'puntajevx "r3/itinerario/vladi/puntaje.mem" load drop
+	buildhs ;
+	
+:savehs
+	'puntajevx 160 "r3/itinerario/vladi/puntaje.mem" save ;
+		
 :main
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/itinerario/vladi/nave y alien.png" ssload 'tsnave !
 	"r3/itinerario/vladi/fondo.png" loadimg 'fondo !
 	"r3/itinerario/vladi/FONDO DE LOS TITULOS GAMMA.png" loadimg 'fondo2 !
-	"r3/itinerario/vladi/Minecraft.ttf" 30 TTF_OpenFont immSDL 
-	| "r3/itinerario/vladi/aurebesh/Aurebesh.otf " 50 immSDL !
-	sndinit
+	"r3/itinerario/vladi/Minecraft.ttf" 30 TTF_OpenFont dup 'font ! immSDL 
+	|sndinit
 	"r3/itinerario/vladi/laser-gun.mp3" mix_loadWAV 'dispaparo !
 	"r3/itinerario/vladi/explosion.mp3" mix_loadWAV	'exploplo !
 	"r3/itinerario/vladi/Nogkii - Wii Menu.mp3" mix_loadmus 'menumusica !
@@ -234,10 +316,10 @@
 	100 'enemis p.ini
 	200 'fx p.ini 
 	8 4 0 vci>anim 'aninave !
-	menumusica -1 mix_playmusic
+|	menumusica -1 mix_playmusic
 	timer<
-	'puntajevx "r3/itinerario/vladi/puntaje.mem" load drop
+	loadhs
 	'menu SDLshow
-	'puntajevx 8 "r3/itinerario/vladi/puntaje.mem" save
+	savehs
 	SDLquit ;	
 : main ;
