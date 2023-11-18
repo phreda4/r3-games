@@ -8,8 +8,11 @@
 #fondo
 #mesa
 
+#supervisor
 #boletas
 #manos
+#urna
+#saco
 
 #places 0 0
 
@@ -44,8 +47,8 @@
 	
 :dncard	
 	dup @+ int. swap @ int. | x y
-	over 170 - abs over 590 - abs distfast 80 <? ( [ 0 rot rot ; ] 'accion ! ) drop
-	swap 800 - abs swap 160 - abs distfast 70 <? ( [ 0 rot rot ; ] 'accion ! ) drop
+	over 170 - abs over 590 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
+	swap 900 - abs swap 300 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
 	;
 	
 :carta
@@ -77,7 +80,7 @@
 	$ff00ff sdlcolor
 	dup >a
 	a@+ a@+ a@+ a@+ 
-|	2over 2over SDLRect
+	2over 2over SDLRect
 	guiBox
 	'nuevatarjeta onClick
 	drop
@@ -90,20 +93,35 @@
 	a!+
 	;
 	
+|--------------------
+#supere 0
+:super
+	700 140 supere supervisor ssprite 
+	70 randmax 1? ( drop ; ) drop
+	supere 1 xor 'supere !
+	;
+
+:pantalla
+	super
+	0 100 mesa SDLImage
+	800 160 urna SDLImage
+	640 450 saco SDLImage
+	;
+	
 |--------------------	
 :resetjuego
 	'places p.clear
-	0 80 110 151 188 +place
-	1 80 110 281 188 +place
-	2 80 110 412 188 +place
-	3 80 110 548 188 +place
+	0 90 150 151 250 +place
+	1 90 150 281 250 +place
+	2 90 150 412 250 +place
+	3 90 150 548 250 +place
 	
-	4 220 120 700 470 +place
+	4 200 200 640 450 +place
 	
 	;
 
 :manocursor
-	sdlx 30 + sdly 
+	sdlx sdly
 	sdlb 1? ( 1 nip )
 	manos ssprite
 	;
@@ -112,7 +130,7 @@
 	gui
 |	0 0 fondo SDLImage 	
 	$666666 sdlcls
-	0 0 mesa SDLImage 	
+	pantalla
 	
 	'places p.draw
 	manocursor
@@ -125,8 +143,11 @@
 	"Fraudecracia" 1024 600 SDLinit
 	"r3/gamejamd/fraudecracia/fondo.png" loadimg 'fondo !
 	"r3/gamejamd/fraudecracia/mesa.png" loadimg 'mesa !
+	"r3/gamejamd/fraudecracia/urna.png" loadimg 'urna !
+	"r3/gamejamd/fraudecracia/saco.png" loadimg 'saco !
 	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'boletas !
 	120 120 "r3/gamejamd/fraudecracia/manos.png" ssload 'manos !
+	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'supervisor !	
 	40 'places p.ini
 	resetjuego
 	'game SDLshow
