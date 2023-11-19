@@ -18,19 +18,29 @@
 
 #mipartido 0
 
+| x y rz n ss vx vy vr
+:.x 1 ncell+ ;
+:.y 2 ncell+ ;
+:.rz 3 ncell+ ;
+:.n 4 ncell+ ;
+:.ss 5 ncell+ ;
+:.vx 6 ncell+ ;
+:.vy 7 ncell+ ;
+:.vr 8 ncell+ ;
+
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@+ a@+ sspriterz
-	dup 40 + @ over +!
-	dup 48 + @ over 8 + +!
-	dup 56 + @ over 16 + +!
+	dup .vx @ over .x +!
+	dup .vy @ over .y +!
+	dup .vr @ over .rz +!
 	;
 	
 :guiRectS | adr -- adr
-	dup @+ int. 25 -
-	swap @ int. 40 - | x y
+	dup .x @ int. 25 -
+	over .y @ int. 40 - | x y
 	over 50 + over 80 +
 	guiRect
 	;
@@ -40,13 +50,13 @@
 #xa #ya
 
 :mvcard | adr -- adr 
-	sdlx xa - 16 << over +! 
-	sdly ya - 16 << over 8 + +! 
+	sdlx xa - 16 << over .x +! 
+	sdly ya - 16 << over .y +! 
 :setcard	
 	sdlx 'xa ! sdly 'ya ! ;
 	
 :dncard	
-	dup @+ int. swap @ int. | x y
+	dup .x @ int. over .y @ int. | x y
 	over 170 - abs over 590 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
 	swap 900 - abs swap 300 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
 	;
@@ -78,7 +88,7 @@
 	
 :place
 	$ff00ff sdlcolor
-	dup >a
+	dup 8 + >a
 	a@+ a@+ a@+ a@+ 
 	2over 2over SDLRect
 	guiBox

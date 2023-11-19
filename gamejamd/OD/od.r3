@@ -22,42 +22,44 @@
 #listfx 0 0 | fx
 #listfx2 0 0 | fx
 
+|-------- sprite list
+:.x 1 ncell+ ;
+:.y 2 ncell+ ;
+:.r 3 ncell+ ; 
+:.a 4 ncell+ ; 
+:.ss 5 ncell+ ;
+:.vx 6 ncell+ ;
+:.vy 7 ncell+ ;
+
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
-	a@+ 				| zoom
+	a@+ 				| rota
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspritez
-	dup 40 + @ over +!		| vx
-	dup 48 + @ over 8 + +!	| vy
+	nanim a@+ sspriter
+	dup .vx @ over .x +!	| vx
+	dup .vy @ over .y +!	| vy
 	;
 
 |--------------- fx	
-:.vx 24 + ;
-:.vy 32 + ;
-
 :nube
-	dup >a
-	a@+ int. a@+ int.	| x y
-	a@+ 				| n
-	nubes ssprite
-	dup .vx @ over +!		| vx
-	dup .vy @ over 8 + +!	| vy
-	
-	dup @ -400.0 <? ( 1400.0 pick2 ! ) drop
-	dup 8 + @ 350.0 - abs 150.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
+	objsprite
+	dup .x @ -400.0 <? ( 1400.0 pick2 .x ! ) drop
+	dup .y @ 350.0 - abs 150.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
 	drop
 	;
 
 :+nube	| vx vy n x y --
 	'nube 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
-	a!+ swap a!+ a!+ ;
+	0.0 a!+ 52 << a!+ nubes a!+
+	swap a!+ a!+ ;
 
 :+nube2	| vx vy n x y --
 	'nube 'listfx2 p!+ >a 
 	swap a!+ a!+	| x y 
-	a!+ swap a!+ a!+ ;
+	0.0 a!+ 52 << a!+ nubes a!+
+	swap a!+ a!+ ;
 
 :cielo
 	40 ( 1? 1 -
@@ -77,50 +79,39 @@
 		+nube2
 		) drop ;		
 
-		
+|-------------- Explosion		
 :nuke
-	dup >a
-	a@+ int. a@+ int.	| x y
-	a@+ int.			| n
-	explo ssprite
-	0.05 over 16 + +!
-	dup 16 + @ int. 4 =? ( 2drop 0 ; )
+	objsprite
+	0.05 over .a +!
+	dup .a @ int. 4 =? ( 2drop 0 ; )
 	2drop
 	;
 	
 :+explo | x y --
 	'nuke 'listfx p!+ >a 
 	swap a!+ 150.0 - a!+	| x y 
-	0 a!
+	0 a!+ 0 a!+ explo a!+
+	0 a!+ 0 a!+
 	;
-
 		
 |-------------- Jugador
 :jugador
-	x int. y int. 0 1.0 spravion SDLspriteRZ  ;
+	x int. y int. 0 spravion SDLspriteR ;
 
 |-------------- Disparo	
 :bomba | v -- 
-	dup >a
-	a@+ int. 
-	a@+ int.	| x y
-	a@+ a@+				| zoom
-	sprbomba SDLspriteRZ 
-	dup 40 + @ over +!		| vx
-	dup 48 + @ over 8 + +!	| vy
-	0.02 over 48 + +!		| gravedad
-	0.001 over 16 + +!		| rotacion
-	
-	dup 8 + @ 700.0 >? ( drop @+ swap @ +explo 0 ; ) 
+	objsprite
+	0.02 over .vy +!		| gravedad
+	0.001 over .r +!		| rotacion
+	dup .y @ 700.0 >? ( drop .x @+ swap @ +explo 0 ; ) 
 	2drop
 	;
 
 :+disparo
 	'bomba 'listshoot p!+ >a 
 	x 30.0 + a!+ y 60.0 + a!+	| x y 
-	0 a!+ 1.0 a!+	| rotacion zoom
-	0 a!+			|
-	0 a!+ 0.0 a!+ 	| vx vy
+	0 a!+ 0 a!+	sprbomba a!+			|
+	0 a!+ 0 a!+ 	| vx vy
 	;
 
 :randwind
@@ -208,8 +199,9 @@
 	"od" 1024 600 SDLinit
 	384 237 "r3/gamejamd/od/nubes.png" ssload 'nubes !	
 	384 360 "r3/gamejamd/od/explo.png" ssload 'explo !
+	51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
-	"r3/gamejamd/od/bomba.png" loadimg 'sprbomba !
+	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	$7f vaini
 	200 'listshoot p.ini
