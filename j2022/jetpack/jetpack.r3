@@ -46,7 +46,7 @@
 	drop 0 ;
 	
 :disparo
-	>a
+	8 + >a
 	8 sprplayer 
 	a@+ int. xvp - a@+ int. tsdraw
 	a@ a> 16 - +!

@@ -4,6 +4,7 @@
 ^r3/util/arr16.r3
 ^r3/win/sdl2mixer.r3
 ^r3/util/sdlgui.r3
+
 #tsnave	| dibujo
 #aninave 0	| frame maximo
 #xp 400.0 #yp 560.0		| posicion
@@ -19,22 +20,23 @@
 #musicafondo
 #puntos 0
 #puntajevx 0
+
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	;
 		
 #fondo
 #fondo2
 :explosion
 	objsprite	
-	24 + @ nanim 36 =? ( drop 0 ; )
+	32 + @ nanim 36 =? ( drop 0 ; )
 	drop
 	;
 
@@ -51,7 +53,7 @@
 
 :exploplayer
 	objsprite
-	24 + @ nanim 19 =? ( drop 0 exit ; )
+	32 + @ nanim 19 =? ( drop 0 exit ; )
 	drop
 	;
 
@@ -90,7 +92,7 @@
 	objsprite
 	
 	1 'hit !
-	dup @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	'choque 'enemis p.mapv | 'vector list --	
 	2drop
@@ -108,12 +110,11 @@
 	0.1 32 << a!			| vrz
 	dispaparo SNDplay
 	;
-
 	
 :alien | v -- 
 	objsprite	
 	|..... remove when outside screen
-	dup @+ dup -17.0 817.0 between -? ( 4drop 0 ;  ) drop
+	dup 8 + @+ dup -17.0 817.0 between -? ( 4drop 0 ;  ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
 	30.0 <? ( +explon ) drop
@@ -150,7 +151,6 @@
 
 	xv 'xp +!
 	yv 'yp +!
-
 	;
 	
 :horda
@@ -165,18 +165,10 @@
 	jugador	
 	'enemis p.draw	
 	'fx p.draw
-	$00 ttcolor
-	14 14 ttat
-	puntos "%d0" ttprint
-	$FF6A00 ttcolor
-	10 10 ttat
-	puntos "%d0" ttprint
-		$00 ttcolor
-	614 14 ttat
-	puntajevx "%d0" ttprint
-	$FF6A00 ttcolor
-	610 10 ttat
-	puntajevx "%d0" ttprint
+	$00 ttcolor 14 14 ttat puntos "%d0" ttprint
+	$FF6A00 ttcolor 10 10 ttat puntos "%d0" ttprint
+	$00 ttcolor 614 14 ttat puntajevx "%d0" ttprint
+	$FF6A00 ttcolor 610 10 ttat puntajevx "%d0" ttprint
 	SDLredraw
 	horda
 	;
@@ -190,38 +182,36 @@
 	8 4 0 vci>anim 'aninave !
 	0 'muerte !
 	0 'puntos !
-;
+	;
+	
 :jugando
-reset 
-musicafondo -1 mix_playmusic
-'demo Sdlshow
-menumusica -1 mix_playmusic
-;
+	reset 
+	musicafondo -1 mix_playmusic
+	'demo Sdlshow
+	menumusica -1 mix_playmusic
+	;
+	
 :menu
-SDLredraw
-0 0 fondo2 SDLImage
-		$00 ttcolor
-	360 14 ttat
-	puntajevx "puntaje maximo %d0" ttprint
-	$4CFF00 ttcolor
-	356 10 ttat
-	puntajevx "puntaje maximo %d0" ttprint
-immgui
-0 150 immat
-800 immwidth
-$FF6A00 'immcolortex !
-"Aliens Malditos" immlabelc
-300 350 immat
-200 immwidth
-$ffffff 'immcolortex !
-'jugando "Jugar" immbtn
-immdn
-'exit "Salir" immbtn
-SDLkey
->esc< =? ( exit )
-<f1> =? ( reset 'demo SDLshow )
-drop
-;
+	0 0 fondo2 SDLImage
+	immgui
+	0 150 immat
+	800 immwidth
+	$FF6A00 'immcolortex !
+	"Aliens Malditos" immlabelc
+	300 350 immat
+	200 immwidth
+	$ffffff 'immcolortex !
+	'jugando "Jugar" immbtn
+	immdn
+	'exit "Salir" immbtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( reset 'demo SDLshow )
+	drop
+	;
+	
 :main
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/itinerario/vladi/nave y alien.png" ssload 'tsnave !
@@ -240,8 +230,7 @@ drop
 	8 4 0 vci>anim 'aninave !
 	menumusica -1 mix_playmusic
 	timer<
-	'puntajevx "r3/itinerario/vladi/puntaje.mem" load drop
 	'menu SDLshow
-	'puntajevx 8 "r3/itinerario/vladi/puntaje.mem" save
 	SDLquit ;	
+	
 : main ;

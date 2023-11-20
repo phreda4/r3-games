@@ -49,7 +49,7 @@
 	;
 
 :explode
-	>a
+	8 + >a
 	a@ 3.0 >=? ( 0 nip ; ) 
 	0.1 + dup a!+
 	16 >> 14 + graficos
@@ -62,7 +62,7 @@
 
 
 :alien | a --
-	>a 
+	8 + >a 
 	msec 7 >> $3 and 9 +
 	graficos a@+ 16 >> a@+ 16 >> tsdraw
 	-16 a+
@@ -102,7 +102,7 @@
 	;
 	
 :disp | a --
-	>a 
+	8 + >a 
 	8 graficos
 	a@+ 16 >> 
 	a@ 8.0 - dup a!+ 16 >>

@@ -95,7 +95,7 @@
 
 |---------------------------------------------
 :muerto
-	>a
+	8 + >a
 	a@ dtime + 
 	10000 >? ( drop 0 ; ) 
 	a!+ 
@@ -138,7 +138,7 @@
 
 	
 :disparo
-	dup >a
+	dup 8 + >a
 	a@+ int. xvp - 4 - 
 	-8 <? ( 2drop 0 ; )
 	800 >? ( 2drop 0 ; )
@@ -181,7 +181,7 @@
 	-? ( $40004 ; ) $c0004 ;
 	
 :enemigo | adr --
-	dup >a
+	dup 8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	animcntm + 	

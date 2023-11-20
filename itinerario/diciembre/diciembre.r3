@@ -271,7 +271,7 @@
 	
 |  x y anim 
 :player	
-	>a
+	8 + >a
 	btnpad
 	%1000 and? ( 3 anim! 0 -2.0 xymove )
 	%100 and? ( 0 anim! 0 2.0 xymove  )
@@ -302,7 +302,7 @@
 	;
 	
 :npc
-	>a
+	8 + >a
 	randir
 	a> 4 3 << + @
 	%1000 and? ( 3 anim! 0 -2.0 xymove )
@@ -325,7 +325,7 @@
 
 |-----------------------------------
 :cosa
-	>a
+	8 + >a
 	a> 2 3 << + @
 	a@+ int. xvp -
 	a@+ int. yvp -

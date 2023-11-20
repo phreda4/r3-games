@@ -163,7 +163,7 @@
 	
 | msec addani|cntani x y vx vy lim|xy dest
 :fantasma | a --
-	>a
+	8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	animcntm + sprplayer | frame 'sprites
@@ -192,7 +192,7 @@
 	;
 
 :explo | a --
-	>a
+	8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	1 >> animcntm + 
@@ -244,7 +244,7 @@
 	a> 16 + dup @ estado swap ! ;
 	
 :robot | v a -- v
-	>a
+	8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	animcntm + 
@@ -305,7 +305,7 @@
 	
 | msec addani|cntani x y vx vy lim|xy dest
 :bici | a --
-	>a
+	8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	animcntm + sprplayer | frame 'sprites
@@ -364,7 +364,7 @@
 	;
 	
 :auto
-	>a
+	8 + >a
 	a@ dup dtime + a!+ 
 	a@+ dup 16 >> swap $ffff and rot |  add cnt msec
 	animcntm + sprauto | frame 'sprites
@@ -407,7 +407,7 @@
 	;
 
 :sema
-	>a a@+ semaforoestado + sprsemaforo 
+	8 + >a a@+ semaforoestado + sprsemaforo 
 	8 a+
 	a@+ 16 >> 48 - a@+ 16 >> 96 - tsdraw 
 	
@@ -428,7 +428,7 @@
 	
 |-------------------------------- adornos
 :quieto
-	>a
+	8 + >a
 	a@+ sprsemaforo 8 a+ 
 	a@+ 16 >> 48 - a@+ 16 >> 96 - tsdraw 
 	;

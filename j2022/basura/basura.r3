@@ -115,7 +115,7 @@
 
 |--------------------------------
 :item | a --
-	>a a@ dup 0.05 + a!+ 
+	8 + >a a@ dup 0.05 + a!+ 
 	16 >> a@+ $f and and a@+ + sprplayer 
 	a@+ xmapa -
 	a@+ ymapa - 
@@ -139,7 +139,7 @@
 :descompone 1 'error ! ;
 |--------------------------------
 :gato | a --
-	>a a@ dup 0.1 + a!+ 
+	8 + >a a@ dup 0.1 + a!+ 
 	16 >> $3 and 30 + sprplayer 
 	16 a+
 	a@+ 
@@ -156,7 +156,7 @@
 
 |--------------------------------
 :perro | a --
-	>a a@ dup 0.1 + a!+ 
+	8 + >a a@ dup 0.1 + a!+ 
 	16 >> $3 and 26 + sprplayer 
 	16 a+
 	a@+ 
@@ -193,7 +193,7 @@
 	a@ $ffffffff not and or	a! ;
 
 :jug	
-	>a
+	8 + >a
 	a@anim a@+
 	8 a+
 	a@+ dup 300 - 'xmapa !

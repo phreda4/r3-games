@@ -20,19 +20,19 @@
 #sfxexp
 
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	;
 
 :explosion
 	objsprite	
-	24 + @ nanim 45 =? ( drop 0 ; )
+	32 + @ nanim 45 =? ( drop 0 ; )
 	drop
 	;
 
@@ -63,7 +63,7 @@
 | 0 8 16  24   32 40 48 56
 	
 :bala | v -- 
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
@@ -71,16 +71,16 @@
 	
 	|..... remove when outside screen
 	1 'hit !
-	dup @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -20.0 616.0 between -? ( 4drop 0 ; ) drop
 	'choque 'enemigos p.mapv | 'vector list --	
 	2drop
 	hit 0? ( nip ; ) drop
 	
 	|..... add velocity to position
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	drop
 	;
 
@@ -97,7 +97,7 @@
  
  
 :explosion
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim	| n
@@ -105,9 +105,9 @@
 	a@+ sspriterz
 	
 	|..... add velocity to position
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	drop
 	;
 
@@ -122,7 +122,7 @@
 	;
 
 :exploplayer
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim	| n
@@ -130,9 +130,9 @@
 	a@+ sspriterz
 	
 	|..... add velocity to position
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	drop
 	;
 
@@ -155,25 +155,25 @@
 | 0 8 16  24   32 40 48 56
 	
 :pulpo | v -- 
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
 	
 	|..... remove when outside screen
-	dup @+ dup -30.0 830.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -30.0 830.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -20.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
 	30.0 <? ( exit ) drop
     
 	
-	90 randmax 0? ( over 40 + dup @ neg swap ! ) drop
+	90 randmax 0? ( over 48 + dup @ neg swap ! ) drop
 	
 	|..... add velocity to position
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	drop
 	;
 

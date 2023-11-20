@@ -180,7 +180,7 @@
 	a@+ pv.p 16 >> a@+ pv.p 16 >> SDLFngon ;
 
 :figura
-	>a
+	8 + >a
 	a@+ SDLColor
 	a@+ pv.p 
 	a@+ dup $ffff and swap 32 >> 

@@ -19,14 +19,14 @@
 | 0 8 16  24   32 40 48 56
 
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	;
 	
 #hit
@@ -46,7 +46,7 @@
 :vomito | v -- 
 	objsprite
 	1 'hit !
-	dup @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -17.0 817.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 410.0 between -? ( 4drop 0 ; ) drop
 	'choque 'npc p.mapv | 'vector list --	
 	2drop
@@ -67,7 +67,7 @@
 :victima | v -- 
 	objsprite	
 |	1 'hit !
-	dup @+ dup -35.0 835.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -35.0 835.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 |	'choque 'npc p.mapv | 'vector list --	
 	2drop

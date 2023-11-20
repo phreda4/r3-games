@@ -24,18 +24,18 @@
 #puntos 0
 
 :objsprite | adr -- adr
-	dup >a
+	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ nanim 			| n
 	a@+ sspriterz
-	dup 40 + @ over +!
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
+	dup 64 + @ over 24 + +!
 	;
 
 :objframe | adr -- frame
-	24 + @ nanim ;
+	32 + @ nanim ;
 	
 :gatovuela
 	7 6 6 vci>anim 'animacion !	;
@@ -58,7 +58,7 @@
 :estela | v -- 
 	objsprite
 	|..... remove when outside screen
-	dup @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	2drop
 	drop
@@ -111,7 +111,7 @@
 :fruta | v -- 
 	objsprite
 	|..... remove when outside screen
-	dup @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
+	dup 8 + @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
 	yp - swap xp - distfast
 	45.0 <? ( drop comefruta ; ) 2drop ;
@@ -160,7 +160,7 @@
 |-------------------------- estrellas
 :estrella | v -- 
 	objsprite
-	dup @ -30.0 <? ( drop 830.0 swap ! ; ) 
+	dup 8 + @ -30.0 <? ( drop 830.0 swap 8 + ! ; ) 
 	2drop ; 
 	
 :+estrella 
@@ -178,7 +178,7 @@
 
 :planeta | v -- 
 	objsprite
-	dup @ -300.0 <? ( drop 1100.0 swap ! ; ) 2drop 
+	dup 8 + @ -300.0 <? ( drop 1100.0 swap 8 + ! ; ) 2drop 
 |	8 + dup @ 
 |	-60.0 <? ( drop 660.0 swap ! ; ) 
 |	660 >? ( drop -60.0 swap ! ; ) 
@@ -307,7 +307,7 @@
 	
 :main
 	"r3sdl" 800 600 SDLinit
-	sdlfull
+	|sdlfull
 	64 64 "r3/itinerario/gio/gato.png" ssload 'tsguy !
 	"r3/itinerario/gio/Starborn.ttf" 38 ttf_OpenFont immsdL
 	"r3/itinerario/gio/comiendo.mp3" mix_loadwav 'sndcomiento !
