@@ -20,7 +20,6 @@
 
 #listshoot 0 0 | lista de disparos
 #listfx 0 0 | fx
-#listfx2 0 0 | fx
 
 |-------- sprite list
 :.x 1 ncell+ ;
@@ -41,57 +40,56 @@
 	dup .vy @ over .y +!	| vy
 	;
 
+:objspritez | adr -- adr
+	dup 8 + >a
+	a@+ int. a@+ int.	| x y
+	a@+ dup 32 >> swap $ffffffff and 	| rota zoom
+	a@ timer+ dup a!+ 	| anima
+	nanim a@+ sspriterz
+	dup .vx @ over .x +!	| vx
+	dup .vy @ over .y +!	| vy
+	;
+
 |--------------- fx	
 :nube
-	objsprite
+	objspritez
 	dup .x @ -400.0 <? ( 1400.0 pick2 .x ! ) drop
-	dup .y @ 350.0 - abs 150.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
+	dup .y @ 250.0 - abs 250.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
 	drop
 	;
 
-:+nube	| vx vy n x y --
+:+nube	| vx vy n z x y --
 	'nube 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
-	0.0 a!+ 52 << a!+ nubes a!+
-	swap a!+ a!+ ;
-
-:+nube2	| vx vy n x y --
-	'nube 'listfx2 p!+ >a 
-	swap a!+ a!+	| x y 
-	0.0 a!+ 52 << a!+ nubes a!+
+	a!+ 
+	52 << a!+ nubes a!+
 	swap a!+ a!+ ;
 
 :cielo
-	40 ( 1? 1 -
-		0.5 randmax 0.7 -
+	30 ( 1? 1 -
+		0.5 randmax 0.6 -
 		0.1 randmax 0.05 -
-		25 randmax 
+		2 randmax 
+		1.0 randmax 0.4 + 
 		1800.0 randmax 400.0 -
-		300.0 randmax 200.0 + | 200..500
+		500.0 randmax 
 		+nube
 		) drop 
-	20 ( 1? 1 -
-		0.5 randmax 0.7 -
-		0.1 randmax 0.05 -
-		25 randmax 
-		1800.0 randmax 400.0 -
-		300.0 randmax 200.0 +
-		+nube2
-		) drop ;		
-
+	;		
+	
 |-------------- Explosion		
 :nuke
 	objsprite
-	0.05 over .a +!
-	dup .a @ int. 4 =? ( 2drop 0 ; )
+	dup .a @ canim 25 =? ( 2drop 0 ; )
 	2drop
 	;
 	
 :+explo | x y --
 	'nuke 'listfx p!+ >a 
 	swap a!+ 150.0 - a!+	| x y 
-	0 a!+ 0 a!+ explo a!+
-	0 a!+ 0 a!+
+	0 a!+ 
+	6 26 0 vci>anim a!+ explo a!+
+	0 a!+ -0.1 a!+
 	;
 		
 |-------------- Jugador
@@ -107,7 +105,11 @@
 	2drop
 	;
 
+#disparodelay
+
 :+disparo
+	disparodelay -? ( drop ; ) drop
+	-200 'disparodelay ! |200 ms delay
 	'bomba 'listshoot p!+ >a 
 	x 30.0 + a!+ y 60.0 + a!+	| x y 
 	0 a!+ 0 a!+	sprbomba a!+			|
@@ -124,12 +126,12 @@
 |-------------- Juego
 :juego
 	vupdate
-	$f0f3f SDLcls
+	deltatime 'disparodelay +!
+	$78ADE8 SDLcls
 	timer.
 	'listfx p.draw
 	'listshoot p.draw	
 	jugador	
-	'listfx2 p.draw
 	SDLredraw
 
 	SDLkey 
@@ -159,9 +161,6 @@
 
 :nextt texto> >>0 'texto> ! ;
 
-:l0count | list -- cnt
-	0 ( swap dup c@ 1? drop >>0 swap 1+ ) 2drop ;
-	
 #colm
 #t	
 :lines | texto --
@@ -169,7 +168,7 @@
 	$ff 'colm !
 	vareset
 	1.0 't !
-	l0count dup "%d" .println
+	l0count 
 	0 ( over <? 
 		'colm 0 $ff 5 1.0 t +vanim
 		'colm $ff 0 5 1.0 t 2.0 + +vanim
@@ -197,16 +196,16 @@
 |-------------------------------------
 :main
 	"od" 1024 600 SDLinit
-	384 237 "r3/gamejamd/od/nubes.png" ssload 'nubes !	
-	384 360 "r3/gamejamd/od/explo.png" ssload 'explo !
+	
+	128 128 "r3/gamejamd/od/explosion.png" ssload 'explo !
 	51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
+	143 88 "r3/gamejamd/od/nubes.png" ssload 'nubes !
 	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	$7f vaini
 	200 'listshoot p.ini
 	100 'listfx p.ini
-	100 'listfx2 p.ini
 	timer<
 	
 	'texto lines

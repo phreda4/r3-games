@@ -48,12 +48,14 @@
 	0 ( 5 <? 1 +
 		dup "%d. " sprint 0 ,line
 		a@+ neg "%d" sprint 10 ,line< 
-		a@+ dup $ff and swap 8 >> swap "%d:%d" sprint 25 ,line< 
+		a@+ dup $ff and swap 8 >> swap "%d : %d" sprint 25 ,line< 
 		'line ,s ,cr eline 
 		) drop
 	,eol
 	empty ;
 
+
+|---------------------------------------
 :objsprite | adr -- adr
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
@@ -65,8 +67,10 @@
 	dup 64 + @ over 24 + +!
 	;
 		
-#fondo
+#fondo1
 #fondo2
+#fondoj
+
 :explosion
 	objsprite	
 	32 + @ nanim 36 =? ( drop 0 ; )
@@ -119,7 +123,7 @@
 
 |disparo
 | x y ang anim ss vx vy ar
-| 0 8 16  24   32 40 48 56
+| 1 2 3   4    5  6  7  8
 	
 :bala | v -- 
 	objsprite
@@ -161,7 +165,6 @@
 
 :+marciano
 	'alien 'enemis p!+ >a 
-	|800.0 randmax 
 	600.0 randmax 100.0 + a!+ -100.0 a!+ |alien  x y 
 	1.0 a!+	| ang zoom
 	7 2 20 vci>anim | vel cnt ini 
@@ -221,7 +224,7 @@
 	;
 	
 :juego
-	0 0 fondo SDLImage 
+	0 0 fondoj SDLImage 
 	timer.
 	deltatime 'tiempo +!
 	
@@ -262,6 +265,7 @@
 	buildhs
 	;
 
+|----------------------------------------
 :menu
 	0 0 fondo2 SDLImage
 	immgui
@@ -293,7 +297,20 @@
 	<f1> =? ( jugando )
 	drop
 	;
-	
+
+|----------------------------------------
+#tittxt
+"En un mundo donde los aliens nos atacan nacen los héroes"
+"este que ves ahora es tu personaje"
+"estos que ahora aparecieron son tus enemigos"
+"Se juegan con las flechas para moverse y con el espacio se dispara"
+"ahora les presento:"
+
+:titulo
+	;
+
+
+|----------------------------------------	
 :loadhs
 	'puntajevx "r3/iti2023/vladi/puntaje.mem" load drop
 	buildhs ;
@@ -304,19 +321,21 @@
 :main
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/iti2023/vladi/nave y alien.png" ssload 'tsnave !
-	"r3/iti2023/vladi/fondo.png" loadimg 'fondo !
-	"r3/iti2023/vladi/FONDO DE LOS TITULOS GAMMA.png" loadimg 'fondo2 !
+	"r3/iti2023/vladi/fondo1.png" loadimg 'fondo1 !
+	"r3/iti2023/vladi/fondo2.png" loadimg 'fondo2 !
+	"r3/iti2023/vladi/fondo.png" loadimg 'fondoj !
 	"r3/iti2023/vladi/Minecraft.ttf" 30 TTF_OpenFont dup 'font ! immSDL 
-	|sndinit
+	
 	"r3/iti2023/vladi/laser-gun.mp3" mix_loadWAV 'dispaparo !
-	"r3/iti2023/vladi/explosion.mp3" mix_loadWAV	'exploplo !
+	"r3/iti2023/vladi/explosion.mp3" mix_loadWAV 'exploplo !
 	"r3/iti2023/vladi/Nogkii - Wii Menu.mp3" mix_loadmus 'menumusica !
 	"r3/iti2023/vladi/Sonic the Werehog Monster.mp3" mix_loadmus 'musicafondo !
 	200 'disparos p.ini
 	100 'enemis p.ini
 	200 'fx p.ini 
 	8 4 0 vci>anim 'aninave !
-|	menumusica -1 mix_playmusic
+
+	menumusica -1 mix_playmusic
 	timer<
 	loadhs
 	'menu SDLshow
