@@ -81,22 +81,23 @@
 	immgui	
 
 	196 immwidth
-	102 300 immat $ff 'immcolorbtn !
-	[ 0 clickc ; ] "click1" immbtn 
-	302 300 immat $ff00 'immcolorbtn !
-	[ 1 clickc ; ] "click2" immbtn
-	502 300 immat $ff0000 'immcolorbtn !
-	[ 2 clickc ; ] "click3" immbtn
-	702 300 immat $ff00ff 'immcolorbtn !
-	[ 3 clickc ; ] "click4" immbtn
-	
+	102 300 immat [ 0 clickc ; ] immzone 
+	$ff SDLColor plxywh SDLFRect 
+	302 300 immat [ 1 clickc ; ] immzone 
+	$ff00 SDLColor plxywh SDLFRect 
+	502 300 immat [ 2 clickc ; ] immzone 
+	$ff0000 SDLColor plxywh SDLFRect 
+	702 300 immat [ 3 clickc ; ] immzone 
+	$ff00ff SDLColor plxywh SDLFRect 
 	
 	'colores colorclick ncell+ @ SDLColor
-	412 50 200 100 SDLFRect
+	412 20 200 100 SDLFRect
 	
-	462 160 immat
-	100 50 immbox
-	puntos "%d" sprint immlabel
+	200 50 immbox
+	412 120 immat
+	puntos "%d" sprint immlabelC
+	412 160 immat
+	tiempoclick "%d" sprint immlabelC
 	
 	'listfx p.draw
 	SDLredraw
