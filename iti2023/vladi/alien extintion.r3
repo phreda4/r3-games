@@ -1,11 +1,13 @@
 ^r3/lib/rand.r3
+^r3/lib/color.r3
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2image.r3
-^r3/util/arr16.r3
 ^r3/win/sdl2mixer.r3
+^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
 ^r3/util/boxtext.r3
 ^r3/util/sort.r3
+^r3/util/varanim.r3
 
 #font
 
@@ -18,7 +20,7 @@
 #disparos 0 0 
 #enemis 0 0
 
-#dispaparo
+#snddisparo
 #exploplo
 #menumusica
 #musicafondo
@@ -47,8 +49,8 @@
 	eline
 	0 ( 5 <? 1 +
 		dup "%d. " sprint 0 ,line
-		a@+ neg "%d" sprint 10 ,line< 
-		a@+ dup $ff and swap 8 >> swap "%d : %d" sprint 25 ,line< 
+		a@+ neg "%d" sprint 14 ,line< 
+		a@+ dup $ff and swap 8 >> swap "%d min %d seg" sprint 30 ,line< 
 		'line ,s ,cr eline 
 		) drop
 	,eol
@@ -149,7 +151,7 @@
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ -3.0 a!+ 	| vx vy
 	0.1 32 << a!			| vrz
-	dispaparo SNDplay
+	snddisparo SNDplay
 	;
 
 	
@@ -170,7 +172,7 @@
 	7 2 20 vci>anim | vel cnt ini 
 	a!+	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - 
-	a!+ 1.0 a!+ 	| vx vy
+	a!+ 1.0 1.0 randmax + a!+ 	| vx vy
 	0 a!		
 	;
 
@@ -269,16 +271,18 @@
 :menu
 	0 0 fondo2 SDLImage
 	immgui
-	0 50 immat
+	
 	800 immwidth
-	$FF6A00 'immcolortex !
-	"Aliens Extintion" immlabelc
-	300 150 immat
-	200 immwidth
+	$0 'immcolortex !
+	4 54 immat "ALIENS EXTINTION" immlabelc
 	$ffffff 'immcolortex !
-	'jugando "Jugar" immbtn
-	immdn
-	'exit "Salir" immbtn
+	0 50 immat "ALIENS EXTINTION" immlabelc
+	
+	200 immwidth
+	$7f00 'immcolorbtn !
+	300 150 immat 'jugando "JUGAR" immbtn
+	$7f0000 'immcolorbtn !
+	300 200 immat 'exit "SALIR" immbtn
 	
 	$00 'puntajetxt 
 	200 260 600 300 xywh64 
@@ -287,7 +291,9 @@
 	textboxo | $vh str box color font --
 
 	timer.
-	400 500 5.0 
+	400 
+	480 msec 5 >> $7f and $40 and? ( $7f swap - ) +
+	5.0 
 	aninave timer+ dup 'aninave ! nanim
 	tsnave sspritez	
 	
@@ -299,14 +305,59 @@
 	;
 
 |----------------------------------------
-#tittxt
-"En un mundo donde los aliens nos atacan nacen los héroes"
+#titxt
+"En un mundo donde los aliens nos atacan nacen los heroes"
 "este que ves ahora es tu personaje"
 "estos que ahora aparecieron son tus enemigos"
 "Se juegan con las flechas para moverse y con el espacio se dispara"
 "ahora les presento:"
+#titxt>
+#colm
+#xn
+#fondot
 
+:titu1
+	timer. vupdate
+	0 0 fondot SDLImage
+
+	$11 titxt>
+	colm 100 300 400 xywh64 
+	$ffffff font textbox | $vh str box color font --
+
+	400 xn 5.0 
+	aninave timer+ dup 'aninave ! nanim
+	tsnave sspritez	
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
+	
+	
 :titulo
+	'titxt 'titxt> !
+	800 'xn !
+	fondo1 'fondot !
+	vareset
+	'colm 250 -300 5 1.0 0.0 +vanim
+	'colm 800 250 5 1.0 4.0 +vanim
+	[ titxt> >>0 'titxt> ! ; ] 5.0 +vexe
+	'colm 250 -300 5 1.0 6.0 +vanim
+	'xn 490 800 5 1.0 7.0 +vanim	
+	'colm 800 250 5 1.0 10.0 +vanim
+	[ titxt> >>0 'titxt> ! ; ] 11.0 +vexe
+	'colm 250 -300 5 1.0 12.0 +vanim
+	[ fondo2 'fondot ! ; ] 13.0 +vexe
+	'colm 800 250 5 1.0 16.0 +vanim
+	[ titxt> >>0 'titxt> ! ; ] 17.0 +vexe
+	'colm 250 -300 5 1.0 18.0 +vanim
+	'colm 800 250 5 1.0 22.0 +vanim
+	[ titxt> >>0 'titxt> ! ; ] 23.0 +vexe
+	'colm 250 -300 5 1.0 24.0 +vanim
+	'colm 800 250 5 1.0 28.0 +vanim
+	'exit 30.0 +vexe 		
+	'titu1 SDLShow
 	;
 
 
@@ -324,9 +375,8 @@
 	"r3/iti2023/vladi/fondo1.png" loadimg 'fondo1 !
 	"r3/iti2023/vladi/fondo2.png" loadimg 'fondo2 !
 	"r3/iti2023/vladi/fondo.png" loadimg 'fondoj !
-	"r3/iti2023/vladi/Minecraft.ttf" 30 TTF_OpenFont dup 'font ! immSDL 
-	
-	"r3/iti2023/vladi/laser-gun.mp3" mix_loadWAV 'dispaparo !
+	"r3/iti2023/vladi/Minecraft.ttf" 32 TTF_OpenFont dup 'font ! immSDL 
+	"r3/iti2023/vladi/laser-gun.mp3" mix_loadWAV 'snddisparo !
 	"r3/iti2023/vladi/explosion.mp3" mix_loadWAV 'exploplo !
 	"r3/iti2023/vladi/Nogkii - Wii Menu.mp3" mix_loadmus 'menumusica !
 	"r3/iti2023/vladi/Sonic the Werehog Monster.mp3" mix_loadmus 'musicafondo !
@@ -334,7 +384,8 @@
 	100 'enemis p.ini
 	200 'fx p.ini 
 	8 4 0 vci>anim 'aninave !
-
+	$7f vaini
+	titulo
 	menumusica -1 mix_playmusic
 	timer<
 	loadhs

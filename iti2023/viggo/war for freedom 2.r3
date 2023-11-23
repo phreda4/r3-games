@@ -24,7 +24,7 @@
 #musicamenu
 #musicaj
 #sonidodis
-#explosionx
+#sonidoexp
 
 #disparos 0 0 
 #enemigos 0 0
@@ -86,8 +86,8 @@
 	dup 8 + @+ swap @ +fx
 	dup 'enemigos p.del
 	1 'puntos2 +!
-|	1 playsnd
 	0 'hit !
+	sonidoexp sndplay
 	;
 	
 :bala | v -- 
@@ -123,7 +123,7 @@
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
-|	sonidodis sndplay
+	sonidodis sndplay
 	;
 
 #tdis2
@@ -137,9 +137,8 @@
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
-|	sonidodis sndplay
+	sonidodis sndplay
 	;
-
 
 |--------------------- ALIEN
 :alien | v -- 
@@ -239,16 +238,26 @@
 	jugador
 	'enemigos p.draw
 	'fx p.draw
+	
 	$0 ttcolor 24 14 ttat puntos "%d" ttprint
 	$ffffff ttcolor 20 10 ttat puntos "%d" ttprint
 
-	$0 ttcolor 624 14 ttat puntos2 "%d" ttprint
-	$ffffff ttcolor 620 10 ttat puntos2 "%d" ttprint
+	$0 ttcolor 24 534 ttat puntos2 "%d" ttprint
+	$ffffff ttcolor 20 530 ttat puntos2 "%d" ttprint
 	
 	SDLredraw
 	;
 	
 :jugar
+	'enemigos p.clear
+	'disparos p.clear
+	'fondos p.clear
+	'fx p.clear	
+	100.0 'xp ! 200.0 'yp !
+	100.0 'xp2 ! 400.0 'yp2 !
+	0 'puntos !
+	0 'puntos2 !
+
 	'juego sdlshow
 	;
 	
@@ -265,13 +274,15 @@
 	
 	200 300 immat
 	400 immwidth
-	
+	$7f00 'immcolorbtn !
 	'jugar "jugar" immbtn
 	immdn
+	$7f0000 'immcolorbtn !
 	'exit "salir" immbtn
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
+	>f1< =? ( jugar )
 	drop
 ;
 
@@ -284,7 +295,8 @@
 	"r3/iti2023/viggo/musica menu.mp3" mix_loadmus 'musicaj !
 	"r3/iti2023/viggo/musica.mp3" mix_loadmus 'musicamenu !
 	"r3/iti2023/viggo/disparo.mp3" mix_loadwav 'sonidodis !
-	"r3/iti2023/viggo/explosion.mp3" mix_loadwav 'explosionx !
+	"r3/iti2023/viggo/explosion.mp3" mix_loadwav 'sonidoexp !
+	
 	"r3/iti2023/viggo/Revamped.otf" 50 TTF_OpenFont immSDL
 	8 3 0 vci>anim 'aninave !
 	timer<
@@ -292,7 +304,7 @@
 	100 'disparos p.ini
 	100 'fondos p.ini
 	100 'fx p.ini	
-	|musicamenu -1 mix_playmusic
+	musicamenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	
 	

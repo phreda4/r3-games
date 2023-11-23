@@ -76,17 +76,15 @@
 	pick4 a@+ -	pick4 a@+ -
 	distfast 20.0 >? ( drop ; )	drop
 	dup 'enemis p.del
-|	pick4 pick4 +fx
 	5 'puntos +!
 	puntajevx puntos max 'puntajevx !
-|	1 playsnd
 	0 'hit !
 	pick4 pick4 +explo
 	;
 
 |disparo
 | x y ang anim ss vx vy ar
-| 0 8 16  24   32 40 48 56
+| 1 2 3    4   5  6  7  8
 	
 :bala | v -- 
 	objsprite
@@ -123,7 +121,6 @@
 
 :+marciano
 	'alien 'enemis p!+ >a 
-	|800.0 randmax 
 	600.0 randmax 100.0 + a!+ -100.0 a!+ |alien  x y 
 	1.0 a!+	| ang zoom
 	7 2 20 vci>anim | vel cnt ini 
@@ -216,10 +213,8 @@
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/iti2023/vladi/nave y alien.png" ssload 'tsnave !
 	"r3/iti2023/vladi/fondo.png" loadimg 'fondo !
-	"r3/iti2023/vladi/FONDO DE LOS TITULOS GAMMA.png" loadimg 'fondo2 !
+	"r3/iti2023/vladi/fondo2.png" loadimg 'fondo2 !
 	"r3/iti2023/vladi/Minecraft.ttf" 30 TTF_OpenFont immSDL 
-	| "r3/iti2023/vladi/aurebesh/Aurebesh.otf " 50 immSDL !
-	sndinit
 	"r3/iti2023/vladi/laser-gun.mp3" mix_loadWAV 'dispaparo !
 	"r3/iti2023/vladi/explosion.mp3" mix_loadWAV	'exploplo !
 	"r3/iti2023/vladi/Nogkii - Wii Menu.mp3" mix_loadmus 'menumusica !

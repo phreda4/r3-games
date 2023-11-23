@@ -17,8 +17,9 @@
 #disparos 0 0 
 #enemis 0 0
 
-#dispaparo
-#exploplo
+#snddisparo
+#sndexplo
+
 #menumusica
 #musicafondo
 
@@ -64,7 +65,7 @@
 	a!+	tsexplo a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!	
-	|exploplo SNDplay	| vrz
+	sndexplo SNDplay	| vrz
 	;
 
 |------------------------------
@@ -84,7 +85,7 @@
 	a!+	tsexplo a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!		
-|	exploplo SNDplay | vrz
+	sndexplo SNDplay | vrz
 	;
 
 #colornave
@@ -126,13 +127,13 @@
 	delayd -? ( 2drop ; ) drop
 	-10 'delayd !
 	'bala 'disparos p!+ >a 
-	xp a!+ 560.0 a!+	| x y 
+	xp a!+ 540.0 a!+	| x y 
 	1.0 a!+	| ang zoom
 	0 0 rot 1 << vci>anim | vel cnt ini 
 	a!+	tsflores a!+			| anim sheet
 	0 a!+ -3.0 a!+ 	| vx vy
 	0.1 32 << a!			| vrz
-|	dispaparo SNDplay
+	snddisparo SNDplay
 	;
 
 	
@@ -174,7 +175,9 @@
 	xp int. yp int. 0.5 2.0 
 	aninave timer+ dup 'aninave ! nanim
 	tsnave sspriterz	
-	xv 'xp +!
+	xp xv +
+	10.0 max 790.0 min
+	'xp !
 	yv 'yp +!
 	1 'delayd +!
 	;
@@ -237,7 +240,9 @@
 	"r3/iti2023/enzo/fondo.png" loadimg 'fondo !
 	32 32 "r3/iti2023/enzo/aviones.png" ssload 'tsnave !
 	64 64 "r3/iti2023/enzo/explo.png" ssload 'tsexplo !
-	41 41 "r3/iti2023/enzo/flores.png" ssload 'tsflores !
+	32 32 "r3/iti2023/enzo/flores.png" ssload 'tsflores !
+	"r3/iti2023/enzo/disparo.mp3" mix_loadWAV 'snddisparo !
+	"r3/iti2023/enzo/explosion.mp3" mix_loadWAV 'sndexplo !
 	"r3/iti2023/enzo/godofwar.ttf" 50 TTF_OpenFont immSDL 	
 	200 'disparos p.ini
 	100 'enemis p.ini
