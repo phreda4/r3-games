@@ -10,16 +10,18 @@
 #font
 #nubes		| hoja de sprites
 #explo		| hoja de sprites
+#spredif	| hoja de sprites
 
 #spravion
 #sprbomba
 
 #x 500.0 #y 100.0
-
 #vx #vy	| viewport
+#puntos
 
-#listshoot 0 0 | lista de disparos
-#listfx 0 0 | fx
+#listbom 0 0	| lista de disparos
+#listedi 0 0	| lista de edificios
+#listfx 0 0 	| fx
 
 |-------- sprite list
 :.x 1 ncell+ ;
@@ -33,16 +35,6 @@
 :objsprite | adr -- adr
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
-	a@+ 				| rota
-	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriter
-	dup .vx @ over .x +!	| vx
-	dup .vy @ over .y +!	| vy
-	;
-
-:objspritez | adr -- adr
-	dup 8 + >a
-	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and 	| rota zoom
 	a@ timer+ dup a!+ 	| anima
 	nanim a@+ sspriterz
@@ -52,9 +44,9 @@
 
 |--------------- fx	
 :nube
-	objspritez
+	objsprite
 	dup .x @ -400.0 <? ( 1400.0 pick2 .x ! ) drop
-	dup .y @ 250.0 - abs 250.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
+	dup .y @ 200.0 - abs 200.0 >? ( over .vy dup @ neg swap ! ) drop | 200..500
 	drop
 	;
 
@@ -72,10 +64,32 @@
 		2 randmax 
 		1.0 randmax 0.4 + 
 		1800.0 randmax 400.0 -
-		500.0 randmax 
+		400.0 randmax 
 		+nube
-		) drop 
-	;		
+		) drop ;		
+		
+|----------------------
+:edi | a -- a
+	objsprite
+	dup .x -100.0 <? ( 2drop 0 ; ) drop
+	drop ;
+	
+:+edificio | vx vy n z x y --
+	'edi 'listedi p!+ >a 
+	swap a!+ a!+	| x y 
+	a!+ 52 << a!+ 	| w h
+	spredif a!+
+	swap a!+ a!+ ;	| vx vy
+
+:edificios
+	50 randmax 1? ( drop ; ) drop
+	-1.0 0 
+	0 
+	0.8 randmax 0.6 + | zoom
+	1100.0 
+	50.0 randmax 560.0 +
+	+edificio
+	;
 	
 |-------------- Explosion		
 :nuke
@@ -86,10 +100,10 @@
 	
 :+explo | x y --
 	'nuke 'listfx p!+ >a 
-	swap a!+ 150.0 - a!+	| x y 
-	0 a!+ 
+	swap a!+ a!+	| x y 
+	1.0 a!+ 
 	6 26 0 vci>anim a!+ explo a!+
-	0 a!+ -0.1 a!+
+	-1.0 a!+ -0.1 a!+
 	;
 		
 |-------------- Jugador
@@ -97,12 +111,30 @@
 	x int. y int. 0 spravion SDLspriteR ;
 
 |-------------- Disparo	
+#hit?
+:hit | x y i n p -- x y p
+	dup 8 + >a 
+	pick4 a@+ -	pick4 a@+ -
+	distfast 
+	20.0 >? ( drop ; )	drop	| lejos
+	dup .a dup
+	@ 52 >> $1 and? ( 2drop ; )  | ya roto
+	1 + 52 << swap !			| cambia dibujo
+	1 'puntos +!
+|	1 playsnd
+	1 'hit? !
+	;
+	
 :bomba | v -- 
 	objsprite
 	0.02 over .vy +!		| gravedad
-	0.001 over .r +!		| rotacion
-	dup .y @ 700.0 >? ( drop .x @+ swap @ +explo 0 ; ) 
+	0.001 32 << over .r +!		| rotacion
+	dup .x @ over .y @ 700.0 >? ( 100.0 - +explo drop 0 ; ) 
+	0 'hit? !
+	'hit 'listedi p.mapv		| choco con edificio
+	hit? 1? ( drop 20.0 - +explo drop 0 ; ) drop
 	2drop
+	drop
 	;
 
 #disparodelay
@@ -110,9 +142,10 @@
 :+disparo
 	disparodelay -? ( drop ; ) drop
 	-200 'disparodelay ! |200 ms delay
-	'bomba 'listshoot p!+ >a 
+	'bomba 'listbom p!+ >a 
 	x 30.0 + a!+ y 60.0 + a!+	| x y 
-	0 a!+ 0 a!+	sprbomba a!+			|
+	1.0 a!+ 0 a!+
+	sprbomba a!+			|
 	0 a!+ 0 a!+ 	| vx vy
 	;
 
@@ -125,13 +158,15 @@
 	
 |-------------- Juego
 :juego
-	vupdate
+	timer. vupdate
 	deltatime 'disparodelay +!
-	$78ADE8 SDLcls
-	timer.
+	|$78ADE8 SDLcls
+	0 sdlcls	
+	'listedi p.draw
 	'listfx p.draw
-	'listshoot p.draw	
+	'listbom p.draw	
 	jugador	
+	edificios
 	SDLredraw
 
 	SDLkey 
@@ -140,10 +175,11 @@
 	drop ;
 
 :jugar 
-	'listshoot p.clear
+	'listbom p.clear
 	'listfx p.clear
 	500.0 'x ! 100.0 'y !
 	cielo
+	
 	randwind
 	'juego SDLShow ;
 
@@ -201,15 +237,16 @@
 	51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
 	143 88 "r3/gamejamd/od/nubes.png" ssload 'nubes !
-	
+	50 100 "r3/gamejamd/od/edificios.png" ssload 'spredif !
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	$7f vaini
-	200 'listshoot p.ini
-	100 'listfx p.ini
+	200 'listbom p.ini
+	100 'listedi p.ini
+	200 'listfx p.ini
 	timer<
 	
 	'texto lines
-	'titlestart SDLshow
+|	'titlestart SDLshow
 	
 	jugar
 	SDLquit ;	
