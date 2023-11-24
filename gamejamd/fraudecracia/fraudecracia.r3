@@ -1,9 +1,11 @@
 | Cards
 | PHREDA 2023
+^r3/lib/rand.r3
 ^r3/win/sdl2gfx.r3
 ^r3/util/arr16.r3
-^r3/lib/gui.r3
-^r3/lib/rand.r3
+^r3/util/sdlgui.r3
+
+#font
 
 #fondo
 #mesa
@@ -13,6 +15,7 @@
 #manos
 #urna
 #saco
+#tacho
 
 #places 0 0
 
@@ -81,6 +84,7 @@
 
 |--------------------	
 :nuevatarjeta
+	
 	a@ 4 =? ( mipartido nip )
 	xr2 xr1 + 1 >> 16 << 
 	yr2 yr1 + 1 >> 16 << +card
@@ -100,7 +104,7 @@
 	'place 'places p!+ >a 
 	swap a!+ a!+	| x y 
 	swap a!+ a!+	| w h
-	a!+
+	a!+	| tipo
 	;
 	
 |--------------------
@@ -116,6 +120,8 @@
 	0 100 mesa SDLImage
 	800 160 urna SDLImage
 	640 450 saco SDLImage
+	
+	90 390 tacho SDLImage
 	;
 	
 |--------------------	
@@ -137,27 +143,38 @@
 	;
 	
 :game
-	gui
+	immgui 
 |	0 0 fondo SDLImage 	
 	$666666 sdlcls
 	pantalla
 	
+	
 	'places p.draw
 	manocursor
+	
+	$ffffff ttcolor 20 10 ttat 
+	sdlb "%h" ttprint
+	
 	SDLredraw
 	SDLkey 
 	>esc< =? ( exit )
 	drop ;
-	
+
+|------------ INICIO ----------------	
 :	
 	"Fraudecracia" 1024 600 SDLinit
 	"r3/gamejamd/fraudecracia/fondo.png" loadimg 'fondo !
 	"r3/gamejamd/fraudecracia/mesa.png" loadimg 'mesa !
 	"r3/gamejamd/fraudecracia/urna.png" loadimg 'urna !
 	"r3/gamejamd/fraudecracia/saco.png" loadimg 'saco !
+	"r3/gamejamd/fraudecracia/tacho.png" loadimg 'tacho !
 	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'boletas !
 	120 120 "r3/gamejamd/fraudecracia/manos.png" ssload 'manos !
 	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'supervisor !	
+	
+	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
+	font immSDL
+	
 	40 'places p.ini
 	resetjuego
 	'game SDLshow

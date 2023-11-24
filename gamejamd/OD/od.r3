@@ -6,18 +6,25 @@
 ^r3/util/varanim.r3
 ^r3/util/boxtext.r3
 ^r3/lib/color.r3
+^r3/util/sdlgui.r3
 
 #font
+
 #nubes		| hoja de sprites
 #explo		| hoja de sprites
 #spredif	| hoja de sprites
-
 #spravion
 #sprbomba
+
+#sndbomba
+#sndgente
+#sndexplo
+#sndvictoria
 
 #x 500.0 #y 100.0
 #vx #vy	| viewport
 #puntos
+#bombas
 
 #listbom 0 0	| lista de disparos
 #listedi 0 0	| lista de edificios
@@ -71,7 +78,7 @@
 |----------------------
 :edi | a -- a
 	objsprite
-	dup .x -100.0 <? ( 2drop 0 ; ) drop
+	dup .x @ -100.0 <? ( 2drop 0 ; ) drop
 	drop ;
 	
 :+edificio | vx vy n z x y --
@@ -104,11 +111,9 @@
 	1.0 a!+ 
 	6 26 0 vci>anim a!+ explo a!+
 	-1.0 a!+ -0.1 a!+
+	|sndexplo SNDPlay
 	;
 		
-|-------------- Jugador
-:jugador
-	x int. y int. 0 spravion SDLspriteR ;
 
 |-------------- Disparo	
 #hit?
@@ -121,14 +126,16 @@
 	@ 52 >> $1 and? ( 2drop ; )  | ya roto
 	1 + 52 << swap !			| cambia dibujo
 	1 'puntos +!
-|	1 playsnd
 	1 'hit? !
+|	10 randmax 1? ( drop ; ) drop
+|	sndgente SNDplay | grito de gente
 	;
 	
 :bomba | v -- 
 	objsprite
 	0.02 over .vy +!		| gravedad
 	0.001 32 << over .r +!		| rotacion
+	20 randmax 0? ( over .a dup @ $10000000000000 xor swap ! ) drop
 	dup .x @ over .y @ 700.0 >? ( 100.0 - +explo drop 0 ; ) 
 	0 'hit? !
 	'hit 'listedi p.mapv		| choco con edificio
@@ -142,31 +149,67 @@
 :+disparo
 	disparodelay -? ( drop ; ) drop
 	-200 'disparodelay ! |200 ms delay
+	bombas 0? ( drop ; ) drop
 	'bomba 'listbom p!+ >a 
 	x 30.0 + a!+ y 60.0 + a!+	| x y 
 	1.0 a!+ 0 a!+
 	sprbomba a!+			|
 	0 a!+ 0 a!+ 	| vx vy
+	|sndbomba SNDplay
+	-1 'bombas +!
 	;
 
 :randwind
 	vareset
 	'x 400.0 randmax 300.0 + x 3 2.0 0.0 +vanim
 	'y 200.0 randmax 50.0 + y 3 2.0 0.0 +vanim
-	'randwind 2.0 +vexe
+	'randwind 2.0 +vexe ;
+	
+:startwind
+	vareset
+	'x 550.0 -500.0 3 3.0 0.0 +vanim 
+	'y 220.0 -100.0 3 3.0 0.0 +vanim 
+	'randwind 4.0 +vexe ;
+
+:endwind
+	vareset
+	'x 1250.0 x 3 3.0 0.0 +vanim 
+	'y -100.0 y 3 3.0 0.0 +vanim 
+	'exit 4.0 +vexe ;
+
+|-------------- Jugador
+#findejuego
+
+:jugador
+	x int. y int. 0 spravion SDLspriteR 
+	findejuego 0? ( drop
+		bombas 0? ( 1 'findejuego ! endwind ) drop 
+		; ) drop
+
+	;
+	
+:hud
+	$ffffff ttcolor 
+
+	20 10 ttat bombas "%d" ttprint
+	920 10 ttat puntos "%d" ttprint
 	;
 	
 |-------------- Juego
 :juego
+	immgui 
 	timer. vupdate
 	deltatime 'disparodelay +!
-	|$78ADE8 SDLcls
-	0 sdlcls	
+	$78ADE8 SDLcls
+	|0 sdlcls	
 	'listedi p.draw
 	'listfx p.draw
 	'listbom p.draw	
 	jugador	
 	edificios
+	
+	hud
+	
 	SDLredraw
 
 	SDLkey 
@@ -179,8 +222,11 @@
 	'listfx p.clear
 	500.0 'x ! 100.0 'y !
 	cielo
-	
-	randwind
+	0 'puntos ! 
+	10 'bombas !
+	0 'findejuego !
+	startwind |	randwind
+
 	'juego SDLShow ;
 
 |-------------------------------------
@@ -234,11 +280,17 @@
 	"od" 1024 600 SDLinit
 	
 	128 128 "r3/gamejamd/od/explosion.png" ssload 'explo !
-	51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
+	|51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
+	50 20 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
 	143 88 "r3/gamejamd/od/nubes.png" ssload 'nubes !
 	50 100 "r3/gamejamd/od/edificios.png" ssload 'spredif !
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
+	font immSDL
+	"r3/gamejamd/od/bomba.mp3" mix_loadWAV 'sndbomba !
+	"r3/gamejamd/od/gente.mp3" mix_loadWAV 'sndgente !
+	"r3/gamejamd/od/explosion.mp3" mix_loadWAV 'sndexplo !
+	"r3/gamejamd/od/victoria.mp3" mix_loadWAV 'sndvictoria !
 	$7f vaini
 	200 'listbom p.ini
 	100 'listedi p.ini

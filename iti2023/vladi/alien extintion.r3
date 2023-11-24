@@ -306,7 +306,7 @@
 
 |----------------------------------------
 #titxt
-"En un mundo donde los aliens nos atacan nacen los heroes"
+"En un mundo donde los aliens nos atacan... nacen los heroes"
 "este que ves ahora es tu personaje"
 "estos que ahora aparecieron son tus enemigos"
 "Se juegan con las flechas para moverse y con el espacio se dispara"
