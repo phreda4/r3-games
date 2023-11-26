@@ -9,7 +9,13 @@
 ^r3/util/sdlgui.r3
 
 #font
+#sprmesa
+#sprmafalda
+#sprpatoru
+#sprmatias
+#sprhijitus
 #sprfx
+
 #listfx 0 0 | fx
 
 |-------- sprite list
@@ -74,20 +80,42 @@
 	1 'puntos +!
 	;
 	
+:jueces	
+	200 230
+	msec 9 >> $3 and
+	sprmafalda ssprite
+	
+	400 200
+	msec 9 >> 3 mod
+	sprpatoru ssprite
+	
+	570 230
+	msec 9 >> $3 and
+	sprmatias ssprite
+	
+	740 230
+	msec 9 >> 3 mod
+	sprhijitus ssprite
+	;
+	
 :juego
 	vupdate timer.
 	deltatime neg 'tiempoclick +!
 	$78ADE8 SDLcls
+	
+	jueces
+	0 180 sprmesa SDLImage
+	
 	immgui	
 
-	196 immwidth
-	102 300 immat [ 0 clickc ; ] immzone 
+	100 90 immbox
+	150 300 immat [ 0 clickc ; ] immzone 
 	$ff SDLColor plxywh SDLFRect 
-	302 300 immat [ 1 clickc ; ] immzone 
+	330 300 immat [ 1 clickc ; ] immzone 
 	$ff00 SDLColor plxywh SDLFRect 
-	502 300 immat [ 2 clickc ; ] immzone 
+	510 300 immat [ 2 clickc ; ] immzone 
 	$ff0000 SDLColor plxywh SDLFRect 
-	702 300 immat [ 3 clickc ; ] immzone 
+	690 300 immat [ 3 clickc ; ] immzone 
 	$ff00ff SDLColor plxywh SDLFRect 
 	
 	'colores colorclick ncell+ @ SDLColor
@@ -120,7 +148,13 @@
 |-------------------------------------
 :main
 	"velocicracia" 1024 600 SDLinit
-	
+
+	"r3/gamejamd/velocicracia/mesa.png" loadimg 'sprmesa !
+	196 170 "r3/gamejamd/velocicracia/mafalda.png" ssload 'sprmafalda !
+	179 375 "r3/gamejamd/velocicracia/Patoruzito.png" ssload 'sprpatoru !
+	163 199 "r3/gamejamd/velocicracia/matias.png" ssload 'sprmatias !
+	150 249 "r3/gamejamd/velocicracia/Hijitus.png" ssload 'sprhijitus !
+
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	font immSDL 
 	timer<

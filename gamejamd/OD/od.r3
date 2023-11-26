@@ -151,46 +151,52 @@
 	-200 'disparodelay ! |200 ms delay
 	bombas 0? ( drop ; ) drop
 	'bomba 'listbom p!+ >a 
-	x 30.0 + a!+ y 60.0 + a!+	| x y 
+	x 30.0 + a!+ y 40.0 + a!+	| x y 
 	1.0 a!+ 0 a!+
 	sprbomba a!+			|
-	0 a!+ 0 a!+ 	| vx vy
+	0 a!+ 0.02 a!+ 	| vx vy
 	|sndbomba SNDplay
 	-1 'bombas +!
 	;
 
 :randwind
 	vareset
-	'x 400.0 randmax 300.0 + x 3 2.0 0.0 +vanim
-	'y 200.0 randmax 50.0 + y 3 2.0 0.0 +vanim
+	'x 400.0 randmax 300.0 + x 9 2.0 0.0 +vanim
+	'y 200.0 randmax 50.0 + y 9 2.0 0.0 +vanim
 	'randwind 2.0 +vexe ;
 	
 :startwind
 	vareset
 	'x 550.0 -500.0 3 3.0 0.0 +vanim 
 	'y 220.0 -100.0 3 3.0 0.0 +vanim 
-	'randwind 4.0 +vexe ;
+	'randwind 3.0 +vexe ;
 
 :endwind
 	vareset
-	'x 1250.0 x 3 3.0 0.0 +vanim 
-	'y -100.0 y 3 3.0 0.0 +vanim 
-	'exit 4.0 +vexe ;
+	'x 1250.0 x 3 3.0 1.0 +vanim 
+	'y -100.0 y 3 3.0 1.0 +vanim 
+	'exit 5.0 +vexe ;
 
 |-------------- Jugador
 #findejuego
+#xant
+#xprom
+
+:angulo
+	x xant =? ( drop ; ) 
+	xant - xprom + 1 >> 'xprom ! x 'xant ! ;
 
 :jugador
-	x int. y int. 0 spravion SDLspriteR 
-	findejuego 0? ( drop
-		bombas 0? ( 1 'findejuego ! endwind ) drop 
-		; ) drop
-
+	x int. y int. 
+	xprom 8 >> 
+	spravion SDLspriteR
+	angulo
+	findejuego 1? ( drop ; ) drop
+	bombas 0? ( 1 'findejuego ! endwind ) drop 
 	;
 	
 :hud
 	$ffffff ttcolor 
-
 	20 10 ttat bombas "%d" ttprint
 	920 10 ttat puntos "%d" ttprint
 	;
@@ -201,17 +207,13 @@
 	timer. vupdate
 	deltatime 'disparodelay +!
 	$78ADE8 SDLcls
-	|0 sdlcls	
 	'listedi p.draw
 	'listfx p.draw
 	'listbom p.draw	
 	jugador	
 	edificios
-	
 	hud
-	
 	SDLredraw
-
 	SDLkey 
 	>esc< =? ( exit )
 	<esp> =? ( +disparo )
@@ -280,7 +282,6 @@
 	"od" 1024 600 SDLinit
 	
 	128 128 "r3/gamejamd/od/explosion.png" ssload 'explo !
-	|51 10 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	50 20 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	"r3/gamejamd/od/b52.png" loadimg 'spravion !
 	143 88 "r3/gamejamd/od/nubes.png" ssload 'nubes !
