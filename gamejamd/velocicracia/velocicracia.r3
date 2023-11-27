@@ -1,22 +1,29 @@
+| Velocicacia
+| Democracia Gamejam 2023
+| EESN 1 - San Cayetano
+| PHREDA
+|-----
 ^r3/lib/rand.r3
 ^r3/lib/color.r3
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2mixer.r3
-^r3/util/bfont.r3
 ^r3/util/arr16.r3
 ^r3/util/varanim.r3
 ^r3/util/boxtext.r3
 ^r3/util/sdlgui.r3
 
 #font
+
 #sprmesa
 #sprmafalda
 #sprpatoru
 #sprmatias
 #sprhijitus
+#sprboletas
 #sprfx
 
 #listfx 0 0 | fx
+#listbol 0 0
 
 |-------- sprite list
 :.x 1 ncell+ ;
@@ -32,7 +39,7 @@
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rota zoom				
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriter
+	nanim a@+ sspriterz
 	dup .vx @ over .x +!	| vx
 	dup .vy @ over .y +!	| vy
 	;
@@ -52,16 +59,26 @@
 	52 << a!+ sprfx a!+ | n spritesheet
 	swap a!+ a!+ ;  | vx vy
 
-:fillscr
-	40 ( 1? 1 -
-		0.5 randmax 0.7 -
-		0.1 randmax 0.05 -
-		25 randmax 
-		1800.0 randmax 400.0 -
-		300.0 randmax 200.0 + | 200..500
-		+fx
-		) drop ;
 	
+#xu 800 #yu 200 | urna
+
+:boleta
+	objsprite
+	xu over .x @ int. - 13 << over .x +!
+	yu over .y @ int. - 13 << over .y +!
+	
+	dup .x @ int. xu - dup *
+	over .y @ int. yu - dup * +
+	0? ( nip ; ) 
+	2drop
+	;
+
+:+boleta | n x y 'accion --
+	'listbol p!+ >a 
+	swap a!+ a!+ 1.0 a!+ 
+	52 <<
+	a!+ sprboletas a!+
+	;	
 		
 |-------------- Juego
 #colores $ff $ff00 $ff0000 $ff00ff
@@ -74,8 +91,13 @@
 	3000 'tiempoclick !
 	;
 
+:xygui
+	xr2 xr1 + 1 >> 16 << 
+	yr2 yr1 + 1 >> 16 << ;
+	
 :clickc | color
-	colorclick <>? ( drop ; ) drop
+	colorclick <>? ( drop ; ) 
+	xygui 'boleta +boleta 
 	newcolor
 	1 'puntos +!
 	;
@@ -127,6 +149,7 @@
 	412 160 immat
 	tiempoclick "%d" sprint immlabelC
 	
+	'listbol p.draw
 	'listfx p.draw
 	SDLredraw
 	SDLkey 
@@ -136,6 +159,7 @@
 
 :reset
 	'listfx p.clear
+	'listbol p.clear
 	0 'puntos !
 	newcolor
 	;
@@ -155,12 +179,14 @@
 	163 199 "r3/gamejamd/velocicracia/matias.png" ssload 'sprmatias !
 	150 249 "r3/gamejamd/velocicracia/Hijitus.png" ssload 'sprhijitus !
 
+	90 140  "r3/gamejamd/velocicracia/boletas.png" ssload 'sprboletas !
+	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	font immSDL 
 	timer<
 	$7f vaini
 	100 'listfx p.ini
-
+	100 'listbol p.ini
 	jugar
 	SDLquit ;	
 	

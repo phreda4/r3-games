@@ -1,4 +1,8 @@
-^r3/win/sdl2gfx.r3
+| Openheimer democracy
+| Democracia Gamejam 2023
+| EESN 1 - San Cayetano
+| PHREDA
+|-----^r3/win/sdl2gfx.r3
 ^r3/win/sdl2mixer.r3
 ^r3/lib/rand.r3
 ^r3/util/bfont.r3

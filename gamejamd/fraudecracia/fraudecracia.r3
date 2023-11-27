@@ -1,9 +1,13 @@
-| Cards
-| PHREDA 2023
+| Fraudecracia
+| Democracia Gamejam 2023
+| EESN 1 - San Cayetano
+| PHREDA
+|-----
 ^r3/lib/rand.r3
 ^r3/win/sdl2gfx.r3
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
+^r3/util/varanim.r3
 
 #font
 
@@ -48,47 +52,51 @@
 	guiRect
 	;
 	
-	
-#accion	
-#xa #ya
-
-:mvcard | adr -- adr 
-	sdlx xa - 16 << over .x +! 
-	sdly ya - 16 << over .y +! 
-:setcard	
-	sdlx 'xa ! sdly 'ya ! ;
-	
-:dncard	
-	dup .x @ int. over .y @ int. | x y
-	over 170 - abs over 590 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
-	swap 900 - abs swap 300 - abs distfast 100 <? ( [ 0 rot rot ; ] 'accion ! ) drop
-	;
-	
-:carta
-	0 'accion !
-	objsprite
-	guiRectS
-	|'setcard 'mvcard onDnMoveA
-	'setcard 'mvcard 'dncard onMapA
-	accion 1? ( dup ex ) drop
-	drop
-	;
-
-:+card	| n y x --
-	'carta 'places p!+ >a 
-	swap a!+ a!+	| x y 
-	1.0 a!+			| zoom|ang 
-	a!+				| n
-	boletas a!+ 	| sprite
-	;
-
 |--------------------	
-:nuevatarjeta
+#xu 800 #yu 200 | urna
+
+:boleta
+	objsprite
+	xu over .x @ int. - 13 << over .x +!
+	yu over .y @ int. - 13 << over .y +!
 	
-	a@ 4 =? ( mipartido nip )
-	xr2 xr1 + 1 >> 16 << 
-	yr2 yr1 + 1 >> 16 << +card
+	dup .x @ int. xu - dup *
+	over .y @ int. yu - dup * +
+	0? ( nip ; ) 
+	2drop
 	;
+
+#xb 100 #yb 490 | basura
+
+:boletab
+	objsprite
+	xb over .x @ int. - 13 << over .x +!
+	yb over .y @ int. - 13 << over .y +!
+	
+	dup .x @ int. xb - dup *
+	over .y @ int. yb - dup * +
+	0? ( nip ; ) 
+	2drop
+	;
+	
+:+boleta | n x y 'accion --
+	'places p!+ >a
+	swap a!+ a!+ 1.0 a!+ a!+ boletas a!+
+	;
+	
+|--------------------	
+:xygui
+	xr2 xr1 + 1 >> 16 << 
+	yr2 yr1 + 1 >> 16 << ;
+	
+:abasura
+	a@ 4 =? ( drop ; ) 
+	xygui 'boletab +boleta ;
+	
+:clickenplace
+	clkbtn 4 =? ( drop abasura ; ) drop
+	a@ 4 =? ( mipartido nip ) 
+	xygui 'boleta +boleta ;
 	
 :place
 	$ff00ff sdlcolor
@@ -96,7 +104,7 @@
 	a@+ a@+ a@+ a@+ 
 	2over 2over SDLRect
 	guiBox
-	'nuevatarjeta onClick
+	'clickenplace onClick
 	drop
 	;
 	
@@ -143,17 +151,17 @@
 	;
 	
 :game
+	vupdate
 	immgui 
 |	0 0 fondo SDLImage 	
 	$666666 sdlcls
 	pantalla
 	
-	
-	'places p.draw
+	'places p.drawo
 	manocursor
 	
-	$ffffff ttcolor 20 10 ttat 
-	sdlb "%h" ttprint
+|	$ffffff ttcolor 20 10 ttat 
+|	sdlb "%h" ttprint
 	
 	SDLredraw
 	SDLkey 
@@ -174,7 +182,8 @@
 	
 	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
 	font immSDL
-	
+	$ff vaini
+	vareset
 	40 'places p.ini
 	resetjuego
 	'game SDLshow
