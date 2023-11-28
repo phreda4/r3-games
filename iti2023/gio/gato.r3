@@ -12,6 +12,7 @@
 
 #sndcomiento
 #sndnocome
+#sndburbuja
 #musmenu
 #musjuego
 
@@ -22,6 +23,7 @@
 #comiendo
 
 #puntos 0
+#vidas 0
 
 :objsprite | adr -- adr
 	dup 8 + >a
@@ -91,14 +93,14 @@
 :nocomefruta
 	gatonocome
 	sndnocome sndplay	
-	-1 'puntos +!
+	-1 'vidas +!
+	vidas 0? ( exit ) drop
 	;
 	
 :comefruta | adr -- 0
 	objframe
 	21 - 'listframe + c@
 	colorestela 0? ( drop dup )
-|	2dup "%d %d" .println
 	<>? ( drop nocomefruta 0 ; ) drop
 	gatocome 1 'puntos +!
 	sndcomiento sndplay
@@ -119,20 +121,17 @@
 :+fruta | fruta y --
 	'fruta 'frutas p!+ >a 
 	810.0 a!+
-	|500.0 randmax 100.0 +
-	| YYY
 	a!+	| x y 
 	1.0 a!+	| ang zoom
 	0 0 
-	|8 randmax 
 	rot  | fruta 
 	vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
 	1.0 randmax neg 1.5 - a!+
-	|2.0 randmax 1.0 - 
 	0
 	a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!			| vrz
+	sndburbuja sndplay
 	;
 
 	
@@ -216,8 +215,11 @@
 	;
 
 :puntaje
-	$000000 ttcolor 314 14 ttat puntos "%d" ttprint
-	$FFFFFF ttcolor 310 10 ttat puntos "%d" ttprint
+	$000000 ttcolor 14 14 ttat vidas "%d vidas" ttprint
+	$FFFFFF ttcolor 10 10 ttat vidas "%d vidas" ttprint
+
+	$000000 ttcolor 514 14 ttat puntos "%d puntos" ttprint
+	$FFFFFF ttcolor 510 10 ttat puntos "%d puntos" ttprint
 	;
 	
 :canios	
@@ -251,12 +253,12 @@
 	<f> =? ( 27 400.0 +fruta ) 
 	<g> =? ( 24 500.0 +fruta ) 
 	
-	<1> =? ( 0 'colorestela ! )
-	<2> =? ( 1 'colorestela ! )
-	<3> =? ( 2 'colorestela ! )
-	<4> =? ( 3 'colorestela ! )
-	<5> =? ( 4 'colorestela ! )
-	<6> =? ( 5 'colorestela ! )
+|	<1> =? ( 0 'colorestela ! )
+|	<2> =? ( 1 'colorestela ! )
+|	<3> =? ( 2 'colorestela ! )
+|	<4> =? ( 3 'colorestela ! )
+|	<5> =? ( 4 'colorestela ! )
+|	<6> =? ( 5 'colorestela ! )
 	
 	drop 
 	;
@@ -267,8 +269,35 @@
 	'frutas p.clear
 	timer<
 	7 3 6 vci>anim 'animacion !
+	0 'puntos !
+	7 'vidas !
+	0 'colorestela !
 	;
 
+:finjuego
+	$252850 SDLcls
+	Immgui timer.
+	'estrellas p.draw
+
+	0 50 immat
+	800 immwidth
+	"Nyan Fruit" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" sprint immlabelc
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
+	
 :jugar
 	juegoreset
 	|Mix_HaltMusic
@@ -279,6 +308,7 @@
 |	Mix_HaltMusic
 |	128 Mix_VolumeMusic 
 |	musmenu -1 mix_playmusic 
+	'finjuego SDLShow
 	;
 
 :menu
@@ -293,8 +323,10 @@
 
 	200 300 immat
 	400 immwidth
+	$7f00 'immcolorbtn !
 	'jugar "jugar" immbtn
 	immdn
+	$7f0000 'immcolorbtn !
 	'exit "salir" immbtn
 
 	SDLredraw
@@ -312,6 +344,7 @@
 	"r3/iti2023/gio/Starborn.ttf" 38 ttf_OpenFont immsdL
 	"r3/iti2023/gio/comiendo.mp3" mix_loadwav 'sndcomiento !
 	"r3/iti2023/gio/nocome.mp3" mix_loadwav 'sndnocome !
+	"r3/iti2023/gio/burbuja.mp3" mix_loadwav 'sndburbuja !
 	"r3/iti2023/gio/Gatito kawaii.mp3" mix_loadmus 'musmenu !
 	"r3/iti2023/gio/Nyan Cat.mp3" mix_loadmus 'musjuego !
 	50 'arcoiris p.ini

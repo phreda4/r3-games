@@ -24,7 +24,6 @@
 #musicafondo
 
 #puntos 0
-#puntajevx 0
 
 |disparo
 | x y ang anim ss vx vy ar
@@ -102,7 +101,6 @@
 	dup 'enemis p.del
 |	pick4 pick4 +fx
 	5 'puntos +!
-	puntajevx puntos max 'puntajevx !
 |	1 playsnd
 	0 'hit !
 	pick4 pick4 +explo
@@ -186,6 +184,11 @@
 	40 randmax 1? ( drop ; ) drop
 	+marciano
 	;
+
+:puntaje
+	$000000 ttcolor 14 14 ttat puntos "%d puntos" ttprint
+	$FFFFFF ttcolor 10 10 ttat puntos "%d puntos" ttprint
+	;
 	
 :juego
 	0 0 fondo SDLImage 
@@ -194,6 +197,7 @@
 	jugador	
 	'enemis p.draw	
 	'fx p.draw
+	puntaje
 	SDLredraw
 	horda
 	;
@@ -209,31 +213,66 @@
 	0 'puntos !
 	;
 
-:jugando
+:jugar
 	reset 
 	'juego Sdlshow
 	;
+
+|-----------------------------------------
+:hitx
+	over .vx dup @ neg swap ! ;
+
+:hity
+	over .vy dup @ neg swap ! ;
 	
+:flor	| y x --
+	objsprite	
+	dup .x @ int. 0 <? ( hitx ) 800 >? ( hitx ) drop
+	dup .y @ int. 0 <? ( hity ) 600 >? ( hity ) drop
+	drop ;
+
+:+flor | n x y --
+	'flor 'fx p!+ >a 
+	swap a!+ a!+	| x y 
+	1.0 a!+	| ang zoom
+	6 2 rot 1 << vci>anim | vel cnt ini 
+	a!+	tsflores a!+			| anim sheet
+	2.0 randmax 1.0 - a!+ 
+	2.0 randmax 1.0 - a!+ 	| vx vy
+	0.01 randmax 0.005 - 32 << a!	
+	;
+	
+:resetmenu
+	'fx p.clear
+	40 ( 1? 1 -
+		3 randmax
+		800.0 randmax
+		600.0 randmax
+		+flor ) drop ;
+		
 :menu
 	0 SDLcls
+	'fx p.draw
 	immgui
-	0 150 immat
+	0 100 immat
 	800 immwidth
 	$FF6A00 'immcolortex !
 	"Flores" immlabelc
 	300 350 immat
 	200 immwidth
 	$ffffff 'immcolortex !
-	'jugando "Jugar" immbtn
+	$7f00 'immcolorbtn !
+	[ jugar resetmenu ; ] "Jugar" immbtn
 	immdn
+	$7f0000 'immcolorbtn !	
 	'exit "Salir" immbtn
-
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( jugando )
+	<f1> =? ( jugar resetmenu )
 	drop
 	;
+
 
 :main
 	"r3sdl" 800 600 SDLinit
@@ -249,6 +288,7 @@
 	200 'fx p.ini 
 	8 0 0 vci>anim 'aninave !
 	timer<
+	resetmenu
 	'menu SDLshow
 	SDLquit ;	
 	
