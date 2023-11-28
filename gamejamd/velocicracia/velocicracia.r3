@@ -43,6 +43,32 @@
 	dup .vx @ over .x +!	| vx
 	dup .vy @ over .y +!	| vy
 	;
+	
+:.xd 8 ncell+ ;	
+:.yd 9 ncell+ ;
+
+:.xt@ 10 ncell+ @ $ffffffff and ; | easex (8) easey (8)  timemax (32) 
+:.easex@ 10 ncell+ @ 32 >> $ff and ; 
+:.easey@ 10 ncell+ @ 40 >> $ff and ; 
+
+:objspritemove
+	dup 8 + >a
+	a@+ int. a@+ int.	| x y
+	a@+ dup 32 >> swap $ffffffff and | rota zoom				
+	a@ timer+ dup a!+ 	| anima
+	nanim a@+ sspriterz
+	
+	dup .a @ $ffffffffff and | timenow
+	1.0 pick2 .xt@ */
+	1.0 >? ( 2drop 0 ; )
+	over .vx @ 				| adr time x
+	over pick3 .easex@ ease | adr time x timen 
+	pick3 .xd @ pick2 - *. + pick2 .x ! | adr time
+	over .easey@ ease		| adr timen
+	over .vy @ 							| adr timen y
+	pick2 .yd @ over - rot *. + over .y !	| adr y
+	drop
+	;
 
 |--------------- fx	
 :ofx
@@ -58,28 +84,18 @@
 	1.0 a!+ 		| rota|zoom
 	52 << a!+ sprfx a!+ | n spritesheet
 	swap a!+ a!+ ;  | vx vy
-
 	
-#xu 800 #yu 200 | urna
-
-:boleta
-	objsprite
-	xu over .x @ int. - 13 << over .x +!
-	yu over .y @ int. - 13 << over .y +!
-	
-	dup .x @ int. xu - dup *
-	over .y @ int. yu - dup * +
-	0? ( nip ; ) 
-	2drop
-	;
-
-:+boleta | n x y 'accion --
-	'listbol p!+ >a 
-	swap a!+ a!+ 1.0 a!+ 
-	52 <<
-	a!+ sprboletas a!+
+|------------
+:+boleta | easex easey et x2 y2 x1 y1 n --
+	'objspritemove 'listbol p!+ >a 
+	pick2 a!+ over a!+ 1.0 a!+ 52 << a!+ sprboletas a!+
+	swap a!+ a!+
+	swap a!+ a!+
+	1000 *. $ffffffff and 
+	rot 32 << or swap 40 << or
+	a!+
 	;	
-		
+	
 |-------------- Juego
 #colores $ff $ff00 $ff0000 $ff00ff
 #tiempoclick
@@ -96,11 +112,12 @@
 	yr2 yr1 + 1 >> 16 << ;
 	
 :clickc | color
-	colorclick <>? ( drop ; ) 
-	xygui 'boleta +boleta 
+	colorclick <>? ( drop ; ) drop
+	27 27 1.0 800.0 200.0 xygui colorclick +boleta 
 	newcolor
 	1 'puntos +!
 	;
+
 	
 :jueces	
 	200 230
@@ -155,6 +172,8 @@
 	SDLkey 
 	>esc< =? ( exit )
 	<f1> =? ( newcolor )
+	<f2> =? ( 9 11 2.0 800.0 400.0 100.0 100.0 0 +boleta )
+	|:+boleta2 | ex ey et x2 y2 x1 y1 n --
 	drop ;
 
 :reset
@@ -169,6 +188,30 @@
 	'juego SDLShow ;
 
 |-------------------------------------
+:menu
+	|0 0 fondo2 SDLImage
+	0 sdlcls
+	immgui
+	
+	1024 immwidth
+	$ffffff 'immcolortex !
+	0 50 immat "Velocicracia" immlabelc
+	
+	200 immwidth
+	$7f00 'immcolorbtn !
+	300 200 immat 'jugar "JUGAR" immbtn
+	
+	$7f0000 'immcolorbtn !
+	500 200 immat 'exit "SALIR" immbtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	drop
+	;
+	
+	
 |-------------------------------------
 :main
 	"velocicracia" 1024 600 SDLinit
@@ -187,7 +230,10 @@
 	$7f vaini
 	100 'listfx p.ini
 	100 'listbol p.ini
+	
 	jugar
+|	'menu SDLShow
+
 	SDLquit ;	
 	
 : main ;

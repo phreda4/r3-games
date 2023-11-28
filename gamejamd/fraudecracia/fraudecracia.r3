@@ -8,7 +8,6 @@
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
 ^r3/util/varanim.r3
-
 #font
 
 #fondo
@@ -33,7 +32,7 @@
 :.ss 5 ncell+ ;
 :.vx 6 ncell+ ;
 :.vy 7 ncell+ ;
-:.vr 8 ncell+ ;
+|:.vr 8 ncell+ ;
 
 :objsprite | adr -- adr
 	dup 8 + >a
@@ -42,7 +41,7 @@
 	a@+ a@+ sspriterz
 	dup .vx @ over .x +!
 	dup .vy @ over .y +!
-	dup .vr @ over .rz +!
+	|dup .vr @ over .rz +!
 	;
 	
 :guiRectS | adr -- adr
@@ -51,38 +50,44 @@
 	over 50 + over 80 +
 	guiRect
 	;
-	
-|--------------------	
-#xu 800 #yu 200 | urna
 
-:boleta
-	objsprite
-	xu over .x @ int. - 13 << over .x +!
-	yu over .y @ int. - 13 << over .y +!
-	
-	dup .x @ int. xu - dup *
-	over .y @ int. yu - dup * +
-	0? ( nip ; ) 
-	2drop
-	;
+:.xd 8 ncell+ ;	
+:.yd 9 ncell+ ;
 
-#xb 100 #yb 490 | basura
+:.xt@ 10 ncell+ @ $ffffffff and ; | easex (8) easey (8)  timemax (32) 
+:.easex@ 10 ncell+ @ 32 >> $ff and ; 
+:.easey@ 10 ncell+ @ 40 >> $ff and ; 
 
-:boletab
-	objsprite
-	xb over .x @ int. - 13 << over .x +!
-	yb over .y @ int. - 13 << over .y +!
+:objspritemove
+	dup 8 + >a
+	a@+ int. a@+ int.	| x y
+	a@+ dup 32 >> swap $ffffffff and | rota zoom				
+	a@ timer+ dup a!+ 	| anima
+	nanim a@+ sspriterz
 	
-	dup .x @ int. xb - dup *
-	over .y @ int. yb - dup * +
-	0? ( nip ; ) 
-	2drop
-	;
+	dup .n @ $ffffffffff and | timenow
+	1.0 pick2 .xt@ */
+	1.0 >? ( 2drop 0 ; )
+	over .vx @ 				| adr time x
+	over pick3 .easex@ ease | adr time x timen 
+	pick3 .xd @ pick2 - *. + pick2 .x ! | adr time
+	over .easey@ ease		| adr timen
+	over .vy @ 							| adr timen y
+	pick2 .yd @ over - rot *. + over .y !	| adr y
+	drop
+	;	
+
 	
-:+boleta | n x y 'accion --
-	'places p!+ >a
-	swap a!+ a!+ 1.0 a!+ a!+ boletas a!+
-	;
+|------------
+:+boletam | easex easey et x2 y2 x1 y1 n --
+	'objspritemove 'places p!+ >a 
+	pick2 a!+ over a!+ 1.0 a!+ 52 << a!+ boletas a!+
+	swap a!+ a!+
+	swap a!+ a!+
+	1000 *. $ffffffff and 
+	rot 32 << or swap 40 << or
+	a!+
+	;	
 	
 |--------------------	
 :xygui
@@ -90,13 +95,15 @@
 	yr2 yr1 + 1 >> 16 << ;
 	
 :abasura
-	a@ 4 =? ( drop ; ) 
-	xygui 'boletab +boleta ;
+	a@ 4 =? ( drop ; ) >a
+	27 27 1.0 100.0 490.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	;
 	
 :clickenplace
 	clkbtn 4 =? ( drop abasura ; ) drop
-	a@ 4 =? ( mipartido nip ) 
-	xygui 'boleta +boleta ;
+	a@ 4 =? ( mipartido nip ) >a
+	27 27 1.0 800.0 200.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	;
 	
 :place
 	$ff00ff sdlcolor
@@ -151,7 +158,7 @@
 	;
 	
 :game
-	vupdate
+	vupdate timer.
 	immgui 
 |	0 0 fondo SDLImage 	
 	$666666 sdlcls
@@ -168,6 +175,35 @@
 	>esc< =? ( exit )
 	drop ;
 
+:jugar
+	resetjuego
+	'game SDLshow
+	;
+	
+|----------------------------------------
+:menu
+	|0 0 fondo2 SDLImage
+	0 sdlcls
+	immgui
+	
+	1024 immwidth
+	$ffffff 'immcolortex !
+	0 50 immat "Fraudecracia" immlabelc
+	
+	200 immwidth
+	$7f00 'immcolorbtn !
+	300 200 immat 'jugar "JUGAR" immbtn
+	
+	$7f0000 'immcolorbtn !
+	500 200 immat 'exit "SALIR" immbtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	drop
+	;
+	
 |------------ INICIO ----------------	
 :	
 	"Fraudecracia" 1024 600 SDLinit
@@ -183,9 +219,10 @@
 	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
 	font immSDL
 	$ff vaini
-	vareset
+	vareset timer<
 	40 'places p.ini
-	resetjuego
-	'game SDLshow
+
+|	'menu SDLshow
+	jugar
 	SDLquit 
 	;
