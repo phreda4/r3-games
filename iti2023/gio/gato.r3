@@ -311,6 +311,11 @@
 	'finjuego SDLShow
 	;
 
+:resetmenu
+	100 ( 1? +estrella 1 - ) drop
+	5 ( 1? dup 32 + +planeta 1 - ) drop	
+	;
+
 :menu
 	$252850 SDLcls
 	Immgui
@@ -349,11 +354,9 @@
 	"r3/iti2023/gio/Nyan Cat.mp3" mix_loadmus 'musjuego !
 	50 'arcoiris p.ini
 	200 'frutas p.ini
-	
 	120 'estrellas p.ini
-	100 ( 1? +estrella 1 - ) drop
-	5 ( 1? dup 32 + +planeta 1 - ) drop	
 |	musmenu -1 mix_playmusic
+	resetmenu
 	'menu SDLshow
 	SDLquit ;	
 	

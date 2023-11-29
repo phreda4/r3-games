@@ -190,8 +190,18 @@
 	$FFFFFF ttcolor 10 10 ttat puntos "%d puntos" ttprint
 	;
 	
+#yscroll -1000
+
+:fondos
+	1 'yscroll +!
+	0 yscroll fondo SDLImage 
+	yscroll +? ( 0 over 1000 - fondo sdlImage )
+	600 <? ( drop ; ) drop
+	-400 'yscroll !
+	;
+	
 :juego
-	0 0 fondo SDLImage 
+	fondos
 	timer.
 	'disparos p.draw
 	jugador	
@@ -211,6 +221,7 @@
 	8 4 0 vci>anim 'aninave !
 	0 'muerte !
 	0 'puntos !
+	0 'yscroll !
 	;
 
 :jugar

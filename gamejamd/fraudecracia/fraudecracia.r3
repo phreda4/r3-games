@@ -152,9 +152,7 @@
 	;
 
 :manocursor
-	sdlx sdly
-	sdlb 1? ( 1 nip )
-	manos ssprite
+	sdlx 10 - sdly 10 - manos SDLimage
 	;
 	
 :game
@@ -174,6 +172,29 @@
 	SDLkey 
 	>esc< =? ( exit )
 	drop ;
+
+:finjuego
+	$0 SDLcls
+	Immgui timer.
+	'estrellas p.draw
+
+	0 50 immat
+	800 immwidth
+	"Fin de Juego" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" sprint immlabelc
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
 
 :jugar
 	resetjuego
@@ -212,8 +233,8 @@
 	"r3/gamejamd/fraudecracia/urna.png" loadimg 'urna !
 	"r3/gamejamd/fraudecracia/saco.png" loadimg 'saco !
 	"r3/gamejamd/fraudecracia/tacho.png" loadimg 'tacho !
+	"r3/gamejamd/fraudecracia/cursor.png" loadimg 'manos !
 	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'boletas !
-	120 120 "r3/gamejamd/fraudecracia/manos.png" ssload 'manos !
 	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'supervisor !	
 	
 	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 

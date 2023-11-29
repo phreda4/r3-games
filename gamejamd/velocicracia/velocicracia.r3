@@ -22,6 +22,8 @@
 #sprboletas
 #sprfx
 
+#sndnaipe
+
 #listfx 0 0 | fx
 #listbol 0 0
 
@@ -111,30 +113,32 @@
 	xr2 xr1 + 1 >> 16 << 
 	yr2 yr1 + 1 >> 16 << ;
 	
-:clickc | color
-	colorclick <>? ( drop ; ) drop
+:clickc | color --
 	27 27 1.0 800.0 200.0 xygui colorclick +boleta 
+	colorclick <>? ( drop ; ) drop
 	newcolor
 	1 'puntos +!
 	;
 
+#ojos
 	
 :jueces	
 	200 230
-	msec 9 >> $3 and
+	ojos 9 >> $1 and
 	sprmafalda ssprite
 	
 	400 200
-	msec 9 >> 3 mod
+	ojos 10 >> $1 and
 	sprpatoru ssprite
 	
 	570 230
-	msec 9 >> $3 and
+	ojos 11 >> $1 and
 	sprmatias ssprite
 	
 	740 230
-	msec 9 >> 3 mod
+	ojos 12 >> $1 and
 	sprhijitus ssprite
+	20 randmax 0? ( rand 'ojos ! ) drop
 	;
 	
 :juego
@@ -166,6 +170,8 @@
 	412 160 immat
 	tiempoclick "%d" sprint immlabelC
 	
+	tiempoclick 0 <? ( newcolor ) drop
+	
 	'listbol p.draw
 	'listfx p.draw
 	SDLredraw
@@ -181,6 +187,29 @@
 	'listbol p.clear
 	0 'puntos !
 	newcolor
+	;
+
+:finjuego
+	$0 SDLcls
+	Immgui timer.
+	'estrellas p.draw
+
+	0 50 immat
+	800 immwidth
+	"Fin de Juego" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" sprint immlabelc
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
 	;
 
 :jugar 
@@ -223,6 +252,8 @@
 	150 249 "r3/gamejamd/velocicracia/Hijitus.png" ssload 'sprhijitus !
 
 	90 140  "r3/gamejamd/velocicracia/boletas.png" ssload 'sprboletas !
+	
+	"r3/gamejamd/velocicracia/sonido naipes.mp3" mix_loadWAV 'sndnaipe !
 	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	font immSDL 

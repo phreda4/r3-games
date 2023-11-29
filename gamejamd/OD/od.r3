@@ -14,11 +14,12 @@
 
 #font
 
-#nubes		| hoja de sprites
-#explo		| hoja de sprites
-#spredif	| hoja de sprites
 #spravion
 #sprbomba
+#sprnubes		
+#sprhumo		
+#sprexplo
+#sprcasa 0 0 0 0
 
 #sndbomba
 #sndgente
@@ -65,20 +66,51 @@
 	'nube 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
 	a!+ 
-	52 << a!+ nubes a!+
+	52 << a!+ sprnubes a!+
 	swap a!+ a!+ ;
 
 :cielo
-	30 ( 1? 1 -
+	50 ( 1? 1 -
 		0.5 randmax 0.6 -
 		0.1 randmax 0.05 -
-		2 randmax 
-		1.0 randmax 0.4 + 
+		|2 randmax 
+		0
+		0.5 randmax 0.6 + 
 		1800.0 randmax 400.0 -
 		400.0 randmax 
 		+nube
 		) drop ;		
-		
+	
+|----------------------	
+:humo
+	objsprite
+	dup .x @ -100.0 <? ( 2drop 0 ; ) drop
+	-0.01 over .vx +!
+	0.001 32 << over .r +!
+	drop
+	;
+	
+:+humo | x y --
+	'humo 'listfx p!+ >a 
+	swap a!+ a!+	| x y 
+	1.0 randmax a!+ 0 a!+ sprhumo a!+
+	-1.0 a!+ 
+	-0.9 a!+ ;
+
+:ohumo
+	dup .vx @ over .x +!	| vx
+	dup .x @ -100.0 <? ( 2drop 0 ; ) drop
+	20 randmax 0? ( over .x @ pick2 .y @ +humo ) drop
+	drop
+	;
+	
+:+ohumo | x y --
+	'ohumo 'listfx p!+ >a 
+	swap a!+ 10.0 + a!+	| x y 
+	1.0 a!+ 0 a!+ sprhumo a!+
+	-1.0 a!+ 
+	0 a!+ ;
+	
 |----------------------
 :edi | a -- a
 	objsprite
@@ -89,16 +121,21 @@
 	'edi 'listedi p!+ >a 
 	swap a!+ a!+	| x y 
 	a!+ 52 << a!+ 	| w h
-	spredif a!+
+	4 randmax 3 << 'sprcasa + @
+	a!+
 	swap a!+ a!+ ;	| vx vy
 
+#distedi
 :edificios
+	1 'distedi +!
+	distedi 50 <? ( drop ; ) drop
 	50 randmax 1? ( drop ; ) drop
+	0 'distedi !
 	-1.0 0 
 	0 
-	0.8 randmax 0.6 + | zoom
-	1100.0 
-	50.0 randmax 560.0 +
+	0.4 randmax 0.6 + | zoom
+	1200.0 
+	20.0 randmax 560.0 +
 	+edificio
 	;
 	
@@ -113,7 +150,7 @@
 	'nuke 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
 	1.0 a!+ 
-	6 26 0 vci>anim a!+ explo a!+
+	6 26 0 vci>anim a!+ sprexplo a!+
 	-1.0 a!+ -0.1 a!+
 	|sndexplo SNDPlay
 	;
@@ -125,12 +162,13 @@
 	dup 8 + >a 
 	pick4 a@+ -	pick4 a@+ -
 	distfast 
-	20.0 >? ( drop ; )	drop	| lejos
+	60.0 >? ( drop ; )	drop	| lejos
 	dup .a dup
 	@ 52 >> $1 and? ( 2drop ; )  | ya roto
 	1 + 52 << swap !			| cambia dibujo
 	1 'puntos +!
 	1 'hit? !
+	dup .x @ over .y @ +ohumo
 |	10 randmax 1? ( drop ; ) drop
 |	sndgente SNDplay | grito de gente
 	;
@@ -143,7 +181,7 @@
 	dup .x @ over .y @ 700.0 >? ( 100.0 - +explo drop 0 ; ) 
 	0 'hit? !
 	'hit 'listedi p.mapv		| choco con edificio
-	hit? 1? ( drop 20.0 - +explo drop 0 ; ) drop
+	hit? 1? ( drop +explo drop 0 ; ) drop
 	2drop
 	drop
 	;
@@ -185,18 +223,19 @@
 #findejuego
 #xant
 #xprom
+#ojos 0
 
 :angulo
 	x xant =? ( drop ; ) 
 	xant - xprom + 1 >> 'xprom ! x 'xant ! ;
 
 :jugador
-	x int. y int. 
-	xprom 8 >> 
-	spravion SDLspriteR
+	x int. y int. xprom 8 >> ojos spravion sspriter
+	x int. y int. xprom 8 >> 3 randmax 2 + spravion sspriter
 	angulo
 	findejuego 1? ( drop ; ) drop
 	bombas 0? ( 1 'findejuego ! endwind ) drop 
+	40 randmax 0? ( ojos 1 xor 'ojos ! ) drop
 	;
 	
 :hud
@@ -210,8 +249,8 @@
 	immgui 
 	timer. vupdate
 	deltatime 'disparodelay +!
-	$78ADE8 SDLcls
-	'listedi p.draw
+	$59BEE6 SDLcls
+	'listedi p.drawo
 	'listfx p.draw
 	'listbom p.draw	
 	jugador	
@@ -223,13 +262,36 @@
 	<esp> =? ( +disparo )
 	drop ;
 
+:finjuego
+	$0 SDLcls
+	Immgui timer.
+	'estrellas p.draw
+
+	0 50 immat
+	800 immwidth
+	"Fin de Juego" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" sprint immlabelc
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
+	
 :jugar 
 	'listbom p.clear
 	'listfx p.clear
 	500.0 'x ! 100.0 'y !
 	cielo
 	0 'puntos ! 
-	10 'bombas !
+	100 'bombas !
 	0 'findejuego !
 	startwind |	randwind
 
@@ -237,6 +299,32 @@
 
 |-------------------------------------
 :menu
+	0 SDLcls
+	immgui
+	timer.
+	|'estrellas p.draw
+
+	0 100 immat
+	1024 immwidth
+	"Oppenheimer Democracy" immlabelc
+
+	100 400 immat
+	400 immwidth
+	$7f00 'immcolorbtn !
+	'jugar "Play" immbtn
+	1024 500 - 400 immat
+	$7f0000 'immcolorbtn !
+	'exit "Exit" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	drop
+	;
+	
+:menuod
+	'menu SDLShow
 	;
 |-------------------------------------
 #texto>
@@ -288,11 +376,21 @@
 :main
 	"od" 1024 600 SDLinit
 	
-	128 128 "r3/gamejamd/od/explosion.png" ssload 'explo !
+	128 128 "r3/gamejamd/od/explosion.png" ssload 'sprexplo !
 	50 20 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
-	"r3/gamejamd/od/b52.png" loadimg 'spravion !
-	143 88 "r3/gamejamd/od/nubes.png" ssload 'nubes !
-	50 100 "r3/gamejamd/od/edificios.png" ssload 'spredif !
+	208 143 "r3/gamejamd/od/avion.png" ssload 'spravion !
+	
+	|247 184 "r3/gamejamd/od/nube.png" ssload 'sprnubes !
+	71 48 "r3/gamejamd/od/nube1.png" ssload 'sprnubes !
+	50 50 "r3/gamejamd/od/humo.png" 
+	ssload 'sprhumo !
+
+	'sprcasa 
+	145 160 "r3/gamejamd/od/casa1.png" ssload swap !+
+	110 126 "r3/gamejamd/od/casa2.png" ssload swap !+
+	121 104 "r3/gamejamd/od/casa3.png" ssload swap !+
+	204 137 "r3/gamejamd/od/casa4.png" ssload swap !
+	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	font immSDL
 	"r3/gamejamd/od/bomba.mp3" mix_loadWAV 'sndbomba !
@@ -307,8 +405,9 @@
 	
 	'texto lines
 |	'titlestart SDLshow
+	menuod
+|	jugar
 	
-	jugar
 	SDLquit ;	
 	
 : main ;
