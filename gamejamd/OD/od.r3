@@ -265,7 +265,7 @@
 :finjuego
 	$0 SDLcls
 	Immgui timer.
-	'estrellas p.draw
+|	'estrellas p.draw
 
 	0 50 immat
 	800 immwidth

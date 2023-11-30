@@ -176,14 +176,14 @@
 :finjuego
 	$0 SDLcls
 	Immgui timer.
-	'estrellas p.draw
+|	'estrellas p.draw
 
 	0 50 immat
 	800 immwidth
 	"Fin de Juego" immlabelc
 	immdn immdn
 	
-	puntos "%d Puntos" sprint immlabelc
+|	puntos "%d Puntos" sprint immlabelc
 
 	200 500 immat
 	400 immwidth
