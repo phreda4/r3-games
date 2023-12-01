@@ -102,7 +102,9 @@
 #colores $ff $ff00 $ff0000 $ff00ff
 #tiempoclick
 #colorclick
+
 #puntos 
+#vidas
 	
 :newcolor
 	4 randmax 'colorclick !
@@ -114,8 +116,8 @@
 	yr2 yr1 + 1 >> 16 << ;
 	
 :clickc | color --
-	27 27 1.0 800.0 200.0 xygui colorclick +boleta 
-	colorclick <>? ( drop ; ) drop
+	2 2 1.0 800.0 200.0 xygui colorclick +boleta 
+	colorclick <>? ( drop -1 'vidas ! ; ) drop
 	newcolor
 	1 'puntos +!
 	;
@@ -186,6 +188,7 @@
 	'listfx p.clear
 	'listbol p.clear
 	0 'puntos !
+	5 'vidas !
 	newcolor
 	;
 
@@ -219,13 +222,14 @@
 |-------------------------------------
 :menu
 	|0 0 fondo2 SDLImage
-	0 sdlcls
+	$ffffff sdlcls
 	immgui
 	
 	1024 immwidth
-	$ffffff 'immcolortex !
+	$0 'immcolortex !
 	0 50 immat "Velocicracia" immlabelc
 	
+	$ffffff 'immcolortex !
 	200 immwidth
 	$7f00 'immcolorbtn !
 	300 200 immat 'jugar "JUGAR" immbtn
@@ -255,15 +259,15 @@
 	
 	"r3/gamejamd/velocicracia/sonido naipes.mp3" mix_loadWAV 'sndnaipe !
 	
-	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
+	"r3/gamejamd/velocicracia/quino.otf" 50 TTF_OpenFont 'font ! 
 	font immSDL 
 	timer<
 	$7f vaini
 	100 'listfx p.ini
 	100 'listbol p.ini
 	
-	jugar
-|	'menu SDLShow
+|	jugar
+	'menu SDLShow
 
 	SDLquit ;	
 	

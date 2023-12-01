@@ -12,6 +12,7 @@
 #xp 100.0 #yp 520.0		| posicion
 #xv #yv		| velocidad
 #puntos
+#tiempo
 #enemigos 0 0 
 #disparos 0 0 
 #fx 0 0
@@ -188,12 +189,12 @@
 	7 2 24 vci>anim | vel cnt ini 
 	a!+	tsguy a!+			| anim sheet
 	6.0 randmax 1.0 - a!+	| vx
-	0.5 randmax 0.5 + a!+ 	| vy
+	0.5 randmax 0.5 tiempo + + a!+ 	| vy
 	0.000 32 << a!			| vrz
 	;
 	
 :horda
-	80 randmax 1? ( drop ; ) drop
+	80 deltatime 11 >> - randmax 1? ( drop ; ) drop
 	+pulpo
 	;
 
@@ -211,7 +212,7 @@
 |	0 SDLcls
 	0 0 fondo SDLImage 
 
-	timer.
+	timer. deltatime 'tiempo +!
 	'enemigos p.draw
 	'disparos p.draw
 	-1 'timedisparo +! 
@@ -239,13 +240,15 @@
   |8 4 0 vci>anim 'anima !
 	0 'muerte !
 	0 'puntos !
+	0 'tiempo !
+	timer<
 	; 
  
 :jugar
 	reset 
-	musicafomdo -1 mix_playmusic
+|	musicafomdo -1 mix_playmusic
 	'demo SDLshow
-	musicamenu -1 mix_playmusic
+|	musicamenu -1 mix_playmusic
 	;
 
 :menu
@@ -268,6 +271,7 @@
 	sdlkey 
 	>esc< =? ( exit )
 	>f1< =? ( jugar )
+	>esp< =? ( jugar )
 	drop
 	;
  
@@ -284,8 +288,7 @@
 	100 'enemigos p.ini
 	100 'disparos p.ini
 	|8 4 0 vci>anim 'anima !
-	musicamenu -1 mix_playmusic
-	timer<
+|	musicamenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	
 	

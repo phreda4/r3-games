@@ -100,7 +100,7 @@
 :ohumo
 	dup .vx @ over .x +!	| vx
 	dup .x @ -100.0 <? ( 2drop 0 ; ) drop
-	20 randmax 0? ( over .x @ pick2 .y @ +humo ) drop
+	10 randmax 0? ( over .x @ pick2 .y @ +humo ) drop
 	drop
 	;
 	
@@ -197,7 +197,7 @@
 	1.0 a!+ 0 a!+
 	sprbomba a!+			|
 	0 a!+ 0.02 a!+ 	| vx vy
-	|sndbomba SNDplay
+	sndbomba SNDplay
 	-1 'bombas +!
 	;
 
@@ -393,14 +393,14 @@
 	
 	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
 	font immSDL
-	"r3/gamejamd/od/bomba.mp3" mix_loadWAV 'sndbomba !
+	"r3/gamejamd/od/silbido.mp3" mix_loadWAV 'sndbomba !
 	"r3/gamejamd/od/gente.mp3" mix_loadWAV 'sndgente !
 	"r3/gamejamd/od/explosion.mp3" mix_loadWAV 'sndexplo !
 	"r3/gamejamd/od/victoria.mp3" mix_loadWAV 'sndvictoria !
 	$7f vaini
-	200 'listbom p.ini
+	100 'listbom p.ini
 	100 'listedi p.ini
-	200 'listfx p.ini
+	500 'listfx p.ini
 	timer<
 	
 	'texto lines

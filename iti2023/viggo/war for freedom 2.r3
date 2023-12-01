@@ -26,6 +26,7 @@
 #sonidodis
 #sonidoexp
 
+#ganador 0
 #disparos 0 0 
 #enemigos 0 0
 #fondos 0 0
@@ -146,8 +147,11 @@
 	|..... remove when outside screen
 	dup 8 + @+ dup -17.0 827.0 between -? ( 4drop 0 ; ) drop
 	swap @ dup -200.0 616.0 between -? ( 4drop 0 ; ) drop
-	yp - swap xp - distfast
-	30.0 <? ( exit ) drop
+	
+	over xp - over yp - distfast 
+	30.0 <? ( exit 2 'ganador ! ) drop
+	swap xp2 - swap yp2 - distfast
+	30.0 <? ( exit 1 'ganador ! ) drop
 	drop
 	;
 
@@ -248,6 +252,36 @@
 	SDLredraw
 	;
 	
+|-----------------------------------------------
+:finjuego
+	$252850 SDLcls
+	Immgui timer.
+|	'estrellas p.draw
+
+	0 50 immat
+	800 immwidth
+	"WAR FOR FREEDOM 2" immlabelc
+	immdn immdn
+	ganador "GANADOR Jugador %d" sprint immlabelc immdn
+	immdn
+	puntos "%d Puntos Jugador 1" sprint immlabelc immdn
+	puntos2 "%d Puntos Jugador 2" sprint immlabelc 
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	>esp< =? ( exit )
+	>ri<  =? ( exit )
+	drop
+	;
+
+	
 :jugar
 	'enemigos p.clear
 	'disparos p.clear
@@ -257,8 +291,10 @@
 	100.0 'xp2 ! 400.0 'yp2 !
 	0 'puntos !
 	0 'puntos2 !
-
+	0 'ganador !
 	'juego sdlshow
+	
+	'finjuego sdlshow
 	;
 	
 :menu
@@ -283,6 +319,8 @@
 	SDLkey
 	>esc< =? ( exit )
 	>f1< =? ( jugar )
+	>esp< =? ( jugar )
+	>ri< =? ( jugar )
 	drop
 ;
 
@@ -297,14 +335,15 @@
 	"r3/iti2023/viggo/disparo.mp3" mix_loadwav 'sonidodis !
 	"r3/iti2023/viggo/explosion.mp3" mix_loadwav 'sonidoexp !
 	
-	"r3/iti2023/viggo/Revamped.otf" 50 TTF_OpenFont immSDL
+	"r3/iti2023/viggo/Revamped.otf" 46 TTF_OpenFont immSDL
 	8 3 0 vci>anim 'aninave !
 	timer<
 	100 'enemigos p.ini
 	100 'disparos p.ini
 	100 'fondos p.ini
 	100 'fx p.ini	
-	musicamenu -1 mix_playmusic
+|	musicamenu -1 mix_play
+
 	'menu SDLshow
 	SDLquit ;	
 	

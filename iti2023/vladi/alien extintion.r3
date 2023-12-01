@@ -172,7 +172,7 @@
 	7 2 20 vci>anim | vel cnt ini 
 	a!+	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - 
-	a!+ 1.0 1.0 randmax + a!+ 	| vx vy
+	a!+ 1.0 1.0 tiempo + randmax + a!+ 	| vx vy
 	0 a!		
 	;
 
@@ -197,7 +197,7 @@
 	;
 	
 :horda
-	60 randmax 1? ( drop ; ) drop
+	60 tiempo 12 >> - abs randmax 1? ( drop ; ) drop
 	+marciano
 	;
 	
@@ -253,13 +253,13 @@
 	0 'tiempo !
 	;
 
-:jugando
+:jugar
 	reset 
 	'puntajevx @+ neg 'puntosm ! @ 'tiempom !
 	
-	musicafondo -1 mix_playmusic
+	|musicafondo -1 mix_playmusic
 	'juego Sdlshow
-	menumusica -1 mix_playmusic
+	|menumusica -1 mix_playmusic
 	
 	tiempo 1000 / 60 /mod 8 << or 
 	puntos neg
@@ -280,7 +280,7 @@
 	
 	200 immwidth
 	$7f00 'immcolorbtn !
-	300 150 immat 'jugando "JUGAR" immbtn
+	300 150 immat 'jugar "JUGAR" immbtn
 	$7f0000 'immcolorbtn !
 	300 200 immat 'exit "SALIR" immbtn
 	
@@ -300,7 +300,8 @@
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( jugando )
+	<f1> =? ( jugar )
+	>esp< =? ( jugar )
 	drop
 	;
 
@@ -309,7 +310,7 @@
 "En un mundo donde los aliens nos atacan... nacen los heroes"
 "este que ves ahora es tu personaje"
 "estos que ahora aparecieron son tus enemigos"
-"Se juegan con las flechas para moverse y con el espacio se dispara"
+|"Se juegan con las flechas para moverse y con el espacio se dispara"
 "ahora les presento:"
 #titxt>
 #colm
@@ -353,10 +354,10 @@
 	[ titxt> >>0 'titxt> ! ; ] 17.0 +vexe
 	'colm 250 -300 5 1.0 18.0 +vanim
 	'colm 800 250 5 1.0 22.0 +vanim
-	[ titxt> >>0 'titxt> ! ; ] 23.0 +vexe
-	'colm 250 -300 5 1.0 24.0 +vanim
-	'colm 800 250 5 1.0 28.0 +vanim
-	'exit 30.0 +vexe 		
+|	[ titxt> >>0 'titxt> ! ; ] 23.0 +vexe
+|	'colm 250 -300 5 1.0 24.0 +vanim
+|	'colm 800 250 5 1.0 28.0 +vanim
+	'exit 24.0 +vexe 		
 	'titu1 SDLShow
 	;
 
@@ -386,7 +387,7 @@
 	8 4 0 vci>anim 'aninave !
 	$7f vaini
 	titulo
-	menumusica -1 mix_playmusic
+	|menumusica -1 mix_playmusic
 	timer<
 	loadhs
 	'menu SDLshow
