@@ -15,11 +15,16 @@
 #font
 
 #sprmesa
+#sprbarra
+#sprvida
+#sprlogo
 #sprmafalda
 #sprpatoru
 #sprmatias
 #sprhijitus
 #sprboletas
+#sprfinal
+#sprfinalm
 #sprfx
 
 #sndnaipe
@@ -99,16 +104,24 @@
 	;	
 	
 |-------------- Juego
-#colores $ff $ff00 $ff0000 $ff00ff
+#colores $E51B20 $347BBE $F3D611 $684495
 #tiempoclick
 #colorclick
+#msclick 3000
 
 #puntos 
 #vidas
+
+:vidascora	
+	0 ( 3 <?
+		dup 68 * 380 + 520 
+		pick2 vidas - 63 >> $1 and
+		sprvida ssprite
+		1 + ) drop ;
 	
 :newcolor
 	4 randmax 'colorclick !
-	3000 'tiempoclick !
+	msclick 'tiempoclick !
 	;
 
 :xygui
@@ -116,81 +129,77 @@
 	yr2 yr1 + 1 >> 16 << ;
 	
 :clickc | color --
-	2 2 1.0 800.0 200.0 xygui colorclick +boleta 
-	colorclick <>? ( drop -1 'vidas ! ; ) drop
-	newcolor
-	1 'puntos +!
+	dup >a
+	2 2 0.5 800.0 200.0 xygui a> +boleta 
+	colorclick =? ( drop 1 'puntos +! ; ) drop
+	-1 'vidas +! 
+	vidas 0? ( exit ) drop
+	;
+
+:barratiempo
+	'colores colorclick ncell+ @ SDLColor
+	317 42 
+	390 tiempoclick msclick */
+	32 SDLFRect
+	317 34 sprbarra SDLImage
+	deltatime neg 'tiempoclick +!
+	tiempoclick 0 <? ( newcolor ) drop
 	;
 
 #ojos
 	
 :jueces	
-	200 230
+	200 280
 	ojos 9 >> $1 and
 	sprmafalda ssprite
 	
-	400 200
+	400 250
 	ojos 10 >> $1 and
 	sprpatoru ssprite
 	
-	570 230
+	570 280
 	ojos 11 >> $1 and
 	sprmatias ssprite
 	
-	740 230
+	740 280
 	ojos 12 >> $1 and
 	sprhijitus ssprite
 	20 randmax 0? ( rand 'ojos ! ) drop
 	;
 	
+	
 :juego
 	vupdate timer.
-	deltatime neg 'tiempoclick +!
-	$78ADE8 SDLcls
-	
+	$ffffff SDLcls
 	jueces
-	0 180 sprmesa SDLImage
+	0 0 sprmesa SDLImage
+	barratiempo
+	vidascora
 	
 	immgui	
+	90 80 immbox
+	200 360 immat [ 0 clickc ; ] immzone 
+	|$ff SDLColor plxywh SDLRect 
+	380 360 immat [ 1 clickc ; ] immzone 
+	|$ff00 SDLColor plxywh SDLRect 
+	560 360 immat [ 2 clickc ; ] immzone 
+	|$ff0000 SDLColor plxywh SDLRect 
+	690 360 immat [ 3 clickc ; ] immzone 
+	|$ff00ff SDLColor plxywh SDLRect 
+	
+	80 100 immbox
+	$0 'immcolortex !
+	815 60 immat
+	puntos "%d" sprint immlabelC 
+|	immdn vidas "%d" sprint immlabelC immdn
 
-	100 90 immbox
-	150 300 immat [ 0 clickc ; ] immzone 
-	$ff SDLColor plxywh SDLFRect 
-	330 300 immat [ 1 clickc ; ] immzone 
-	$ff00 SDLColor plxywh SDLFRect 
-	510 300 immat [ 2 clickc ; ] immzone 
-	$ff0000 SDLColor plxywh SDLFRect 
-	690 300 immat [ 3 clickc ; ] immzone 
-	$ff00ff SDLColor plxywh SDLFRect 
-	
-	'colores colorclick ncell+ @ SDLColor
-	412 20 200 100 SDLFRect
-	
-	200 50 immbox
-	412 120 immat
-	puntos "%d" sprint immlabelC
-	412 160 immat
-	tiempoclick "%d" sprint immlabelC
-	
-	tiempoclick 0 <? ( newcolor ) drop
-	
 	'listbol p.draw
 	'listfx p.draw
 	SDLredraw
 	SDLkey 
 	>esc< =? ( exit )
-	<f1> =? ( newcolor )
-	<f2> =? ( 9 11 2.0 800.0 400.0 100.0 100.0 0 +boleta )
-	|:+boleta2 | ex ey et x2 y2 x1 y1 n --
+|	<f1> =? ( newcolor )
 	drop ;
-
-:reset
-	'listfx p.clear
-	'listbol p.clear
-	0 'puntos !
-	5 'vidas !
-	newcolor
-	;
 
 :finjuego
 	$0 SDLcls
@@ -216,59 +225,182 @@
 	;
 
 :jugar 
-	reset
-	'juego SDLShow ;
+	'listfx p.clear
+	'listbol p.clear
+	0 'puntos !
+	3 'vidas !
+	newcolor
+	'juego SDLShow 
+	;
 
 |-------------------------------------
+#txt1 "PERDISTE ¿ NO VOTASTE BIEN ?..."
+#txt2 "¡NO TENGO PORQUE OBEDECER A NADIE, YO SOY UN SER LIBRE!"
+#txt3 "POR SUERTE EN LA VIDA REAL NADIE TE APURA, NADIE TE OBLIGA. UNO ELIGE A QUIEN VOTAR."
+#ntxt 'txt1 'txt2 'txt3
+#srctxt>
+#txt * 256
+#txt> 'txt
+
+:>title
+	srctxt> c@+ swap 'srctxt> !
+	0? ( drop vareset 'exit 1.0 +vexe ; )
+	txt> c!+ 0 over c! 'txt> !
+	;
+	
+:>>title
+	srctxt> txt> strcpy
+	vareset 'exit 0.3 +vexe ;
+	
+:nextcar
+	vareset
+	'>title 0.0 +vexe
+	'nextcar 0.002 +vexe
+	;
+
+:findj
+	vupdate
+	$ffffff sdlcls
+	immgui
+	0 0 sprfinal SDLImage
+
+	$11 puntos "Puntaje: %d" sprint
+	100 30 824 100 xywh64 
+	0 font textbox | $vh str box color font --	
+	
+	$01 'txt
+	100 30 824 400 xywh64 
+	0 font textbox | $vh str box color font --	
+	
+	700 400
+	pick3
+	sprfinalm ssprite
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( >>title )
+|	<f1> =? ( >title )
+	drop
+	;
+
+:blink
+	msec $100 and? ( drop $ffffff ; ) drop 0 ;
+	
+:espera
+	immgui
+	320 immwidth
+	$7f00 'immcolorbtn !
+	
+	blink 'immcolortex !
+	330 540 immat 'exit "CONTINUAR" immbtn
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:findejuego	
+	0 ( 3 <?
+		'ntxt over ncell+ @ 'srctxt> !
+		'txt 'txt> ! 0 'txt c!
+		nextcar
+		'findj SDLshow
+		1 + ) drop 
+	'espera SDLShow
+	;
+
+|-------------------------------------
+:creditos
+	;
+	
+|-------------------------------------
+#textoinicio
+"Vota por el color en la barra de tiempo.
+Si votás el equivocado pierdes una vida."
+#xlogo 228
+#ylogo 10
+
+:menuani
+	vareset
+	'ylogo 10 -10 29 1.0 0.0 +vanim 
+	'ylogo -10 10 28 1.0 3.0 +vanim 
+
+	'xlogo 228 -700 23 1.0 0.0 +vanim 
+	'xlogo 1100 228 22 1.0 3.0 +vanim 
+
+	'menuani 4.0 +vexe
+	;
+	
+:menuj
+	jugar
+	findejuego
+	menuani
+	;	
+	
 :menu
-	|0 0 fondo2 SDLImage
+	vupdate
 	$ffffff sdlcls
 	immgui
 	
-	1024 immwidth
-	$0 'immcolortex !
-	0 50 immat "Velocicracia" immlabelc
+	xlogo ylogo sprlogo SDLImage
+	
+|	1024 immwidth
+|	$0 'immcolortex !
+|	0 50 immat "Click'o Cracia" immlabelc
 	
 	$ffffff 'immcolortex !
-	200 immwidth
+	220 immwidth
+	$7f7f00 'immcolorbtn !
+	140 540 immat 'creditos "CREDITOS" immbtn
+	
 	$7f00 'immcolorbtn !
-	300 200 immat 'jugar "JUGAR" immbtn
+	380 540 immat 'menuj "JUGAR" immbtn
 	
 	$7f0000 'immcolorbtn !
-	500 200 immat 'exit "SALIR" immbtn
+	620 540 immat 'exit "SALIR" immbtn
+
+	$11 'textoinicio
+	50 150 924 400 xywh64 
+	0 font textbox | $vh str box color font --
 	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( jugar )
+	<esp> =? ( menuj )
 	drop
 	;
-	
 	
 |-------------------------------------
 :main
 	"velocicracia" 1024 600 SDLinit
 
-	"r3/gamejamd/velocicracia/mesa.png" loadimg 'sprmesa !
+	"r3/gamejamd/velocicracia/logo.png" loadimg 'sprlogo !
+	
+	"r3/gamejamd/velocicracia/juego.png" loadimg 'sprmesa !
+	"r3/gamejamd/velocicracia/barratiempo.png" loadimg 'sprbarra !
+	58 58 "r3/gamejamd/velocicracia/vida.png" ssload 'sprvida !
 	196 170 "r3/gamejamd/velocicracia/mafalda.png" ssload 'sprmafalda !
 	179 375 "r3/gamejamd/velocicracia/Patoruzito.png" ssload 'sprpatoru !
 	163 199 "r3/gamejamd/velocicracia/matias.png" ssload 'sprmatias !
 	150 249 "r3/gamejamd/velocicracia/Hijitus.png" ssload 'sprhijitus !
-
 	90 140  "r3/gamejamd/velocicracia/boletas.png" ssload 'sprboletas !
+
+	"r3/gamejamd/velocicracia/final.png" loadimg 'sprfinal !
+	260 280 "r3/gamejamd/velocicracia/mafaldafin.png" ssload 'sprfinalm !
 	
 	"r3/gamejamd/velocicracia/sonido naipes.mp3" mix_loadWAV 'sndnaipe !
 	
 	"r3/gamejamd/velocicracia/quino.otf" 50 TTF_OpenFont 'font ! 
 	font immSDL 
 	timer<
-	$7f vaini
+	$ff vaini
 	100 'listfx p.ini
-	100 'listbol p.ini
+	200 'listbol p.ini
 	
-|	jugar
+||	jugar
+	menuani
 	'menu SDLShow
-
+|	findejuego
+	
 	SDLquit ;	
 	
 : main ;

@@ -132,7 +132,7 @@
 
 :pantalla
 	super
-	0 100 mesa SDLImage
+	0 0 mesa SDLImage
 	800 160 urna SDLImage
 	640 450 saco SDLImage
 	
