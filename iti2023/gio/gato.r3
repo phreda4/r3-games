@@ -284,7 +284,7 @@
 	"Nyan Fruit" immlabelc
 	immdn immdn
 	
-	puntos "%d Puntos" sprint immlabelc
+	puntos "%d Puntos" immlabelc
 
 	200 500 immat
 	400 immwidth

@@ -26,8 +26,8 @@
 #sndexplo
 #sndvictoria
 
-#x 500.0 #y 100.0
-#vx #vy	| viewport
+#x #y 
+#maxbombas 20
 #puntos
 #bombas
 
@@ -262,20 +262,21 @@
 	<esp> =? ( +disparo )
 	drop ;
 
-:finjuego
-	$0 SDLcls
-	Immgui timer.
-|	'estrellas p.draw
 
-	0 50 immat
+:finjuego
+	$59BEE6 SDLcls
+	Immgui timer.
+	'listedi p.drawo
+	'listfx p.draw
+	
 	800 immwidth
+	112 50 immat
 	"Fin de Juego" immlabelc
 	immdn immdn
-	
-	puntos "%d Puntos" sprint immlabelc
+	puntos 100 maxbombas */ "%d%% de Democracia" immlabelc
 
-	200 500 immat
 	400 immwidth
+	312 500 immat
 	$7f 'immcolorbtn !
 	'exit "Continuar" immbtn
 
@@ -287,34 +288,35 @@
 	
 :jugar 
 	'listbom p.clear
-	'listfx p.clear
-	500.0 'x ! 100.0 'y !
-	cielo
+	'listedi p.clear
 	0 'puntos ! 
-	100 'bombas !
+	maxbombas 'bombas !
 	0 'findejuego !
 	startwind |	randwind
-
-	'juego SDLShow ;
+	timer<
+	'juego SDLShow 
+	'finjuego SDLShow
+	;
 
 |-------------------------------------
 :menu
-	0 SDLcls
+	vupdate 
+	$59BEE6 SDLcls
 	immgui
-	timer.
-	|'estrellas p.draw
-
-	0 100 immat
-	1024 immwidth
+	
+	'listfx p.draw
+	
+	824 immwidth
+	100 120 immat
 	"Oppenheimer Democracy" immlabelc
 
-	100 400 immat
-	400 immwidth
+	340 immwidth
+	100 460 immat
 	$7f00 'immcolorbtn !
-	'jugar "Play" immbtn
-	1024 500 - 400 immat
+	'jugar "Jugar" immbtn
+	1024 440 - 460 immat
 	$7f0000 'immcolorbtn !
-	'exit "Exit" immbtn
+	'exit "Salir" immbtn
 
 	SDLredraw
 	SDLkey
@@ -323,9 +325,6 @@
 	drop
 	;
 	
-:menuod
-	'menu SDLShow
-	;
 |-------------------------------------
 #texto>
 #texto 
@@ -335,7 +334,7 @@
 "don't worry"
 "we have democracy for all"
 " "
-"Oppenheimer Democracy"
+|"Oppenheimer Democracy"
 0
 
 :nextt texto> >>0 'texto> ! ;
@@ -404,9 +403,10 @@
 	timer<
 	
 	'texto lines
-|	'titlestart SDLshow
-	menuod
-|	jugar
+	'titlestart SDLshow
+	'listfx p.clear
+	cielo
+	'menu SDLShow
 	
 	SDLquit ;	
 	

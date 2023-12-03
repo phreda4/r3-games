@@ -8,21 +8,24 @@
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
 ^r3/util/varanim.r3
+
 #font
 
-#fondo
-#mesa
+#imgfondo
+#imgmesa
+#imgmanos
+#imgurna
+#imgsaco
+#imgtacho
+#imgburtext
 
-#supervisor
-#boletas
-#manos
-#urna
-#saco
-#tacho
+#sprsupervisor
+#sprboletas
 
 #places 0 0
 
 #mipartido 0
+#pideboleta 0
 
 | x y rz n ss vx vy vr
 :.x 1 ncell+ ;
@@ -81,7 +84,7 @@
 |------------
 :+boletam | easex easey et x2 y2 x1 y1 n --
 	'objspritemove 'places p!+ >a 
-	pick2 a!+ over a!+ 1.0 a!+ 52 << a!+ boletas a!+
+	pick2 a!+ over a!+ 1.0 a!+ 52 << a!+ sprboletas a!+
 	swap a!+ a!+
 	swap a!+ a!+
 	1000 *. $ffffffff and 
@@ -125,43 +128,42 @@
 |--------------------
 #supere 0
 :super
-	700 140 supere supervisor ssprite 
+	700 140 supere sprsupervisor ssprite 
+	300 0 imgburtext SDLImage
+	450 130 pideboleta sprboletas ssprite
 	70 randmax 1? ( drop ; ) drop
 	supere 1 xor 'supere !
 	;
 
 :pantalla
 	super
-	0 0 mesa SDLImage
-	800 160 urna SDLImage
-	640 450 saco SDLImage
-	
-	90 390 tacho SDLImage
+	0 0 imgmesa SDLImage
+	800 160 imgurna SDLImage
+	640 450 imgsaco SDLImage
+	90 390 imgtacho SDLImage
 	;
 	
 |--------------------	
 :resetjuego
 	'places p.clear
-	0 90 150 151 250 +place
-	1 90 150 281 250 +place
-	2 90 150 412 250 +place
-	3 90 150 548 250 +place
+	0 120 160 90 280 +place
+	1 120 160 240 280 +place
+	2 120 160 410 280 +place
+	3 120 160 590 280 +place
 	
 	4 200 200 640 450 +place
-	
 	;
 
 :manocursor
-	sdlx 10 - sdly 10 - manos SDLimage
+	sdlx 10 - sdly 10 - imgmanos SDLimage
 	;
 	
-:game
+:juego
 	vupdate timer.
 	immgui 
-|	0 0 fondo SDLImage 	
+|	0 0 imgfondo SDLImage 	
 	$666666 sdlcls
 	pantalla
-	
 	'places p.drawo
 	manocursor
 	
@@ -173,20 +175,20 @@
 	>esc< =? ( exit )
 	drop ;
 
+|--------------------	
 :finjuego
 	$0 SDLcls
 	Immgui timer.
-|	'estrellas p.draw
 
-	0 50 immat
 	800 immwidth
+	112 50 immat
 	"Fin de Juego" immlabelc
 	immdn immdn
 	
-|	puntos "%d Puntos" sprint immlabelc
+|	puntos "%d Puntos" immlabelc
 
-	200 500 immat
 	400 immwidth
+	312 500 immat
 	$7f 'immcolorbtn !
 	'exit "Continuar" immbtn
 
@@ -198,25 +200,49 @@
 
 :jugar
 	resetjuego
-	'game SDLshow
+	'juego SDLshow
+	'finjuego SDLShow
 	;
 	
 |----------------------------------------
+#txtpartido
+"Juntos por el mambo"
+"La esclavitud avanza"
+"Frente al caño"
+"Union ezquimal"
+
+#cursor
+
 :menu
-	|0 0 fondo2 SDLImage
 	0 sdlcls
 	immgui
 	
 	1024 immwidth
 	$ffffff 'immcolortex !
 	0 50 immat "Fraudecracia" immlabelc
+	immdn immdn
+	'txtpartido mipartido n>>0 immlabelc
+
+	$ffffff sdlcolor
+	msec 4 >> $f and 'cursor !
+	mipartido 150 * 230 + cursor - 310 cursor - 
+	130 cursor 1 << + 150 cursor 1 << + SDLRect
 	
-	200 immwidth
+	130 150 immbox
+	0 ( 4 <?
+		150 over * 295 + 385 
+		pick2 sprboletas ssprite
+		150 over * 230 + 310 immat
+		[ dup 'mipartido ! ; ] immzone
+		1 + ) drop
+		
+	
+	200 60 immbox
 	$7f00 'immcolorbtn !
-	300 200 immat 'jugar "JUGAR" immbtn
+	200 500 immat 'jugar "JUGAR" immbtn
 	
 	$7f0000 'immcolorbtn !
-	500 200 immat 'exit "SALIR" immbtn
+	640 500 immat 'exit "SALIR" immbtn
 	
 	SDLredraw
 	SDLkey
@@ -228,14 +254,15 @@
 |------------ INICIO ----------------	
 :	
 	"Fraudecracia" 1024 600 SDLinit
-	"r3/gamejamd/fraudecracia/fondo.png" loadimg 'fondo !
-	"r3/gamejamd/fraudecracia/mesa.png" loadimg 'mesa !
-	"r3/gamejamd/fraudecracia/urna.png" loadimg 'urna !
-	"r3/gamejamd/fraudecracia/saco.png" loadimg 'saco !
-	"r3/gamejamd/fraudecracia/tacho.png" loadimg 'tacho !
-	"r3/gamejamd/fraudecracia/cursor.png" loadimg 'manos !
-	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'boletas !
-	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'supervisor !	
+	"r3/gamejamd/fraudecracia/fondo.png" loadimg 'imgfondo !
+	"r3/gamejamd/fraudecracia/mesa.png" loadimg 'imgmesa !
+	"r3/gamejamd/fraudecracia/urna.png" loadimg 'imgurna !
+	"r3/gamejamd/fraudecracia/saco.png" loadimg 'imgsaco !
+	"r3/gamejamd/fraudecracia/tacho.png" loadimg 'imgtacho !
+	"r3/gamejamd/fraudecracia/cursor.png" loadimg 'imgmanos !
+	"r3/gamejamd/fraudecracia/burtext.png" loadimg 'imgburtext !
+	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'sprboletas !
+	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'sprsupervisor !	
 	
 	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
 	font immSDL
@@ -243,7 +270,7 @@
 	vareset timer<
 	40 'places p.ini
 
-|	'menu SDLshow
-	jugar
+	'menu SDLshow
+|	jugar
 	SDLquit 
 	;

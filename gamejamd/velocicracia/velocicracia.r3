@@ -190,8 +190,8 @@
 	80 100 immbox
 	$0 'immcolortex !
 	815 60 immat
-	puntos "%d" sprint immlabelC 
-|	immdn vidas "%d" sprint immlabelC immdn
+	puntos "%d" immlabelC 
+|	immdn vidas "%d" immlabelC immdn
 
 	'listbol p.draw
 	'listfx p.draw
@@ -211,7 +211,7 @@
 	"Fin de Juego" immlabelc
 	immdn immdn
 	
-	puntos "%d Puntos" sprint immlabelc
+	puntos "%d Puntos" immlabelc
 
 	200 500 immat
 	400 immwidth

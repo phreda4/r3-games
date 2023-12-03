@@ -262,10 +262,10 @@
 	800 immwidth
 	"WAR FOR FREEDOM 2" immlabelc
 	immdn immdn
-	ganador "GANADOR Jugador %d" sprint immlabelc immdn
+	ganador "GANADOR Jugador %d" immlabelc immdn
 	immdn
-	puntos "%d Puntos Jugador 1" sprint immlabelc immdn
-	puntos2 "%d Puntos Jugador 2" sprint immlabelc 
+	puntos "%d Puntos Jugador 1" immlabelc immdn
+	puntos2 "%d Puntos Jugador 2" immlabelc 
 
 	200 500 immat
 	400 immwidth

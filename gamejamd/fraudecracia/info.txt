@@ -1,0 +1,36 @@
+Fraude Electoral (Fraude-Cracia)- The Game
+ 
+-Sinopsis:
+ Somos un presidente de mesa que busca cometer fraude electoral para que su presidente salga electo; es un país nuevo y es una nueva democracia
+
+-Jugabilidad (concepto): 
+Las boletas del color que eliges, las metes en la urna, y las que no las tiras a la basura pero solo cuando no te ve el supervisor. 
+El supervisor te va a ir cantando las boletas que tenes que meter en la urna, mientras este te mira le debes de hacer caso, de lo contrario, bajará el nivel del medidor de confianza, el cual funciona como vidas, aguantara solo cuatro errores antes de perder.
+Al darse la vuelta el supervisor te seguirá cantando las boletas, pero esta vez habrá que aprovechar, para tirar al tacho las boletas del partido que el supervisor te va cantando, y reemplazarlas con boletas tuyas. 
+
+Al iniciar el juego elegis a qué partido perteneces.
+Tenes repartidas en la mesa boletas de cada partido (4 partidos); vos, presidente de mesa, tenes que meter boletas de distintos partidos en la urna mientras el supervisor te vea, si metes muchas seguidas de tu partido mientras te ve perdes confianza, cuando este no te ve reemplazas boletas de otros partidos con las tuyas (las de lo otros partidos las tiras al tacho y metes boletas de tu partido, de la bolsa a la urna):
+
+    • Si el medidor de confianza llega a cero caes preso
+    • Si completas el padrón y tu partido no ganó, perdiste
+    • Si completas el padrón y tu partido ganó, ganaste, se puede ganar con 1, 2 o 3 estrellas
+        ◦ 1ra estrella se consigue ganando
+        ◦ 2da estrella se consigue cuando no baja el nivel de confianza
+        ◦ 3ra estrella se consigue cuando tu partido supera el 65% de votos
+ 
+-Jugabilidad (jugabilidad): 
+
+Se jugará con el mouse; se emplearán ambos clicks del mouse, cada uno con su respectiva utilidad.
+    • Click izquierdo: mandar boletas a la urna / sacar boletas de la bolsa
+    • Click derecho: mandar boletas al tacho de basura
+
+-Personajes:
+
+    • Presidente de mesa
+    • Supervisor 1
+
+-Partidos:
+
+ La esclavitud avanza, Juntos por el mambo, Frente al caño, Union ezquimal.
+
+-Música:
