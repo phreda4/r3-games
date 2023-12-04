@@ -208,7 +208,7 @@
 	<esp> =? ( +disparo )
 	drop ;
 	
-:demo
+:juego
 |	0 SDLcls
 	0 0 fondo SDLImage 
 
@@ -231,6 +231,30 @@
 	horda
 	;
 
+|-----------------------------
+:finjuego
+	0 0 fondo SDLImage 
+	Immgui 
+	
+	0 50 immat
+	800 immwidth
+	"Pulpo Attack" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" immlabelc
+
+	400 immwidth
+	200 400 immat
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
+	
+|-----------------------------	
 :reset
 	'disparos p.clear
 	'enemigos p.clear
@@ -247,8 +271,9 @@
 :jugar
 	reset 
 |	musicafomdo -1 mix_playmusic
-	'demo SDLshow
+	'juego SDLshow
 |	musicamenu -1 mix_playmusic
+	'finjuego SDLshow
 	;
 
 :menu
@@ -261,11 +286,13 @@
 	800 immwidth
 	"Pulpo Attack" immlabelc
 
-	200 300 immat
-	400 immwidth
+	200 immwidth
+	100 400 immat
+	$7f00 'immcolorbtn !	
+	'jugar "jugar" immbtn
+	500 400 immat	
+	$7f0000 'immcolorbtn !	
 	'exit "salir" immbtn
-	immdn
-	'jugar "juego" immbtn
 
 	SDLredraw
 	sdlkey 

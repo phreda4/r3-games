@@ -309,9 +309,71 @@
 	;
 
 |-------------------------------------
-:creditos
+#texto 
+"VELOCICRACIA" 
+""
+"Gamejam Democracia 2023"
+"EEMN 1 - San cayetano"
+"Ininerario formativo en informatica"
+""
+"Integrantes:"
+"a"
+"b"
+"b"
+
+#clinea 9
+#hlinea 7
+#nlinea	
+#ys 0
+#yh 100
+
+:linestr | nro -- ""
+	-? ( drop "" ; )
+	clinea >=? ( drop "" ; )
+	'texto swap n>>0 ;
+
+:printline | ynow nro str -- ynow nro
+
+|... center 1024,yh
+	ttsize | w h 
+	yh swap - 1 >> pick4 + swap
+	1024 swap - 1 >> swap ttat
+	
+	tt. ;
+	
+:animc
+	vareset
+	'ys yh neg 0 0 2.0 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg nip ) 'nlinea ! animc ; ] 2.0 +vexe
+	0 'ys ! 
 	;
 	
+:drawlines
+	ys 0 ( hlinea <? 
+		nlinea over + linestr printline
+		1 + swap yh + swap ) 2drop ;
+	
+:screditos
+	vupdate
+	$ffffff sdlcls
+	$0 ttcolor
+	drawlines
+	
+	0 0 sprfinal SDLImage
+	
+	
+
+	
+	SDLredraw	
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:creditos	
+	animc
+	hlinea neg 'nlinea !
+	'screditos SDLShow
+	;
 |-------------------------------------
 #textoinicio
 "Vota por el color en la barra de tiempo.

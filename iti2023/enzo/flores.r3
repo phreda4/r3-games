@@ -224,10 +224,8 @@
 	0 'yscroll !
 	;
 
-:jugar
-	reset 
-	'juego Sdlshow
-	;
+
+
 
 |-----------------------------------------
 :hitx
@@ -260,7 +258,38 @@
 		800.0 randmax
 		600.0 randmax
 		+flor ) drop ;
+
+:finjuego
+	$0 SDLcls
+	'fx p.draw
+	Immgui 
+
+	0 50 immat
+	800 immwidth
+	"Flores" immlabelc
+	immdn immdn
+	
+	puntos "%d Puntos" immlabelc
+
+	200 500 immat
+	400 immwidth
+	$7f 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;	
+			
 		
+:jugar
+	reset 
+	'juego Sdlshow
+	resetmenu
+	'finjuego SDLshow
+	;
+	
 :menu
 	0 SDLcls
 	'fx p.draw
@@ -280,7 +309,7 @@
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( jugar resetmenu )
+	<f1> =? ( jugar  )
 	drop
 	;
 
