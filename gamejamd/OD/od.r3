@@ -2,7 +2,8 @@
 | Democracia Gamejam 2023
 | EESN 1 - San Cayetano
 | PHREDA
-|-----^r3/win/sdl2gfx.r3
+|-----
+^r3/win/sdl2gfx.r3
 ^r3/win/sdl2mixer.r3
 ^r3/lib/rand.r3
 ^r3/util/arr16.r3
@@ -20,8 +21,8 @@
 #sprexplo
 #sprcasa 0 0 0 0
 
+#sndboton
 #sndbomba
-#sndgente
 #sndexplo
 #sndvictoria
 
@@ -72,9 +73,8 @@
 	50 ( 1? 1 -
 		0.5 randmax 0.6 -
 		0.1 randmax 0.05 -
-		|2 randmax 
 		0
-		0.5 randmax 0.6 + 
+		0.5 randmax 0.3 + 
 		1800.0 randmax 400.0 -
 		400.0 randmax 
 		+nube
@@ -151,7 +151,7 @@
 	1.0 a!+ 
 	6 26 0 vci>anim a!+ sprexplo a!+
 	-1.0 a!+ -0.1 a!+
-	|sndexplo SNDPlay
+	sndexplo SNDPlay
 	;
 		
 
@@ -238,6 +238,9 @@
 	;
 	
 :hud
+	$0 ttcolor 
+	24 14 ttat bombas "%d" ttprint
+	924 14 ttat puntos "%d" ttprint
 	$ffffff ttcolor 
 	20 10 ttat bombas "%d" ttprint
 	920 10 ttat puntos "%d" ttprint
@@ -261,6 +264,15 @@
 	<esp> =? ( +disparo )
 	drop ;
 
+|-------------- Pantallas
+::immbtn | 'click "" -- ; reecode button
+	|0 SDLColor
+	immcolorbtn SDLColor
+	plxywh SDLFRect
+	[ curx 3 + cury 3 + immat ; ] guiI 
+	immlabelc
+	plxywh guiBox
+	[ sndboton SNDplay dup ex ; ] onClick drop ;	
 
 :finjuego
 	$59BEE6 SDLcls
@@ -269,13 +281,20 @@
 	'listfx p.draw
 	
 	800 immwidth
-	112 50 immat
-	"Fin de Juego" immlabelc
-	immdn immdn
-	puntos 100 maxbombas */ "%d%% de Democracia" immlabelc
+	$0 'immcolortex !	
+	116 54 immat "Fin de Juego" immlabelc
+	$ffffff 'immcolortex !	
+	112 50 immat "Fin de Juego" immlabelc
+
+	$0 'immcolortex !	
+	116 234 immat
+	puntos 100 maxbombas */ "    %d%% de Democracia" immlabelc
+	$ffffff 'immcolortex !	
+	112 230 immat
+	puntos 100 maxbombas */ "    %d%% de Democracia" immlabelc
 
 	400 immwidth
-	312 500 immat
+	312 450 immat
 	$7f 'immcolorbtn !
 	'exit "Continuar" immbtn
 
@@ -294,9 +313,69 @@
 	startwind |	randwind
 	timer<
 	'juego SDLShow 
+	sndvictoria SNDplay
 	'finjuego SDLShow
 	;
 
+|-------------------------------------
+#texto 
+"Oppenheimer Democracy" 
+""
+"Gamejam Democracia 2023"
+"EEMN 1 - San Cayetano"
+"Itinerario formativo en informatica"
+""
+"Integrantes:"
+""
+"Profesores:"
+"Clara Sorensen"
+"Pablo H. Reda"
+
+#clinea 11
+#hlinea 9
+#nlinea	
+#ys 0
+#yh 80
+
+:linestr | nro -- ""
+	-? ( drop "" ; )
+	clinea >=? ( drop "" ; )
+	'texto swap n>>0 ;
+
+:printline | ynow nro str -- ynow nro
+	ttsize | w h  |... center 1024,yh
+	yh swap - 1 >> pick4 + swap
+	1024 swap - 1 >> swap ttat
+	tt. ;
+	
+:animc
+	vareset
+	'ys yh neg 0 24 2.0 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 2.0 +vexe
+	0 'ys ! 
+	;
+	
+:drawlines
+	ys 0 ( hlinea <? 
+		nlinea over + linestr printline
+		1 + swap yh + swap ) 2drop ;
+	
+:screditos
+	vupdate
+	$0 sdlcls
+	$ffffff ttcolor
+	drawlines
+	SDLredraw	
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:creditos	
+	animc
+	hlinea neg 1 + 'nlinea !
+	'screditos SDLShow
+	;	
+	
 |-------------------------------------
 :menu
 	vupdate 
@@ -306,16 +385,22 @@
 	'listfx p.draw
 	
 	824 immwidth
-	100 120 immat
-	"Oppenheimer Democracy" immlabelc
+	$0 'immcolortex !
+	104 124 immat "OPPENHEIMER DEMOCRACY" immlabelc
+	$ffffff 'immcolortex !
+	100 120 immat "OPPENHEIMER DEMOCRACY" immlabelc
 
-	340 immwidth
-	100 460 immat
+
+	$ffffff 'immcolortex !
+	240 immwidth
+	$7f7f00 'immcolorbtn !
+	120 450 immat 'creditos "CREDITOS" immbtn
+	
 	$7f00 'immcolorbtn !
-	'jugar "Jugar" immbtn
-	1024 440 - 460 immat
+	380 450 immat 'jugar "JUGAR" immbtn
+	
 	$7f0000 'immcolorbtn !
-	'exit "Salir" immbtn
+	640 450 immat 'exit "SALIR" immbtn
 
 	SDLredraw
 	SDLkey
@@ -327,11 +412,11 @@
 |-------------------------------------
 #texto>
 #texto 
-"The world need" 
-"more democracy"
+"THE WORLD NEED" 
+"MORE DEMOCRACY"
 " "
-"don't worry"
-"we have democracy for all"
+"DON'T WORRY"
+"WE HAVE DEMOCRACY FOR ALL"
 " "
 |"Oppenheimer Democracy"
 0
@@ -367,7 +452,7 @@
 
 	SDLredraw	
 	SDLkey
-	>esc< =? ( exit )
+	>esc< =? ( vareset exit )
 	drop ;
 
 |-------------------------------------
@@ -378,8 +463,8 @@
 	50 20 "r3/gamejamd/od/bomba.png" ssload 'sprbomba !
 	208 143 "r3/gamejamd/od/avion.png" ssload 'spravion !
 	
-	|247 184 "r3/gamejamd/od/nube.png" ssload 'sprnubes !
-	71 48 "r3/gamejamd/od/nube1.png" ssload 'sprnubes !
+	247 184 "r3/gamejamd/od/nube.png" ssload 'sprnubes !
+	|71 48 "r3/gamejamd/od/nube1.png" ssload 'sprnubes !
 	50 50 "r3/gamejamd/od/humo.png" 
 	ssload 'sprhumo !
 
@@ -389,11 +474,12 @@
 	121 104 "r3/gamejamd/od/casa3.png" ssload swap !+
 	204 137 "r3/gamejamd/od/casa4.png" ssload swap !
 	
-	"media/ttf/roboto-medium.ttf" 48 TTF_OpenFont 'font ! 
+	
+	"r3/gamejamd/od/Capsmall.ttf" 46 TTF_OpenFont 'font ! 
 	font immSDL
 	"r3/gamejamd/od/silbido.mp3" mix_loadWAV 'sndbomba !
-	"r3/gamejamd/od/gente.mp3" mix_loadWAV 'sndgente !
 	"r3/gamejamd/od/explosion.mp3" mix_loadWAV 'sndexplo !
+	"r3/gamejamd/od/boton.mp3" mix_loadWAV 'sndboton !
 	"r3/gamejamd/od/victoria.mp3" mix_loadWAV 'sndvictoria !
 	$7f vaini
 	100 'listbom p.ini

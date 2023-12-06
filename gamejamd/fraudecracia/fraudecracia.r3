@@ -204,11 +204,70 @@
 	'finjuego SDLShow
 	;
 	
+|-------------------------------------
+#texto 
+"Fraudecracia" 
+""
+"Gamejam Democracia 2023"
+"EEMN 1 - San Cayetano"
+"Itinerario formativo en informatica"
+""
+"Integrantes:"
+""
+"Profesores:"
+"Clara Sorensen"
+"Pablo H. Reda"
+
+#clinea 11
+#hlinea 9
+#nlinea	
+#ys 0
+#yh 80
+
+:linestr | nro -- ""
+	-? ( drop "" ; )
+	clinea >=? ( drop "" ; )
+	'texto swap n>>0 ;
+
+:printline | ynow nro str -- ynow nro
+	ttsize | w h |... center 1024,yh
+	yh swap - 1 >> pick4 + swap
+	1024 swap - 1 >> swap ttat
+	tt. ;
+	
+:animc
+	vareset
+	'ys yh neg 0 0 2.0 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 2.0 +vexe
+	0 'ys ! 
+	;
+	
+:drawlines
+	ys 0 ( hlinea <? 
+		nlinea over + linestr printline
+		1 + swap yh + swap ) 2drop ;
+	
+:screditos
+	vupdate
+	$0 sdlcls
+	$ffffff ttcolor
+	drawlines
+	SDLredraw	
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:creditos	
+	animc
+	hlinea neg 1 + 'nlinea !
+	'screditos SDLShow
+	;	
+	
 |----------------------------------------
 #txtpartido
 "Juntos por el mambo"
 "La esclavitud avanza"
-"Frente al caÃ±o"
+"Frente al caño"
 "Union ezquimal"
 
 #cursor
@@ -224,7 +283,7 @@
 	'txtpartido mipartido n>>0 immlabelc
 
 	$ffffff sdlcolor
-	msec 4 >> $f and 'cursor !
+	msec 5 >> $f and 'cursor !
 	mipartido 150 * 230 + cursor - 310 cursor - 
 	130 cursor 1 << + 150 cursor 1 << + SDLRect
 	
@@ -238,8 +297,12 @@
 		
 	
 	200 60 immbox
+
+	$7f7f00 'immcolorbtn !
+	120 500 immat 'creditos "CREDITOS" immbtn
+	
 	$7f00 'immcolorbtn !
-	200 500 immat 'jugar "JUGAR" immbtn
+	380 500 immat 'jugar "JUGAR" immbtn
 	
 	$7f0000 'immcolorbtn !
 	640 500 immat 'exit "SALIR" immbtn
