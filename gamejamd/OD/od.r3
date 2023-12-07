@@ -26,6 +26,9 @@
 #sndexplo
 #sndvictoria
 
+#musmenu
+#musjuego
+
 #x #y 
 #maxbombas 20
 #puntos
@@ -266,13 +269,11 @@
 
 |-------------- Pantallas
 ::immbtn | 'click "" -- ; reecode button
-	|0 SDLColor
-	immcolorbtn SDLColor
-	plxywh SDLFRect
-	[ curx 3 + cury 3 + immat ; ] guiI 
-	immlabelc
 	plxywh guiBox
-	[ sndboton SNDplay dup ex ; ] onClick drop ;	
+	immcolorbtn SDLColor plxywh SDLFRect
+	[ 3 3 immat+ ; ] guiI 
+	immlabelc
+	[ sndboton SNDplay 400 SDL_delay dup ex ; ] onClick drop ;	
 
 :finjuego
 	$59BEE6 SDLcls
@@ -305,6 +306,8 @@
 	;
 	
 :jugar 
+	Mix_HaltMusic
+	|musmenu -1 mix_playmusic
 	'listbom p.clear
 	'listedi p.clear
 	0 'puntos ! 
@@ -315,6 +318,7 @@
 	'juego SDLShow 
 	sndvictoria SNDplay
 	'finjuego SDLShow
+	musmenu -1 mix_playmusic
 	;
 
 |-------------------------------------
@@ -386,9 +390,9 @@
 	
 	824 immwidth
 	$0 'immcolortex !
-	104 124 immat "OPPENHEIMER DEMOCRACY" immlabelc
+	104 154 immat "OPPENHEIMER DEMOCRACY" immlabelc
 	$ffffff 'immcolortex !
-	100 120 immat "OPPENHEIMER DEMOCRACY" immlabelc
+	100 150 immat "OPPENHEIMER DEMOCRACY" immlabelc
 
 
 	$ffffff 'immcolortex !
@@ -481,6 +485,11 @@
 	"r3/gamejamd/od/explosion.mp3" mix_loadWAV 'sndexplo !
 	"r3/gamejamd/od/boton.mp3" mix_loadWAV 'sndboton !
 	"r3/gamejamd/od/victoria.mp3" mix_loadWAV 'sndvictoria !
+	
+
+	"r3/gamejamd/od/tema1.mp3" mix_loadmus 'musmenu !
+	"r3/gamejamd/od/tema2.mp3" mix_loadmus 'musjuego !
+	
 	$7f vaini
 	100 'listbom p.ini
 	100 'listedi p.ini
@@ -491,6 +500,7 @@
 	'titlestart SDLshow
 	'listfx p.clear
 	cielo
+	musmenu -1 mix_playmusic
 	'menu SDLShow
 	
 	SDLquit ;	

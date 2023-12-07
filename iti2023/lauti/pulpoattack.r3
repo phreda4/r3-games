@@ -306,8 +306,8 @@
 	"r3sdl" 800 600 SDLinit
 	32 32 "r3/iti2023/lauti/completojuego.png" ssload 'tsguy !
 	"r3/iti2023/lauti/fondo2.jpg" loadimg 'fondo !
-	"r3/iti2023/lauti/destrucion.mp3" mix_loadmus 'musicafomdo !
-	"r3/iti2023/lauti/musicmenu.mp3" mix_loadmus 'musicamenu !
+|	"r3/iti2023/lauti/destrucion.mp3" mix_loadmus 'musicafomdo !
+|	"r3/iti2023/lauti/musicmenu.mp3" mix_loadmus 'musicamenu !
 	"r3/iti2023/lauti/letrasfuturistas.ttf" 30 TTF_OpenFont immsdl
 	"r3/iti2023/lauti/disparo.mp3" mix_loadwav 'sfxdis !
 	"r3/iti2023/lauti/desintegración.mp3" mix_loadwav 'sfxexp !

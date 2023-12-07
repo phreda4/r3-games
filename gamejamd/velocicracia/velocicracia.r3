@@ -31,6 +31,7 @@
 #sndvoto
 #sndok
 #snderror
+#sndboton
 
 #listfx 0 0 | fx
 #listbol 0 0
@@ -177,14 +178,10 @@
 	
 	immgui	
 	90 80 immbox
-	200 360 immat [ 0 clickc ; ] immzone 
-	|plxywh SDLRect 
-	380 360 immat [ 1 clickc ; ] immzone 
-	|plxywh SDLRect 
-	560 360 immat [ 2 clickc ; ] immzone 
-	|plxywh SDLRect 
-	690 360 immat [ 3 clickc ; ] immzone 
-	|plxywh SDLRect 
+	200 360 immat [ 0 clickc ; ] immzone 	|plxywh SDLRect 
+	380 360 immat [ 1 clickc ; ] immzone 	|plxywh SDLRect 
+	560 360 immat [ 2 clickc ; ] immzone 	|plxywh SDLRect 
+	690 360 immat [ 3 clickc ; ] immzone 	|plxywh SDLRect 
 	
 	80 100 immbox
 	$0 'immcolortex !
@@ -198,6 +195,15 @@
 	>esc< =? ( exit )
 	drop ;
 
+|-------------------------------
+::immbtn | 'click "" -- ; reecode button
+	plxywh guiBox
+	immcolorbtn SDLColor plxywh SDLFRect
+|	plxywh sprbarra SDLimages immcolorbtn 'immcolortex !
+	3 3 immat+ [ 3 3 immat+ ; ] guiI 
+	immlabelc
+	[ sndboton SNDplay 400 SDL_delay dup ex ; ] onClick drop ;
+	
 :finjuego
 	$0 SDLcls
 	Immgui timer.
@@ -284,7 +290,7 @@
 :espera
 	immgui
 	320 immwidth
-	$7f00 'immcolorbtn !
+	$674494 'immcolorbtn !
 	
 	blink 'immcolortex !
 	330 520 immat 'exit "CONTINUAR" immbtn
@@ -348,10 +354,15 @@
 	
 :screditos
 	vupdate
+	immgui
 	$ffffff sdlcls
 	$0 ttcolor
 	drawlines
 	0 0 sprfinal SDLImage
+	260 immwidth
+	$674494 'immcolorbtn !
+	760 500 immat
+	'exit "Continuar" immbtn	
 	SDLredraw	
 	SDLkey
 	>esc< =? ( exit )
@@ -433,6 +444,7 @@ Si votás el equivocado pierdes una vida."
 	"r3/gamejamd/velocicracia/voto.mp3" mix_loadWAV 'sndvoto !
 	"r3/gamejamd/velocicracia/ok.mp3" mix_loadWAV 'sndok !
 	"r3/gamejamd/velocicracia/error.mp3" mix_loadWAV 'snderror !
+	"r3/gamejamd/velocicracia/boton.mp3" mix_loadWAV 'sndboton !
 	
 	"r3/gamejamd/velocicracia/quino.otf" 46 TTF_OpenFont 'font ! 
 	font immSDL 

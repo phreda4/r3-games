@@ -24,8 +24,14 @@
 
 #places 0 0
 
+#cntvotos
+#cntvotosa
+
 #mipartido 0
 #pideboleta 0
+#distrae 0
+#confianza 0
+#puntos 0
 
 | x y rz n ss vx vy vr
 :.x 1 ncell+ ;
@@ -92,27 +98,49 @@
 	a!+
 	;	
 	
-|--------------------	
+|--------------------
+|#mipartido 0
+|#pideboleta 0
+|#distrae 0
+
+:otrovoto
+	1 'cntvotosa +!
+	cntvotosa cntvotos =? ( drop exit ; ) drop
+	4 randmax 'pideboleta !
+	;
+	
+:testvoto | voto -- voto
+	pideboleta =? ( otrovoto ; )
+	distrae +? ( drop | no esta mirando
+		mipartido =? ( 1 'puntos +! )
+		; ) 
+	drop
+	-1 'confianza +!
+	otrovoto
+	;
+	
 :xygui
 	xr2 xr1 + 1 >> 16 << 
 	yr2 yr1 + 1 >> 16 << ;
 	
 :abasura
 	a@ 4 =? ( drop ; ) >a
-	27 27 1.0 100.0 490.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	27 27 0.5 100.0 490.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
 	;
 	
 :clickenplace
 	clkbtn 4 =? ( drop abasura ; ) drop
-	a@ 4 =? ( mipartido nip ) >a
-	27 27 1.0 800.0 200.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	a@ 4 =? ( mipartido nip ) 
+	testvoto
+	>a
+	27 27 0.5 860.0 280.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
 	;
 	
 :place
 	$ff00ff sdlcolor
 	dup 8 + >a
 	a@+ a@+ a@+ a@+ 
-	2over 2over SDLRect
+|	2over 2over SDLRect | debug
 	guiBox
 	'clickenplace onClick
 	drop
@@ -126,13 +154,16 @@
 	;
 	
 |--------------------
-#supere 0
+:agente
+	distrae +? ( 1 nip ; ) 0 nip ;
+	
 :super
-	700 140 supere sprsupervisor ssprite 
+	700 140 agente sprsupervisor ssprite 
 	300 0 imgburtext SDLImage
+	
 	450 130 pideboleta sprboletas ssprite
-	70 randmax 1? ( drop ; ) drop
-	supere 1 xor 'supere !
+	
+	-1 'distrae +!
 	;
 
 :pantalla
@@ -152,6 +183,10 @@
 	3 120 160 590 280 +place
 	
 	4 200 200 640 450 +place
+	20 'cntvotos !
+	0 'cntvotosa !
+	10 'confianza !
+	0 'puntos !
 	;
 
 :manocursor
@@ -159,20 +194,23 @@
 	;
 	
 :juego
-	vupdate timer.
-	immgui 
-|	0 0 imgfondo SDLImage 	
+	vupdate timer. immgui 
 	$666666 sdlcls
+|	0 0 imgfondo SDLImage 	
+	
 	pantalla
 	'places p.drawo
 	manocursor
 	
-|	$ffffff ttcolor 20 10 ttat 
-|	sdlb "%h" ttprint
-	
+	$ffffff ttcolor 
+	20 10 ttat puntos "puntos:%d" ttprint
+	20 40 ttat confianza "confianza:%d" ttprint
+	20 70 ttat cntvotosa "votos:%d" ttprint
+	20 100 ttat distrae "distrae:%d" ttprint
 	SDLredraw
 	SDLkey 
 	>esc< =? ( exit )
+	<f1> =? ( 200 'distrae ! )
 	drop ;
 
 |--------------------	
@@ -267,8 +305,8 @@
 #txtpartido
 "Juntos por el mambo"
 "La esclavitud avanza"
-"Frente al caño"
 "Union ezquimal"
+"Frente al caño"
 
 #cursor
 
@@ -279,7 +317,8 @@
 	1024 immwidth
 	$ffffff 'immcolortex !
 	0 50 immat "Fraudecracia" immlabelc
-	immdn immdn
+	
+	0 220 immat 
 	'txtpartido mipartido n>>0 immlabelc
 
 	$ffffff sdlcolor
@@ -299,13 +338,13 @@
 	200 60 immbox
 
 	$7f7f00 'immcolorbtn !
-	120 500 immat 'creditos "CREDITOS" immbtn
+	140 500 immat 'creditos "CREDITOS" immbtn
 	
 	$7f00 'immcolorbtn !
-	380 500 immat 'jugar "JUGAR" immbtn
+	400 500 immat 'jugar "JUGAR" immbtn
 	
 	$7f0000 'immcolorbtn !
-	640 500 immat 'exit "SALIR" immbtn
+	660 500 immat 'exit "SALIR" immbtn
 	
 	SDLredraw
 	SDLkey
