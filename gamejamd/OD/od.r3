@@ -26,8 +26,8 @@
 #sndexplo
 #sndvictoria
 
-#musmenu
-#musjuego
+|#musmenu
+|#musjuego
 
 #x #y 
 #maxbombas 20
@@ -306,8 +306,9 @@
 	;
 	
 :jugar 
-	Mix_HaltMusic
-	|musmenu -1 mix_playmusic
+|	Mix_HaltMusic
+|	musjuego -1 mix_playmusic
+	
 	'listbom p.clear
 	'listedi p.clear
 	0 'puntos ! 
@@ -316,30 +317,52 @@
 	startwind |	randwind
 	timer<
 	'juego SDLShow 
+|	Mix_HaltMusic
 	sndvictoria SNDplay
 	'finjuego SDLShow
-	musmenu -1 mix_playmusic
+|	musmenu -1 mix_playmusic
 	;
 
 |-------------------------------------
 #texto 
 "Oppenheimer Democracy" 
 ""
-"Gamejam Democracia 2023"
-"EEMN 1 - San Cayetano"
-"Itinerario formativo en informatica"
+"Equipo de desarrollo"
 ""
-"Integrantes:"
+"Bianca Cipollone"
+"Brian Saenz Valiente"
+"Braian Canal"
+"Camila Pellegrini"
+"Diogo Peñalba"
+"Efrain Pardo"
+"Enzo Piacquadio"
+"Lucía Campos Hojsgaard"
+"Felix Klink"
+"Matias Keergaard"
+"Naiara Baptista"
+"Pierina Santillan"
 ""
-"Profesores:"
-"Clara Sorensen"
-"Pablo H. Reda"
+"Profesores"
+"Maria Clara Sorensen"
+"Pablo Hugo Reda"
+""
+"Curso 3er Año"
+"Itinirario formativo de"
+"asistencia en informatica"
+""
+"EESN 1"
+"San Cayetano"
+"Buenos Aires"
+""
+"Democracia Gamejam"
+""
+"2023"
 
-#clinea 11
-#hlinea 9
+#clinea 32
+#hlinea 10
 #nlinea	
 #ys 0
-#yh 80
+#yh 70
 
 :linestr | nro -- ""
 	-? ( drop "" ; )
@@ -354,8 +377,8 @@
 	
 :animc
 	vareset
-	'ys yh neg 0 24 2.0 0 +vanim
-	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 2.0 +vexe
+	'ys yh neg 0 0 0.5 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 0.5 +vexe
 	0 'ys ! 
 	;
 	
@@ -366,9 +389,13 @@
 	
 :screditos
 	vupdate
+	immgui
 	$0 sdlcls
 	$ffffff ttcolor
 	drawlines
+	280 immwidth
+	$7f0000 'immcolorbtn !
+	720 50 immat 'exit "CONTINUAR..." immbtn	
 	SDLredraw	
 	SDLkey
 	>esc< =? ( exit )
@@ -390,9 +417,14 @@
 	
 	824 immwidth
 	$0 'immcolortex !
-	104 154 immat "OPPENHEIMER DEMOCRACY" immlabelc
+	104 114 immat "OPPENHEIMER DEMOCRACY" immlabelc
 	$ffffff 'immcolortex !
-	100 150 immat "OPPENHEIMER DEMOCRACY" immlabelc
+	100 110 immat "OPPENHEIMER DEMOCRACY" immlabelc
+
+	$0 'immcolortex !
+	104 254 immat "ESPACIO para MAS Democracia" immlabelc
+	$ffffff 'immcolortex !
+	100 250 immat "ESPACIO para MAS Democracia" immlabelc
 
 
 	$ffffff 'immcolortex !
@@ -485,10 +517,9 @@
 	"r3/gamejamd/od/explosion.mp3" mix_loadWAV 'sndexplo !
 	"r3/gamejamd/od/boton.mp3" mix_loadWAV 'sndboton !
 	"r3/gamejamd/od/victoria.mp3" mix_loadWAV 'sndvictoria !
-	
 
-	"r3/gamejamd/od/tema1.mp3" mix_loadmus 'musmenu !
-	"r3/gamejamd/od/tema2.mp3" mix_loadmus 'musjuego !
+|	"r3/gamejamd/od/tema1.mp3" mix_loadmus 'musmenu !
+|	"r3/gamejamd/od/tema2.mp3" mix_loadmus 'musjuego !
 	
 	$7f vaini
 	100 'listbom p.ini
@@ -500,7 +531,8 @@
 	'titlestart SDLshow
 	'listfx p.clear
 	cielo
-	musmenu -1 mix_playmusic
+|	50 Mix_VolumeMusic drop
+|	musmenu -1 mix_playmusic
 	'menu SDLShow
 	
 	SDLquit ;	

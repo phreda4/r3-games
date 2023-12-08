@@ -5,22 +5,29 @@
 |-----
 ^r3/lib/rand.r3
 ^r3/win/sdl2gfx.r3
+^r3/win/sdl2mixer.r3
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
 ^r3/util/varanim.r3
+^r3/util/boxtext.r3
 
 #font
+#font1
 
 #imgfondo
 #imgmesa
+#imgmesaf
 #imgmanos
 #imgurna
-#imgsaco
-#imgtacho
-#imgburtext
+#imgburbu
+#imgexcla
+#imgmouse
 
 #sprsupervisor
 #sprboletas
+
+#sndvoto
+#sndbasura
 
 #places 0 0
 
@@ -30,8 +37,10 @@
 #mipartido 0
 #pideboleta 0
 #distrae 0
+#atencion 100
 #confianza 0
 #puntos 0
+#tirados 0
 
 | x y rz n ss vx vy vr
 :.x 1 ncell+ ;
@@ -99,25 +108,42 @@
 	;	
 	
 |--------------------
-|#mipartido 0
-|#pideboleta 0
-|#distrae 0
+#zexcla	0.0
+#zbur 1.0
+
+:superdis
+	1600 1000 randmax + 'atencion ! | tiempo entre distracciones
+	'zbur 0.0 1.0 16 0.5 0.0 +vanim
+	'zexcla 1.0 0.0 23 0.5 0.0 +vanim
+	'zexcla 0.0 1.0 22 0.5 1.0 +vanim
+	[ 1 'distrae ! ; ] 1.5 +vexe
+	'zexcla 1.0 0.0 23 0.5 5.0 +vanim
+	'zexcla 0.0 1.0 22 0.5 6.0 +vanim
+	[ 0 'distrae ! ; ] 6.5 +vexe
+	'zbur 1.0 0.0 17 0.5 6.5 +vanim
+	;
+
 
 :otrovoto
 	1 'cntvotosa +!
 	cntvotosa cntvotos =? ( drop exit ; ) drop
-	4 randmax 'pideboleta !
+	'zbur 0.0 1.0 16 0.3 0.0 +vanim
+	[ 4 randmax 'pideboleta ! ; ] 0.4 +vexe
+	'zbur 1.0 0.0 17 0.5 0.5 +vanim
+	;
+
+:restavida
+	distrae 1? ( drop ; ) drop
+	-1 'confianza +! 
+	confianza 0? ( exit ) drop
 	;
 	
 :testvoto | voto -- voto
-	pideboleta =? ( otrovoto ; )
-	distrae +? ( drop | no esta mirando
+	distrae 1? ( drop
 		mipartido =? ( 1 'puntos +! )
-		; ) 
-	drop
-	-1 'confianza +!
-	otrovoto
-	;
+		; ) drop
+	pideboleta =? ( otrovoto ; )
+	restavida ;
 	
 :xygui
 	xr2 xr1 + 1 >> 16 << 
@@ -125,15 +151,23 @@
 	
 :abasura
 	a@ 4 =? ( drop ; ) >a
-	27 27 0.5 100.0 490.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
-	;
+	27 27 0.5 230.0 590.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	sndbasura SNDplay 
+	1 'tirados +!
+	restavida ;
+	
+:demochi
+	27 27 0.5 860.0 280.0 xygui mipartido +boletam | easex easey et x2 y2 x1 y1 n --
+	sndvoto SNDplay 
+	restavida ;
 	
 :clickenplace
 	clkbtn 4 =? ( drop abasura ; ) drop
-	a@ 4 =? ( mipartido nip ) 
+	a@ 4 =? ( drop demochi ; ) 
 	testvoto
 	>a
 	27 27 0.5 860.0 280.0 xygui a> +boletam | easex easey et x2 y2 x1 y1 n --
+	sndvoto SNDplay 
 	;
 	
 :place
@@ -154,24 +188,31 @@
 	;
 	
 |--------------------
-:agente
-	distrae +? ( 1 nip ; ) 0 nip ;
-	
+
 :super
-	700 140 agente sprsupervisor ssprite 
-	300 0 imgburtext SDLImage
-	
-	450 130 pideboleta sprboletas ssprite
-	
-	-1 'distrae +!
+	600 140 distrae sprsupervisor ssprite 
+	400 120 0.0 zbur 0 imgburbu sspriterz
+	376 120 -0.1 zbur pideboleta sprboletas sspriterz
+	710 110 0.1 zexcla 0 imgexcla sspriterz
+	;
+		
+:manocursor	
+	sdlx 10 - sdly 10 - imgmanos SDLimage
 	;
 
 :pantalla
 	super
 	0 0 imgmesa SDLImage
-	800 160 imgurna SDLImage
-	640 450 imgsaco SDLImage
-	90 390 imgtacho SDLImage
+	'places p.drawo
+	0 0 imgmesaf SDLImage
+	
+	0 ( confianza <?
+		dup 50 * 10 + 10 imgurna SDLImage
+		1 + ) drop
+	manocursor 
+	atencion 1? ( -1 'atencion +! drop ; ) drop
+	50 randmax 1? ( drop ; ) drop | distraccion
+	superdis
 	;
 	
 |--------------------	
@@ -182,35 +223,31 @@
 	2 120 160 410 280 +place
 	3 120 160 590 280 +place
 	
-	4 200 200 640 450 +place
+	4 200 200 550 500 +place
 	20 'cntvotos !
 	0 'cntvotosa !
-	10 'confianza !
+	4 'confianza !
 	0 'puntos !
+	0 'tirados !
 	;
 
-:manocursor
-	sdlx 10 - sdly 10 - imgmanos SDLimage
-	;
-	
+
 :juego
 	vupdate timer. immgui 
 	$666666 sdlcls
 |	0 0 imgfondo SDLImage 	
-	
+
 	pantalla
-	'places p.drawo
-	manocursor
 	
 	$ffffff ttcolor 
-	20 10 ttat puntos "puntos:%d" ttprint
-	20 40 ttat confianza "confianza:%d" ttprint
-	20 70 ttat cntvotosa "votos:%d" ttprint
-	20 100 ttat distrae "distrae:%d" ttprint
+	20 80 ttat puntos "puntos:%d" ttprint
+|	20 40 ttat confianza "confianza:%d" ttprint
+|	20 70 ttat cntvotosa "votos:%d" ttprint
+|	20 100 ttat distrae "distrae:%d" ttprint
 	SDLredraw
 	SDLkey 
 	>esc< =? ( exit )
-	<f1> =? ( 200 'distrae ! )
+	<f1> =? ( superdis )
 	drop ;
 
 |--------------------	
@@ -223,7 +260,11 @@
 	"Fin de Juego" immlabelc
 	immdn immdn
 	
-|	puntos "%d Puntos" immlabelc
+	puntos "%d Puntos" immlabelc
+	tirados puntos - 1? ( 
+		immdn 
+		"Descubrieron el fraude !!" immlabelc
+		) drop
 
 	400 immwidth
 	312 500 immat
@@ -246,21 +287,42 @@
 #texto 
 "Fraudecracia" 
 ""
-"Gamejam Democracia 2023"
-"EEMN 1 - San Cayetano"
-"Itinerario formativo en informatica"
+"Equipo de desarrollo"
 ""
-"Integrantes:"
+"Bianca Cipollone"
+"Brian Saenz Valiente"
+"Braian Canal"
+"Camila Pellegrini"
+"Diogo Peñalba"
+"Efrain Pardo"
+"Enzo Piacquadio"
+"Lucía Campos Hojsgaard"
+"Felix Klink"
+"Matias Keergaard"
+"Naiara Baptista"
+"Pierina Santillan"
 ""
-"Profesores:"
-"Clara Sorensen"
-"Pablo H. Reda"
+"Profesores"
+"Maria Clara Sorensen"
+"Pablo Hugo Reda"
+""
+"Curso 3er Año"
+"Itinirario formativo de"
+"asistencia en informatica"
+""
+"EESN 1"
+"San Cayetano"
+"Buenos Aires"
+""
+"Democracia Gamejam"
+""
+"2023"
 
-#clinea 11
-#hlinea 9
+#clinea 32
+#hlinea 10
 #nlinea	
 #ys 0
-#yh 80
+#yh 70
 
 :linestr | nro -- ""
 	-? ( drop "" ; )
@@ -275,8 +337,8 @@
 	
 :animc
 	vareset
-	'ys yh neg 0 0 2.0 0 +vanim
-	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 2.0 +vexe
+	'ys yh neg 0 0 0.5 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 0.5 +vexe
 	0 'ys ! 
 	;
 	
@@ -287,9 +349,13 @@
 	
 :screditos
 	vupdate
+	immgui	
 	$0 sdlcls
 	$ffffff ttcolor
 	drawlines
+	280 immwidth
+	$7f0000 'immcolorbtn !
+	720 50 immat 'exit "CONTINUAR..." immbtn		
 	SDLredraw	
 	SDLkey
 	>esc< =? ( exit )
@@ -299,7 +365,47 @@
 	animc
 	hlinea neg 1 + 'nlinea !
 	'screditos SDLShow
-	;	
+	;
+	
+|----------------------------------------	
+#info "En un paÃ­s con un sistema democratico nuevo y disfuncional
+Desarrollamos un plan maestro: El FRAUDE ELECTORAL.
+El plan es simple: Nos ofreceremos como presidentes de mesa, y cuando llegue la hora de la contabilizaciÃ³n: pondremos manos a la obra. 
+Cumpliremos lo que nos demandarÃ¡ el supervisor, y cuando este distraido 
+
+          tiraremos a la basura la boleta 
+
+
+          y sacaremos una nuestra de la mochila. 
+
+
+Todo para que el nÃºmero de boletas coincida con el padrÃ³n electoral y no nos descubran."
+
+:inst	
+	vupdate
+	$ffffff sdlcls
+	immgui
+
+	$00 'info
+	100 50 824 500 xywh64 
+	$0 font1 textbox | $vh str box color font --
+
+	100 200 imgmouse SDLImage 	
+	
+	260 immwidth
+	300 50 immbox
+	$7f0000 'immcolorbtn !
+	700 520 immat 'exit "CONTINUAR..." immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop
+	;
+	
+:instrucciones	
+	'inst SDLShow
+	;
 	
 |----------------------------------------
 #txtpartido
@@ -335,11 +441,16 @@
 		1 + ) drop
 		
 	
+	340 50 immbox
+
+	$7f00 'immcolorbtn !
+	340 120 immat 'instrucciones "INSTRUCCIONES" immbtn
+
 	200 60 immbox
 
 	$7f7f00 'immcolorbtn !
 	140 500 immat 'creditos "CREDITOS" immbtn
-	
+
 	$7f00 'immcolorbtn !
 	400 500 immat 'jugar "JUGAR" immbtn
 	
@@ -358,15 +469,25 @@
 	"Fraudecracia" 1024 600 SDLinit
 	"r3/gamejamd/fraudecracia/fondo.png" loadimg 'imgfondo !
 	"r3/gamejamd/fraudecracia/mesa.png" loadimg 'imgmesa !
+	"r3/gamejamd/fraudecracia/mesaf.png" loadimg 'imgmesaf !
 	"r3/gamejamd/fraudecracia/urna.png" loadimg 'imgurna !
-	"r3/gamejamd/fraudecracia/saco.png" loadimg 'imgsaco !
-	"r3/gamejamd/fraudecracia/tacho.png" loadimg 'imgtacho !
 	"r3/gamejamd/fraudecracia/cursor.png" loadimg 'imgmanos !
-	"r3/gamejamd/fraudecracia/burtext.png" loadimg 'imgburtext !
-	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'sprboletas !
-	289 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'sprsupervisor !	
+
+	"r3/gamejamd/fraudecracia/mouse.png" loadimg 'imgmouse !
 	
-	"media/ttf/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
+	90 140 "r3/gamejamd/fraudecracia/boletas.png" ssload 'sprboletas !
+	
+	267 300 "r3/gamejamd/fraudecracia/supervisor.png" ssload 'sprsupervisor !	
+	273 204 "r3/gamejamd/fraudecracia/burbuja.png" ssload 'imgburbu !
+	130 200 "r3/gamejamd/fraudecracia/exclama.png" ssload 'imgexcla !
+
+	"r3/gamejamd/fraudecracia/voto.mp3" mix_loadWAV 'sndvoto !
+	"r3/gamejamd/fraudecracia/basura.mp3" mix_loadWAV 'sndbasura !
+	
+	
+	"r3/gamejamd/fraudecracia/Roboto-Medium.ttf" 40 TTF_OpenFont 'font ! 
+	"r3/gamejamd/fraudecracia/Roboto-Medium.ttf" 24 TTF_OpenFont 'font1 !
+	
 	font immSDL
 	$ff vaini
 	vareset timer<

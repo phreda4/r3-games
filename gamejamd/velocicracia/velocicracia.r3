@@ -23,10 +23,12 @@
 #sprmatias
 #sprhijitus
 #sprboletas
-#sprfinal
-#sprfinalm
-#sprradio
+
 #sprfx
+
+#imgfinal 0 0 0
+#imgfinalb
+#imgcreditos
 
 #sndvoto
 #sndok
@@ -205,20 +207,23 @@
 	[ sndboton SNDplay 400 SDL_delay dup ex ; ] onClick drop ;
 	
 :finjuego
-	$0 SDLcls
+	$ffffff SDLcls
 	Immgui timer.
-
-	0 50 immat
-	800 immwidth
+	0 0 imgfinalb SDLImage
+	400 immwidth
+	
+	$0 'immcolortex !
+	1024 immwidth
+	0 150 immat
 	"Fin de Juego" immlabelc
 	immdn immdn
-	
 	puntos "%d Puntos" immlabelc
 	
-	400 immwidth
-	$7f 'immcolorbtn !
-	200 500 immat
-	'exit "Continuar" immbtn
+	$674494 'immcolorbtn !
+	$ffffff 'immcolortex !
+	260 immwidth
+	382 500 immat
+	'exit "Continuar..." immbtn
 
 	SDLredraw
 	SDLkey
@@ -237,135 +242,53 @@
 	;
 
 |-------------------------------------
-#txt1 "PERDISTE ¿ NO VOTASTE BIEN ?..."
-#txt2 "¡NO TENGO PORQUE OBEDECER A NADIE, YO SOY UN SER LIBRE!"
-#txt3 "POR SUERTE EN LA VIDA REAL NADIE TE APURA, NADIE TE OBLIGA. UNO ELIGE A QUIEN VOTAR."
-#ntxt 'txt1 'txt2 'txt3
-#srctxt>
-#txt * 256
-#txt> 'txt
+#pantfinal 0
+#xp
 
-:>title
-	srctxt> c@+ swap 'srctxt> !
-	0? ( drop vareset 'exit 1.0 +vexe ; )
-	txt> c!+ 0 over c! 'txt> !
-	;
-	
-:>>title
-	srctxt> txt> strcpy
-	vareset 'exit 0.3 +vexe ;
-	
-:nextcar
-	vareset
-	'>title 0.0 +vexe
-	'nextcar 0.002 +vexe
-	;
-
-:findj
+:sespera
 	vupdate
 	$ffffff sdlcls
 	immgui
-	0 0 sprfinal SDLImage
-	218 326 sprradio SDLImage
-	
-	$11 puntos "Puntaje: %d" sprint
-	100 30 824 100 xywh64 
-	0 font textbox
-	
-	$00 'txt
-	100 130 824 350 xywh64 
-	0 font textbox
-	
-	700 370 pick3 sprfinalm ssprite
-	
-	SDLredraw
-	SDLkey
-	>esc< =? ( >>title )
-	drop
-	;
-
-:blink
-	msec $100 and? ( drop $ffffff ; ) drop 0 ;
-	
-:espera
-	immgui
-	320 immwidth
-	$674494 'immcolorbtn !
-	
-	blink 'immcolortex !
-	330 520 immat 'exit "CONTINUAR" immbtn
+	xp 0 pantfinal SDLImage
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
 	drop ;
 	
 :findejuego	
-	0 ( 3 <?
-		'ntxt over ncell+ @ 'srctxt> !
-		'txt 'txt> ! 0 'txt c!
-		nextcar
-		'findj SDLshow
-		1 + ) drop 
-	'espera SDLShow
+	'imgfinal
+	0 ( 3 <? swap
+		@+ 'pantfinal !
+		vareset 
+		'xp 0 -1024 23 1.0 0.0 +vanim 
+		'xp 1024 0 22 1.0 3.0 +vanim 
+		'exit 4.0 +vexe
+		'sespera SDLshow
+		vareset
+		swap 1 + ) 2drop 
+	'finjuego SDLshow 
 	;
 
 |-------------------------------------
-#texto 
-"VELOCICRACIA" 
-""
-"Gamejam Democracia 2023"
-"EEMN 1 - San cayetano"
-"Itinerario formativo en informatica"
-""
-"Integrantes:"
-""
-"Profesores:"
-"Clara Sorensen"
-"Pablo H. Reda"
+#yc 600
 
-#clinea 11
-#hlinea 8
-#nlinea	
-#ys 0
-#yh 80
-
-:linestr | nro -- ""
-	-? ( drop "" ; )
-	clinea >=? ( drop "" ; )
-	'texto swap n>>0 ;
-
-:printline | ynow nro str -- ynow nro
-	ttsize | w h |... center 1024,yh
-	yh swap - 1 >> pick4 + swap
-	1024 swap - 1 >> swap ttat
-	tt. ;
-	
-:animc
-	vareset
-	'ys yh neg 0 0 2.0 0 +vanim
-	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 2.0 +vexe
-	0 'ys ! 
-	;
-	
-:drawlines
-	ys 0 ( hlinea <? 
-		nlinea over + linestr printline
-		1 + swap yh + swap ) 2drop ;
-	
 :screditos
-	vupdate
 	immgui
 	$ffffff sdlcls
-	$0 ttcolor
-	drawlines
-	0 0 sprfinal SDLImage
+	244 yc imgcreditos SDLImage	
+	
+	yc 1 - 
+	-2323 <? ( 600 nip ) 
+	'yc !
+	
+	0 0 imgfinalb SDLImage
 	260 immwidth
 	$674494 'immcolorbtn !
-	760 500 immat
-	'exit "Continuar" immbtn	
+	760 50 immat
+	'exit "CONTINUAR..." immbtn	
 	SDLredraw	
 	SDLkey
-	>esc< =? ( exit )
+	>esc< =? ( vareset exit )
 	drop ;
 	
 |-------------------------------------
@@ -385,8 +308,7 @@ Si votás el equivocado pierdes una vida."
 	;
 
 :creditos	
-	animc
-	hlinea neg 1 + 'nlinea !
+	600 'yc !
 	'screditos SDLShow
 	menuani
 	;
@@ -437,9 +359,13 @@ Si votás el equivocado pierdes una vida."
 	150 249 "r3/gamejamd/velocicracia/Hijitus.png" ssload 'sprhijitus !
 	74 106  "r3/gamejamd/velocicracia/boletas.png" ssload 'sprboletas !
 
-	"r3/gamejamd/velocicracia/final.png" loadimg 'sprfinal !
-	"r3/gamejamd/velocicracia/radio.png" loadimg 'sprradio !
-	260 280 "r3/gamejamd/velocicracia/mafaldafin.png" ssload 'sprfinalm !
+	'imgfinal >a
+	"r3/gamejamd/velocicracia/final1.png" loadimg a!+
+	"r3/gamejamd/velocicracia/final2.png" loadimg a!+
+	"r3/gamejamd/velocicracia/final3.png" loadimg a!
+	
+	"r3/gamejamd/velocicracia/final.png" loadimg 'imgfinalb !
+	"r3/gamejamd/velocicracia/creditos.png" loadimg 'imgcreditos !	
 	
 	"r3/gamejamd/velocicracia/voto.mp3" mix_loadWAV 'sndvoto !
 	"r3/gamejamd/velocicracia/ok.mp3" mix_loadWAV 'sndok !
