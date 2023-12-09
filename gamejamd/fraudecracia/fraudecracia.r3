@@ -139,9 +139,6 @@
 	;
 	
 :testvoto | voto -- voto
-	distrae 1? ( drop
-		mipartido =? ( 1 'puntos +! )
-		; ) drop
 	pideboleta =? ( otrovoto ; )
 	restavida ;
 	
@@ -157,6 +154,7 @@
 	restavida ;
 	
 :demochi
+	distrae 1? ( 1 'puntos +! ) drop
 	27 27 0.5 860.0 280.0 xygui mipartido +boletam | easex easey et x2 y2 x1 y1 n --
 	sndvoto SNDplay 
 	restavida ;
@@ -229,6 +227,9 @@
 	4 'confianza !
 	0 'puntos !
 	0 'tirados !
+	0 'pideboleta !
+	0 'distrae !
+	100 'atencion !
 	;
 
 
@@ -263,7 +264,8 @@
 	puntos "%d Puntos" immlabelc
 	tirados puntos - 1? ( 
 		immdn 
-		"Descubrieron el fraude !!" immlabelc
+		"Descubrieron el fraude !!" immlabelc immdn
+		tirados "quitaste %d" immlabelc
 		) drop
 
 	400 immwidth
