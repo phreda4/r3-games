@@ -52,7 +52,7 @@
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and 	| rota zoom
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriterz
+	anim>N a@+ sspriterz
 	dup .vx @ over .x +!	| vx
 	dup .vy @ over .y +!	| vy
 	;
@@ -144,7 +144,7 @@
 |-------------- Explosion		
 :nuke
 	objsprite
-	dup .a @ canim 25 =? ( 2drop 0 ; )
+	dup .a @ anim>c 25 =? ( 2drop 0 ; )
 	2drop
 	;
 	
@@ -152,7 +152,8 @@
 	'nuke 'listfx p!+ >a 
 	swap a!+ a!+	| x y 
 	1.0 a!+ 
-	6 26 0 vci>anim a!+ sprexplo a!+
+	0 26 $3f ICS>anim | init cnt scale -- val
+	a!+ sprexplo a!+
 	-1.0 a!+ -0.1 a!+
 	sndexplo SNDPlay
 	;
@@ -253,7 +254,7 @@
 :juego
 	immgui 
 	timer. vupdate
-	deltatime 'disparodelay +!
+	disparodelay timer+ 'disparodelay !
 	$59BEE6 SDLcls
 	'listedi p.drawo
 	'listfx p.draw

@@ -81,7 +81,7 @@
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rota zoom				
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriterz
+	anim>N a@+ sspriterz
 	
 	dup .n @ $ffffffffff and | timenow
 	1.0 pick2 .xt@ */

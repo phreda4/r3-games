@@ -60,7 +60,7 @@
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rota zoom				
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriterz
+	anim>N a@+ sspriterz
 	dup .vx @ over .x +!	| vx
 	dup .vy @ over .y +!	| vy
 	;
@@ -84,7 +84,7 @@
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rota zoom				
 	a@ timer+ dup a!+ 	| anima
-	nanim a@+ sspriterz
+	anim>N a@+ sspriterz
 	
 	dup .a @ $ffffffffff and | timenow
 	1.0 pick2 .xt@ */
@@ -151,7 +151,7 @@
 	390 tiempoclick msclick */
 	32 SDLFRect
 	317 34 sprbarra SDLImage
-	deltatime neg 'tiempoclick +!
+	tiempoclick timer- 'tiempoclick !
 	tiempoclick 0 <? ( newcolor ) drop
 	;
 
