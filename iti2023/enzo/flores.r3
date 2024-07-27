@@ -41,7 +41,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	dup .vx @ over .x +!
 	dup .vy @ over .y +!
@@ -52,7 +52,7 @@
 #fondo2
 :explosion
 	objsprite	
-	.anim @ canim 5 =? ( drop 0 ; )
+	.anim @ anim>c 5 =? ( drop 0 ; )
 	drop
 	;
 
@@ -60,7 +60,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	1.0 a!+	| ang zoom
-	6 6 6 vci>anim | vel cnt ini 
+	6 6 $ff ICS>anim | init cnt scale -- val
 	a!+	tsexplo a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!	
@@ -70,7 +70,7 @@
 |------------------------------
 :exploplayer
 	objsprite
-	.anim @ canim 5 =? ( drop 0 exit ; )
+	.anim @ anim>c 5 =? ( drop 0 exit ; )
 	drop
 	;
 
@@ -80,7 +80,7 @@
 	'exploplayer 'fx p!+ >a 
 	xp a!+ yp a!+	| x y 
 	2.0 a!+	| ang zoom
-	6 6 0 vci>anim | vel cnt ini 
+	0 6 $ff ICS>anim | init cnt scale -- val
 	a!+	tsexplo a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!		
@@ -127,7 +127,7 @@
 	'bala 'disparos p!+ >a 
 	xp a!+ 540.0 a!+	| x y 
 	1.0 a!+	| ang zoom
-	0 0 rot 1 << vci>anim | vel cnt ini 
+	1 << 0 $3f ICS>anim | init cnt scale -- val
 	a!+	tsflores a!+			| anim sheet
 	0 a!+ -3.0 a!+ 	| vx vy
 	0.1 32 << a!			| vrz
@@ -149,9 +149,8 @@
 	'alien 'enemis p!+ >a 
 	600.0 randmax 100.0 + a!+ -100.0 a!+ |alien  x y 
 	2.0 a!+	| ang zoom
-	8 4 | vel cnt ini 
-	3 randmax 1 + 2 << 
-	vci>anim a!+
+	3 randmax 1 + 2 << 4 $3f ICS>anim | init cnt scale -- val
+	a!+
 	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - a!+ 
 	1.0 1.0 randmax + a!+ 	| vx vy
@@ -171,7 +170,7 @@
 	drop 
 	muerte 1? ( drop ; ) drop
 	xp int. yp int. 0.5 2.0 
-	aninave timer+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! anim>N
 	tsnave sspriterz	
 	xp xv +
 	10.0 max 790.0 min
@@ -218,7 +217,7 @@
 	'fx p.clear
 	400.0 'xp !
 	560.0 'yp !
-	8 4 0 vci>anim 'aninave !
+	0 4 $3f ICS>anim | init cnt scale -- val'aninave !
 	0 'muerte !
 	0 'puntos !
 	0 'yscroll !
@@ -244,7 +243,7 @@
 	'flor 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	1.0 a!+	| ang zoom
-	6 2 rot 1 << vci>anim | vel cnt ini 
+	1 << 2 $3f ICS>anim | init cnt scale -- val
 	a!+	tsflores a!+			| anim sheet
 	2.0 randmax 1.0 - a!+ 
 	2.0 randmax 1.0 - a!+ 	| vx vy
@@ -326,7 +325,8 @@
 	200 'disparos p.ini
 	100 'enemis p.ini
 	200 'fx p.ini 
-	8 0 0 vci>anim 'aninave !
+	0 0 $3f ICS>anim | init cnt scale -- val
+	'aninave !
 	timer<
 	resetmenu
 	'menu SDLshow

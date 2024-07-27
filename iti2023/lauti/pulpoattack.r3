@@ -25,7 +25,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
@@ -34,7 +34,7 @@
 
 :explosion
 	objsprite	
-	32 + @ nanim 45 =? ( drop 0 ; )
+	32 + @ anim>n 45 =? ( drop 0 ; )
 	drop
 	;
 
@@ -42,7 +42,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	3.0 a!+	| ang zoom
-	6 16 31 vci>anim | vel cnt ini 
+	31 16 $3f ICS>anim | init cnt scale -- val
 	a!+ tsguy a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!	
@@ -68,7 +68,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	
 	|..... remove when outside screen
@@ -94,7 +94,7 @@
 	'bala 'disparos p!+ >a 
 	xp a!+ yp 16.0 - a!+	| x y 
 	6.0 a!+	| ang zoom
-	7 0 30 vci>anim | vel cnt ini 
+	30 0 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	0 a!+ -5.0 a!+ 	| vx vy
 	0.0 32 << a!			| vrz
@@ -106,7 +106,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim	| n
+	a@ timer+ dup a!+ anim>n	| n
 	37 =? ( 4drop 2drop 0 ; )
 	a@+ sspriterz
 	
@@ -121,7 +121,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	3.0 a!+	| ang zoom
-	6 45 31 vci>anim | vel cnt ini 
+	31 45 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -131,7 +131,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim	| n
+	a@ timer+ dup a!+ anim>n	| n
 	23 =? ( 4drop 2drop 0 exit ; )
 	a@+ sspriterz
 	
@@ -148,7 +148,7 @@
 	'exploplayer 'fx p!+ >a 
 	xp a!+ yp a!+	| x y 
 	2.0 a!+	| ang zoom
-	6 22 1 vci>anim | vel cnt ini 
+	1 22 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -163,7 +163,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n			| n
 	a@+ sspriterz
 	
 	|..... remove when outside screen
@@ -186,13 +186,15 @@
 	'pulpo 'enemigos p!+ >a 
 	700.0 randmax 50.0 + a!+ -10.0 a!+	| x y 
 	3.0 a!+	| ang zoom
-	7 2 24 vci>anim | vel cnt ini 
+	24 2 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	6.0 randmax 1.0 - a!+	| vx
 	0.5 randmax 0.5 tiempo + + a!+ 	| vy
 	0.000 32 << a!			| vrz
 	;
 	
+#deltatime
+
 :horda
 	80 deltatime 11 >> - randmax 1? ( drop ; ) drop
 	+pulpo
@@ -212,7 +214,7 @@
 |	0 SDLcls
 	0 0 fondo SDLImage 
 
-	timer. deltatime 'tiempo +!
+	timer. tiempo timer+ 'tiempo !
 	'enemigos p.draw
 	'disparos p.draw
 	-1 'timedisparo +! 
@@ -261,7 +263,6 @@
 	'fx p.clear
 	sw 15 << 'xp !
 	540.0 'yp !
-  |8 4 0 vci>anim 'anima !
 	0 'muerte !
 	0 'puntos !
 	0 'tiempo !
@@ -314,7 +315,6 @@
 	100 'fx p.ini 
 	100 'enemigos p.ini
 	100 'disparos p.ini
-	|8 4 0 vci>anim 'anima !
 |	musicamenu -1 mix_playmusic
 	'menu SDLshow
 	SDLquit ;	

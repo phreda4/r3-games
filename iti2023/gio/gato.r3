@@ -29,7 +29,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n			| n
 	a@+ sspriterz
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
@@ -37,20 +37,23 @@
 	;
 
 :objframe | adr -- frame
-	32 + @ nanim ;
+	32 + @ anim>n ;
 	
 :gatovuela
-	7 6 6 vci>anim 'animacion !	;
+	6 6 $3f ICS>anim | init cnt scale -- val
+	'animacion !	;
 	
 :gatocome
 	comiendo 1? ( drop ; ) drop
 	60 'comiendo !
-	7 7 12 vci>anim 'animacion ! ; | 7
+	12 7 $3f ICS>anim | init cnt scale -- val
+	'animacion ! ; | 7
 
 :gatonocome
 	comiendo 1? ( drop ; ) drop	
 	60 'comiendo !
-	7 2 19 vci>anim 'animacion ! ; | 7
+	19 2 $3f ICS>anim | init cnt scale -- val
+	'animacion ! ; | 7
 	
 |--------------- ARCOIRIS	
 |disparo
@@ -72,7 +75,7 @@
 	'estela 'arcoiris p!+ >a 
 	260.0 a!+ yp 10.0 + alterna + a!+	| x y 
 	1.0 a!+	| ang zoom
-	0 0 colorestela vci>anim | vel cnt ini 
+	colorestela 0 $0 ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	-2.0 a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -123,9 +126,7 @@
 	810.0 a!+
 	a!+	| x y 
 	1.0 a!+	| ang zoom
-	0 0 
-	rot  | fruta 
-	vci>anim | vel cnt ini 
+	0 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	1.0 randmax neg 1.5 - a!+
 	0
@@ -141,9 +142,8 @@
 	500.0 randmax 100.0 +
 	a!+	| x y 
 	1.0 a!+	| ang zoom
-	0 0 
 	8 randmax 21 + | 16
-	vci>anim | vel cnt ini 
+	0 $3f ICS>anim | init cnt scale -- val
 	a!+	tsguy a!+			| anim sheet
 	1.0 randmax neg 1.5 - a!+
 	2.0 randmax 1.0 - a!+ 	| vx vy
@@ -167,7 +167,7 @@
 	860.0 randmax 30.0 - a!+
 	600.0 randmax a!+
 	1.0 a!+
-	6 3 29 vci>anim | 24
+	29 3 $3f ICS>anim | init cnt scale -- val
 	rand $fffffffff and or
 	a!+
 	tsguy a!+
@@ -189,9 +189,7 @@
 	1400.0 randmax 300.0 - a!+
 	600.0 randmax a!+
 	1.0 a!+
-	1 0  
-	rot
-	vci>anim 
+	0 $f ICS>anim | init cnt scale -- val 
 	rand $fffffffff and or
 	a!+
 	tsguy a!+
@@ -203,7 +201,7 @@
 :jugador
 
 	xp int. yp int. 2.0 
-	animacion timer+ dup 'animacion ! nanim 
+	animacion timer+ dup 'animacion ! anim>n 
 	tsguy sspritez	
 |	xv 'xp +! yv 'yp +!
 	msec 4 << sin 250 * 300.0 + 'yp !
@@ -268,7 +266,8 @@
 	'arcoiris p.clear
 	'frutas p.clear
 	timer<
-	7 3 6 vci>anim 'animacion !
+	6 3 $3f ICS>anim | init cnt scale -- val
+	'animacion !
 	0 'puntos !
 	7 'vidas !
 	0 'colorestela !

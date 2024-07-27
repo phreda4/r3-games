@@ -22,7 +22,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
@@ -58,7 +58,7 @@
 	'vomito 'disparos p!+ >a 
 	xp a!+ yp 32.0 + a!+	| x y 
 	2.0 a!+	| ang zoom
-	4 8 40 vci>anim | vel cnt ini 
+	40 8 $3f ICS>anim | init cnt scale -- val
 	a!+	sprjuego a!+			| anim sheet
 	0 a!+ 2.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -79,9 +79,8 @@
 	832.0 a!+ 
 	350.0 60.0 randmax + a!+	| x y 
 	2.5 a!+	| ang zoom
-	7 4
 	4 randmax 3 << 12 +
-	vci>anim | vel cnt ini 
+	4 $3f ICS>anim | init cnt scale -- val
 	a!+	sprjuego a!+			| anim sheet
 	-0.7 0.2 randmax - a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -93,9 +92,8 @@
 	-32.0 a!+ 
 	350.0 60.0 randmax + a!+	| x y 
 	2.5 a!+	| ang zoom
-	7 4
 	4 randmax 3 << 8 +
-	vci>anim | vel cnt ini 
+	4 $3f ICS>anim | init cnt scale -- val
 	a!+	sprjuego a!+			| anim sheet
 	0.7 0.2 randmax + a!+ 0.0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -108,23 +106,26 @@
 	
 #disp 0	
 :normal
-	8 2 0 vci>anim 'anima !	;	
+	0 2 $3f ICS>anim | init cnt scale -- val
+	'anima !	;	
 :lanza
 	disp 1? ( drop ; ) drop
 	1 'disp !
-	7 6 2 vci>anim 'anima !	;
+	2 6 $3f ICS>anim | init cnt scale -- val
+	'anima !	;
 :lanzav
 	0 'disp !
 	+disparo
-	8 2 0 vci>anim 'anima !	;
+	0 2 $3f ICS>anim | init cnt scale -- val
+	'anima !	;
 
 		
 :jugador
 	xp int. yp int. 3.0 
-	anima timer+ dup 'anima ! nanim
+	anima timer+ dup 'anima ! anim>n
 	sprjuego sspritez	
 
-	anima nanim 7 =? ( lanzav ) drop
+	anima anim>n 7 =? ( lanzav ) drop
 	
 	xv 'xp +!
 	yv 'yp +!

@@ -9,7 +9,7 @@
 
 ^r3/util/arr16.r3
 ^r3/util/tilesheet.r3
-^r3/util/fontutil.r3
+^r3/util/ttfont.r3
 ^r3/util/boxtext.r3
 
 #mapajuego
@@ -353,14 +353,14 @@
 	impvidas	
 	
 	330 16 sbtniempo sdlImage
-	$ffffff font 
-	60 tiempo 1000 / - "0:%d" sprint
-	|puntos "%d" sprint
-	380 16 ttfprint | color font "text" x y -- 
-
+	$ffffff ttcolor 
+	380 16 ttat 
+	60 tiempo 1000 / - "0:%d" sprint ttprint
+	
 	10 10 sbtndia sdlImage
-	$ffffff font diahoy
-	80 14 ttfprint | color font "text" x y -- 
+	$ffffff ttcolor
+	80 14 ttat 
+	diahoy ttprint | color font "text" x y -- 
 	
 	tiempo 59000 >? ( exit ) drop
 	
@@ -524,7 +524,8 @@ $"
 	|SDLfull
 
 	ttf_init
-	"r3/iti2022/basura/font/ChakraPetch-Bold.ttf" 30 TTF_OpenFont 'font !		
+	"r3/iti2022/basura/font/ChakraPetch-Bold.ttf" 30 TTF_OpenFont dup 'font !
+	ttfont
 	
 	"r3/iti2022/basura/mapa.map" loadtilemap 'mapajuego !
 	128 128 "r3/iti2022/basura/img/sprites.png" tsload 'sprplayer !

@@ -62,7 +62,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
@@ -75,7 +75,7 @@
 
 :explosion
 	objsprite	
-	32 + @ nanim 36 =? ( drop 0 ; )
+	32 + @ anim>n 36 =? ( drop 0 ; )
 	drop
 	;
 
@@ -83,7 +83,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	1.0 a!+	| ang zoom
-	6 16 22 vci>anim | vel cnt ini 
+	22 16 $3f ICS>anim | init cnt scale -- val
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << a!	
@@ -92,7 +92,7 @@
 
 :exploplayer
 	objsprite
-	32 + @ nanim 19 =? ( drop 0 exit ; )
+	32 + @ anim>n 19 =? ( drop 0 exit ; )
 	drop
 	;
 
@@ -102,7 +102,7 @@
 	'exploplayer 'fx p!+ >a 
 	xp a!+ yp a!+	| x y 
 	2.0 a!+	| ang zoom
-	6 20 4 vci>anim | vel cnt ini 
+	4 20 $3f ICS>anim | init cnt scale -- val
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0 a!		
@@ -147,7 +147,7 @@
 	'bala 'disparos p!+ >a 
 	xp a!+ 560.0 a!+	| x y 
 	0.75 a!+	| ang zoom
-	7 2 37 vci>anim | vel cnt ini 
+	37 2 $3f ICS>anim | init cnt scale -- val
 	a!+	tsnave a!+			| anim sheet
 	0 a!+ -3.0 a!+ 	| vx vy
 	0.1 32 << a!			| vrz
@@ -169,7 +169,7 @@
 	'alien 'enemis p!+ >a 
 	600.0 randmax 100.0 + a!+ -100.0 a!+ |alien  x y 
 	1.0 a!+	| ang zoom
-	7 2 20 vci>anim | vel cnt ini 
+	20 2 $3f ICS>anim | init cnt scale -- val
 	a!+	tsnave a!+			| anim sheet
 	2.0 randmax 1.0 - 
 	a!+ 1.0 1.0 tiempo + randmax + a!+ 	| vx vy
@@ -189,7 +189,7 @@
 	muerte 1? ( drop ; ) drop
 	xp int. yp int. 
 	2.0 
-	aninave timer+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! anim>n
 	tsnave sspritez	
 
 	xv 'xp +!
@@ -228,7 +228,7 @@
 :juego
 	0 0 fondoj SDLImage 
 	timer.
-	deltatime 'tiempo +!
+	tiempo timer+ 'tiempo !
 	
 	-1 'timedisparo +! 
 	'disparos p.draw
@@ -247,7 +247,8 @@
 	'fx p.clear
 	400.0 'xp !
 	560.0 'yp !
-	8 4 0 vci>anim 'aninave !
+	0 4 $3f ICS>anim | init cnt scale -- val
+	'aninave !
 	0 'muerte !
 	0 'puntos !
 	0 'tiempo !
@@ -294,7 +295,7 @@
 	400 
 	480 msec 5 >> $7f and $40 and? ( $7f swap - ) +
 	5.0 
-	aninave timer+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! anim>n
 	tsnave sspritez	
 	
 	SDLredraw
@@ -326,7 +327,7 @@
 	$ffffff font textbox | $vh str box color font --
 
 	400 xn 5.0 
-	aninave timer+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! anim>n
 	tsnave sspritez	
 
 	SDLredraw
@@ -384,7 +385,8 @@
 	200 'disparos p.ini
 	100 'enemis p.ini
 	200 'fx p.ini 
-	8 4 0 vci>anim 'aninave !
+	0 4 $3f ICS>anim | init cnt scale -- val
+	'aninave !
 	$7f vaini
 	titulo
 	|menumusica -1 mix_playmusic

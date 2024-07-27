@@ -39,7 +39,7 @@
 	dup 8 + >a
 	a@+ int. a@+ int.	| x y
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
-	a@ timer+ dup a!+ nanim 			| n
+	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	dup 48 + @ over 8 + +!
 	dup 56 + @ over 16 + +!
@@ -49,7 +49,7 @@
 |------- explosion
 :explosion
 	objsprite	
-	32 + @ nanim 20 =? ( drop 0 ; )
+	32 + @ anim>n 20 =? ( drop 0 ; )
 	drop
 	;
 
@@ -57,7 +57,7 @@
 	'explosion 'fx p!+ >a 
 	swap a!+ a!+	| x y 
 	2.0 a!+	| ang zoom
-	6 19 2 vci>anim | vel cnt ini 
+	2 19 $3f ICS>anim | init cnt scale -- val
 	a!+	sprene a!+			| anim sheet
 	0 a!+ 0 a!+ 	| vx vy
 	0.01 randmax 0.005 - 32 << 
@@ -120,7 +120,7 @@
 	'bala 'disparos p!+ >a 
 	xp 40.0 + a!+ yp 3.0 + a!+	| x y 
 	2.0 a!+	| ang zoom
-	9 4 0 vci>anim | vel cnt ini 
+	0 4 $3f ICS>anim | init cnt scale -- val
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -134,7 +134,7 @@
 	'bala2 'disparos p!+ >a 
 	xp2 40.0 + a!+ yp2 3.0 + a!+	| x y 
 	2.0 a!+	| ang zoom
-	9 4 0 vci>anim | vel cnt ini 
+	0 4 $3f ICS>anim | init cnt scale -- val
 	a!+	sprdis a!+			| anim sheet
 	3.0 a!+ 0 a!+ 	| vx vy
 	0 a!			| vrz
@@ -160,7 +160,7 @@
 	820.0 a!+
 	400.0 randmax 100.0 + a!+  |alien  x y 
 	2.0 a!+	| ang zoom
-	7 2 0 vci>anim | vel cnt ini 
+	0 2 $3f ICS>anim | init cnt scale -- val
 	a!+	sprene a!+			| anim sheet
 	0.5 randmax 2.0 - a!+ 
 	0.2 randmax 0.1 - a!+ 	| vx vy
@@ -186,8 +186,8 @@
 	600.0 randmax a!+  	| y 
 	4 randmax 0.25 * 32 <<	| rotacion
 	3.0 or a!+			| zoom
-	0 0 4 randmax		| animacion nro sprite
-	vci>anim | vel cnt ini 
+	4 randmax		| animacion nro sprite
+	0 $3f ICS>anim | init cnt scale -- val
 	a!+ sprislas a!+	| anim sheet
 	-0.6 a!+ 			| vx
 	0 a!+ 0 a!			| vy vr
@@ -208,12 +208,12 @@
 	xv2 'xp2 +! yv2 'yp2 +!	
 	
 	xp int. yp int. 2.0
-	aninave timer+ dup 'aninave ! nanim
+	aninave timer+ dup 'aninave ! anim>n
 	sprnave
 	sspritez 
 
 	xp2 int. yp2 int. 2.0
-	aninave2 timer+ dup 'aninave2 ! nanim
+	aninave2 timer+ dup 'aninave2 ! anim>n
 	sprnave
 	sspritez 
 	
@@ -336,7 +336,8 @@
 	"r3/iti2023/viggo/explosion.mp3" mix_loadwav 'sonidoexp !
 	
 	"r3/iti2023/viggo/Revamped.otf" 46 TTF_OpenFont immSDL
-	8 3 0 vci>anim 'aninave !
+	0 3 $3f ICS>anim | init cnt scale -- val
+	'aninave !
 	timer<
 	100 'enemigos p.ini
 	100 'disparos p.ini
