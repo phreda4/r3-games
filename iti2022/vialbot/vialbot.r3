@@ -279,7 +279,7 @@
 	'robot +obj
 	
 	'obj p.cnt 1 - 
-	'obj p.nro
+	'obj p.adr
 	16 +
 	dup @ 
 	$30000 + 
@@ -293,7 +293,7 @@
 	'resdemo 'robot +obj
 	
 	'obj p.cnt 1 - 
-	'obj p.nro
+	'obj p.adr
 	16 +
 	dup @ 
 	$30000 + 
@@ -333,7 +333,7 @@
 	'bici +obj
 
 	'obj p.cnt 1 - 
-	'obj p.nro
+	'obj p.adr
 	16 +
 	dup @ 
 	$30000 + 
