@@ -16,19 +16,22 @@
 #fx 0 0 
 
 |----------------------------------
-#jx 60.0 #jy 300.0
+#xbarco #ybarco
+#jx 60.0 #jy 320.0
 #jvx 0 #jvy 0
 #js 0 #jvs 0
 #ja
 
 :jugador
-	jx int. jy js + int. 2.0 ja spr sspritez
+	jx int. xbarco +
+	jy js + int. ybarco +
+	2.0 ja spr sspritez
 	
 	jvx 'jx +!
 	jvy 'jy +!
 	js 0? ( drop ; ) drop
 	jvs 'js +!
-	0.7 'jvs +!
+	0.5 'jvs +!
 	js +? ( drop 0 'js ! ; ) drop
 	;
 	
@@ -38,8 +41,11 @@
 	0 0 640 480 imgmar SDLImages
 	0 0 640 480 imgnube SDLImages
 	0 0 640 480 imgisla SDLImages
-	0 0 640 480 imgnave SDLImages
-	0 0 640 480 imgvela SDLImages
+	msec dup 4 << sin 20 *. swap 3 << sin 10 *. 
+	2dup 'ybarco ! 'xbarco !
+	|0 0 
+	2dup 640 480 imgnave SDLImages
+	640 480 imgvela SDLImages
 	;
 
 |----------------------------------
@@ -54,9 +60,9 @@
 	| ---- player control	
 |	<up> =? ( btnpad %1000 or 'btnpad ! )
 |	<dn> =? ( btnpad %100 or 'btnpad ! )
-	<le> =? ( -1.4 'jvx ! ) >le< =? ( 0 'jvx ! ) 
-	<ri> =? ( 1.4 'jvx ! ) >ri< =? ( 0 'jvx ! ) 
-	<esp> =? ( -14.0 'jvs ! jvs 'js +! )
+	<le> =? ( -1.6 'jvx ! ) >le< =? ( 0 'jvx ! ) 
+	<ri> =? ( 1.6 'jvx ! ) >ri< =? ( 0 'jvx ! ) 
+	<esp> =? ( -12.0 'jvs ! jvs 'js +! )
 	
 	drop ;
 	
