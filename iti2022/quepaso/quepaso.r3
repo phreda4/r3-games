@@ -216,7 +216,7 @@
 	'sbtn1 [ 8 + rot 4 + rot 4 + rot ; ] guiI
 	@ pick2 pick2 rot SDLimage
 	swap 5 + swap 280 74 xywh64
-	$11 rot rot $0 font textbox 
+	$11 -rot $0 font textbox 
 	onCLick ;
 	
 :jugando

@@ -597,7 +597,7 @@
 	SDLColor
 	2over 2over SDLFRect	
 	xywh64 
-	$11 rot rot $0 font textbox 
+	$11 -rot $0 font textbox 
 	onCLick ;
 	
 :btni | 'vecor 'ip 'i x y w h -- size

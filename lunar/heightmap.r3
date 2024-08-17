@@ -239,7 +239,7 @@
 
 :look | dist ang -- x y
 	sincos pick2 *. px + | dist sin x
-	rot rot *. py + ;
+	-rot *. py + ;
 	
 ::genfloordyn | prot px py --
 	'py ! 'px ! 'prot !

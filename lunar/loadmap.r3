@@ -150,7 +150,7 @@
 	
 :look | dist ang -- x y
 	sincos pick2 *. px + | dist sin x
-	rot rot *. py + ;
+	-rot *. py + ;
 	
 :superficie
 	400.0 prot 0.1 - look 'supy1 ! 'supx1 !

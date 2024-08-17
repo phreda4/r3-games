@@ -149,7 +149,7 @@
 
 |----------------------------------------	
 :tcirc | r x y --
-	pick2 rot rot SDLFEllipse ;
+	pick2 -rot SDLFEllipse ;
 	
 |----------------------------------------	
 :pv.p | a -- 'a

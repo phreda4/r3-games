@@ -190,7 +190,7 @@
 	;
 	
 :a!anim | nuevoanim -- ; a:
-	a@ $ffffffff not and or	a! ;
+	a@ $ffffffff nand or	a! ;
 
 :jug	
 	8 + >a
@@ -299,10 +299,10 @@
 	<dn> =? ( btnpad %100 or 'btnpad ! )
 	<le> =? ( btnpad %10 or 'btnpad ! )
 	<ri> =? ( btnpad %1 or 'btnpad ! )
-	>up< =? ( btnpad %1000 not and 'btnpad ! )
-	>dn< =? ( btnpad %100 not and 'btnpad ! )
-	>le< =? ( btnpad %10 not and 'btnpad ! )
-	>ri< =? ( btnpad %1 not and 'btnpad ! )	
+	>up< =? ( btnpad %1000 nand 'btnpad ! )
+	>dn< =? ( btnpad %100 nand 'btnpad ! )
+	>le< =? ( btnpad %10 nand 'btnpad ! )
+	>ri< =? ( btnpad %1 nand 'btnpad ! )	
 	<esp> =? ( saltar )
 |	<f1> =? ( 800 randy +perro ) 
 |	<f2> =? ( -128 randy +gato ) 
