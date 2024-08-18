@@ -235,7 +235,7 @@
 :[map]@s | x y -- c
 	[map]@
 	4 =? ( ; ) 
-	9 21 bt? ( ; ) 
+	9 21 in? ( ; ) 
 	drop 0 ;
 	
 :roof? | -- techo?
@@ -252,7 +252,7 @@
 	xp int. 32 +
 	yp int. 64 + 
 	[map]@
-	22 33 bt? ( ; ) 
+	22 33 in? ( ; ) 
 	drop 0 ;
 
 :wall? | dx -- wall?
@@ -364,8 +364,8 @@
 	
 |---- con reemplazo	
 :vectortile | tile -- tile
-	31 33 bt? ( drop msec 8 >> 3 mod abs 31 + ; )
-	34 36 bt? ( drop msec 8 >> 3 mod abs 34 + ; )
+	31 33 in? ( drop msec 8 >> 3 mod abs 31 + ; )
+	34 36 in? ( drop msec 8 >> 3 mod abs 34 + ; )
 	;
 	
 :drawmapa
