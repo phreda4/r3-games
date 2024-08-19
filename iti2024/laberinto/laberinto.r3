@@ -47,6 +47,7 @@
 
 
 |-------------- raycasting
+
 #texs
 #ntex
 #rayDirX #rayDirY
@@ -55,6 +56,8 @@
 #perpWallDist
 #stepX #stepY
 #side
+
+#yhorizon
 
 :calcDistX
 	rayDirX sign 16 << 'stepX !
@@ -89,8 +92,8 @@
 	; 
 
 :perpWall | mapx mapy --
-    side 0? ( 2drop posX - 1.0 stepX - 1 >> + rayDirX 0? ( 1.0 + ) /. ; ) drop nip
-	posY - 1.0 stepY - 1 >> + rayDirY 0? ( 1.0 + ) /.
+    side 0? ( 2drop posX - 1.0 stepX - 2/ + rayDirX 0? ( 1.0 + ) /. ; ) drop nip
+	posY - 1.0 stepY - 2/ + rayDirY 0? ( 1.0 + ) /.
 	;
 
 :deltaX
@@ -133,9 +136,11 @@
 	perpWall 'perpWallDist !
 	sh 16 << perpWallDist 0? ( 1 + ) / 'altura !
 
-	'desrec >a dup da!+ 
-	sh 1 >> altura 1 >> - 
-	da!+ 4 a+ altura da!
+	'desrec >a 
+	dup da!+
+	yhorizon altura 2/ - da!+ 
+	4 a+ 
+	altura da!
 	
 	ntex 6 << calcWallX 10 >> $3f and + 'srcrec d! | xs
 	
@@ -145,7 +150,7 @@
 
  :render
 	$5a5a5a sdlcolor
-	0 300 800 300 sdlfrect
+	0 yhorizon 800 sh yhorizon - sdlfrect
 	0 ( sw <? 
 		drawline
 		1+ ) drop ;
@@ -163,10 +168,34 @@
 :.vy 8 ncell+ ;
 :.va 9 ncell+ ;
 
-#v2d 0 0
+#v2dx 0 
+#v2dy 0
 
+#sprx
+#spry
+#invdet
+#trax 
+#traY
+#sprSX
+#sprH
+:drawsprite | x y
+	posy - 'spry !
+	posx - 'sprx !
+	1.0 planeX dirY *. dirX planeY *. - 0? ( 1+ ) /. 'invdet !
+	dirY sprX *. dirX sprY *. - invdet *. 'trax !
+	planeY neg sprX *. planeX sprY *. + invdet *. 'tray !
+	trax tray 0? ( 1+ ) /. 1.0 + sw 2/ * 16 >> 'sprSX !
+	sh 15 << traY 0? ( 1+ ) /. 4 >> 
+	-? ( drop ; ) | offscreen
+	'sprH !
+	
+	sprSX yhorizon sprH 0 sprimg sspritez
+	;
+	
 :persona
 	$ff00 sdlcolor
+	
+	dup .x @ over .y @ drawsprite
 	>a
 	mm 
 	1 and? ( |--- mapa
@@ -175,17 +204,17 @@
 		3 3 sdlrect
 		) 
 	2 and? ( |--- radar
-		'v2d 'posx v2=
-		'v2d a> .x v2- | v2s=vper	
-		'v2d angP 0.75 - v2rot
+		'v2dx a> .x v2=
+		'v2dx 'posx v2- | v2s=vper	
+		'v2dx angP neg 0.25 + v2rot
 	
-		'v2d @ 12 >> 400 + 1 -
-		'v2d 8 + @ 12 >> 100 + 1 -
+		v2dx 12 >> 400 + 1 -
+		v2dy 12 >> 100 + 1 -
 		3 3 sdlrect
 		) 
 	drop	
-	
-|	1.0 0 sprimg
+	a> .x @ a> .y @ drawsprite
+	|v2dx v2dy 1.0 0 sprimg
 |	sspritez
 	;
 	
@@ -223,7 +252,8 @@
 	300 0 200 200 sdlfrect
 	$ffffff sdlcolor
 	399 99 2 2 sdlfrect
-	
+	300 200 400 100 sdlline
+	400 100 500 200 sdlline
 	;
 |---------------------------------
 :mover | speed --
@@ -251,7 +281,7 @@
 	2 and? ( drawradar ) 
 	drop
 	objetos
-	
+	|drawsprite
 
 |	$ffffff pccolor
 |	0 0 pcat "<f1> mapa" pcprint
@@ -269,6 +299,10 @@
 	<up> =? ( 0.1 'vmov ! )
 	<dn> =? ( -0.1 'vmov ! )
 	>up< =? ( 0 'vmov ! ) >dn< =? ( 0 'vmov ! )
+	
+	<w> =? ( -4 'yhorizon +! )
+	<s> =? ( 4 'yhorizon +! )
+	
 	>esc< =? ( exit )
 	drop
 
@@ -284,6 +318,7 @@
 	500 'spr p.ini
 	100 H2d.ini 
 	
+	sh 2/ 'yhorizon !
 	5.5 'posX ! 5.5 'posY ! 0 rota
 	4.0 3.0 +persona
 	6.0 8.0 +persona
