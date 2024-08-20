@@ -116,9 +116,10 @@
 #srcrec [ 0 0 1 64 ]
 #desrec [ 0 0 1 600 ]
 
+
 :face
-	side 1? ( drop $7f ; ) drop 
-	$ff ;
+	altura 3 << 600 min $ff 600 */ 
+	side 1? ( drop 2/ ; ) drop ;
 	
 :shadowface
 	texs face dup dup SDL_SetTextureColorMod ;
@@ -181,7 +182,7 @@
 :drawsprite | x y
 	posy - 'spry !
 	posx - 'sprx !
-	1.0 planeX dirY *. dirX planeY *. - 0? ( 1+ ) /. 'invdet !
+
 	dirY sprX *. dirX sprY *. - invdet *. 'trax !
 	planeY neg sprX *. planeX sprY *. + invdet *. 'tray !
 	trax tray 0? ( 1+ ) /. 1.0 + sw 2/ * 16 >> 'sprSX !
@@ -189,7 +190,7 @@
 	-? ( drop ; ) | offscreen
 	'sprH !
 	
-	sprSX yhorizon sprH 0 sprimg sspritez
+	sprSX yhorizon sprH msec 7 >> $3 and sprimg sspritez
 	;
 	
 :persona
@@ -199,8 +200,8 @@
 	>a
 	mm 
 	1 and? ( |--- mapa
-		a> .x @ 12 >> 1 -
-		a> .y @ 12 >> 1 -
+		a> .x @ 13 >> 1 - 
+		a> .y @ 13 >> 1 -
 		3 3 sdlrect
 		) 
 	2 and? ( |--- radar
@@ -208,8 +209,8 @@
 		'v2dx 'posx v2- | v2s=vper	
 		'v2dx angP neg 0.25 + v2rot
 	
-		v2dx 12 >> 400 + 1 -
-		v2dy 12 >> 100 + 1 -
+		v2dx 13 >> 400 + 1 -
+		v2dy 13 >> 100 + 1 -
 		3 3 sdlrect
 		) 
 	drop	
@@ -230,8 +231,8 @@
 |----------- mini mapa
 :drawcell | map y x --
 	rot c@+ 3 << 'colores + @ sdlcolor
-	-rot over 4 << over 4 << swap
-	14 14 sdlFRect
+	-rot over 3 << over 3 << swap
+	8 8 sdlFRect
 	;
 
 :drawmap
@@ -242,9 +243,9 @@
 			1+ ) drop
 		1+ ) 2drop
 	$ffffff sdlcolor
-	posX 12 >> posY 12 >>
-	over dirX 12 >> + over dirY 12 >> + 2over sdlline
-	2dup swap planeX 12 >> + swap planeY 12 >> + sdlline
+	posX 13 >> posY 13 >>
+	over dirX 13 >> + over dirY 13 >> + 2over sdlline
+	2dup swap planeX 13 >> + swap planeY 13 >> + sdlline
 	;
 
 :drawradar
@@ -264,10 +265,10 @@
 
 :rota
 	angP + dup 'angP !
-	1.0 polar | bangle largo -- dx dy
-	2dup 'dirY ! 'dirX !
-	0.66 *. 'planeX !
-	neg 0.66 *. 'planeY !
+	sincos
+	dup 'dirY ! 0.66 *. 'planeX !
+	dup 'dirX ! neg 0.66 *. 'planeY !
+	1.0 planeX dirY *. dirX planeY *. - /. 'invdet !
 	;
 
 #vrot
