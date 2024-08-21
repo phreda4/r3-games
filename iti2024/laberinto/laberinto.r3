@@ -4,8 +4,8 @@
 ^r3/lib/rand.r3
 ^r3/lib/vec2.r3
 ^r3/util/arr16.r3
-^r3/util/hash2d.r3
 ^r3/util/pcfont.r3
+^r3/util/sort.r3
 
 #worldMap (
   4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 7 7 7 7 7 7 7 7
@@ -40,11 +40,13 @@
 #angP
 #dirX #dirY
 #planeX #planeY
-#mm 2
+#invdet
+
+#mm 0
+
 |-------------- sprites
 #sprimg
 #spr 0 0
-
 
 |-------------- raycasting
 
@@ -88,7 +90,7 @@
 	posX $ffff nand posY $ffff nand
 	( 2dup maphit 0?
 		drop step )
-	$1 and 'ntex !
+	$1 and 'ntex ! |***************
 	; 
 
 :perpWall | mapx mapy --
@@ -112,10 +114,10 @@
 	;
 
 #altura
+#linea * 8192 | 800 * 8 = 6400
 
 #srcrec [ 0 0 1 64 ]
 #desrec [ 0 0 1 600 ]
-
 
 :face
 	altura 3 << 600 min $ff 600 */ 
@@ -137,24 +139,30 @@
 	perpWall 'perpWallDist !
 	sh 16 << perpWallDist 0? ( 1 + ) / 'altura !
 
+	altura 48 <<
+	side 47 << or 
+	ntex 6 << calcWallX 10 >> $3f and + 12 << or
+	over or | x
+	'linea pick2 3 << + !
+	
+|	'desrec >a dup da!+ yhorizon altura 2/ - da!+ 4 a+ altura da!
+|	ntex 6 << calcWallX 10 >> $3f and + 'srcrec d! | xs
+|	shadowface
+|	SDLrenderer texs 'srcrec 'desrec SDL_RenderCopy
+	;
+
+:drawlv | l --
 	'desrec >a 
-	dup da!+
-	yhorizon altura 2/ - da!+ 
-	4 a+ 
-	altura da!
-	
-	ntex 6 << calcWallX 10 >> $3f and + 'srcrec d! | xs
-	
+	dup $fff and da!+ 
+	dup 48 >>
+	yhorizon over 2/ - da!+ 
+	4 a+ da!
+		
+	dup 12 >> $ffffff and  'srcrec d! | xs
+	47 >> $1 and 'side !
 	shadowface
 	SDLrenderer texs 'srcrec 'desrec SDL_RenderCopy
 	;
-
- :render
-	$5a5a5a sdlcolor
-	0 yhorizon 800 sh yhorizon - sdlfrect
-	0 ( sw <? 
-		drawline
-		1+ ) drop ;
 
 |---------- struct sprite
 | 1 2  3    4   5   6  7  8  9
@@ -174,33 +182,92 @@
 
 #sprx
 #spry
-#invdet
+
 #trax 
 #traY
 #sprSX
 #sprH
-:drawsprite | x y
-	posy - 'spry !
-	posx - 'sprx !
 
+#listaspr * 8000
+#listaspr>
+
+:drawsprite | x y --
+|	0.5 +
+	posy - 'spry ! posx - 'sprx !
 	dirY sprX *. dirX sprY *. - invdet *. 'trax !
 	planeY neg sprX *. planeX sprY *. + invdet *. 'tray !
-	trax tray 0? ( 1+ ) /. 1.0 + sw 2/ * 16 >> 'sprSX !
-	sh 15 << traY 0? ( 1+ ) /. 4 >> 
+
+	trax tray 0? ( 1+ ) 
+	/. 1.0 + sw 2/ * 16 >> 'sprSX !
+	
+	sh 15 << traY 0? ( 1+ ) /. 16 >> |5 >> | 64pix H
 	-? ( drop ; ) | offscreen
 	'sprH !
 	
-	sprSX yhorizon sprH msec 7 >> $3 and sprimg sspritez
+	sprH 32 <<
+	sprSX $ffffffff and or
+	listaspr> !+ 'listaspr> !
+	
+|	sprSX yhorizon sprH 0 sprimg sspritez
 	;
+
+:drawlistspr
+	'listaspr ( listaspr> <? @+ 
+		dup 32 >> swap 32 << 32 >> | sprh sprx
+		yhorizon rot 0 sprimg sspritez
+		) drop ; 
+
+#fromlinea
+:drawtolinea | altura -- 
+	49 << | 2*
+	fromlinea
+	( @+ pick2 <=? drawlv ) drop
+	8 - 'fromlinea ! 
+	drop ;
 	
-:persona
+
+:drawmix
+	'linea 'fromlinea !
+	'listaspr ( listaspr> <? @+ 
+		dup 32 >> | sprh
+		dup drawtolinea
+		swap 32 << 32 >> | sprh sprx
+		yhorizon rot 
+		12 << | tamanio
+		msec 7 >> $3 and | anim
+		sprimg sspritez || 11 =16-5 (32pixels)
+		) drop 
+	'linea 800 3 << + | ultima
+	fromlinea ( over <? @+ drawlv ) 2drop
+	; 
+	
+:pantalla
+	0 ( sw <? drawline 1+ ) drop 
+	sw 'linea shellsort1
+
+	'listaspr 'listaspr> !
+	'spr p.draw
+	'listaspr listaspr> over - 3 >> swap shellsort1
+	
+	$5a5a5a sdlcolor
+	0 yhorizon 800 sh yhorizon - sdlfrect
+	
+	drawmix
+	|drawlinea 
+	|drawlistspr
+	;
+
+	
+:persona | a -- 
 	$ff00 sdlcolor
+
+	dup .x @ over .y @ 
+	drawsprite | normal
 	
-	dup .x @ over .y @ drawsprite
 	>a
 	mm 
 	1 and? ( |--- mapa
-		a> .x @ 13 >> 1 - 
+		a> .x @ 13 >> 1 -
 		a> .y @ 13 >> 1 -
 		3 3 sdlrect
 		) 
@@ -209,14 +276,11 @@
 		'v2dx 'posx v2- | v2s=vper	
 		'v2dx angP neg 0.25 + v2rot
 	
-		v2dx 13 >> 400 + 1 -
-		v2dy 13 >> 100 + 1 -
+		v2dx 12 >> 400 + 1 -
+		v2dy 12 >> 100 + 1 -
 		3 3 sdlrect
 		) 
 	drop	
-	a> .x @ a> .y @ drawsprite
-	|v2dx v2dy 1.0 0 sprimg
-|	sspritez
 	;
 	
 :+persona | x y --
@@ -224,9 +288,7 @@
 	swap a!+ a!+
 	;
 	
-:objetos
-	'spr p.draw
-	;
+
 	
 |----------- mini mapa
 :drawcell | map y x --
@@ -276,13 +338,11 @@
 
 :game
 	$0 SDLcls
-	render
+	pantalla
 	mm 
 	1 and? ( drawmap ) 
 	2 and? ( drawradar ) 
 	drop
-	objetos
-	|drawsprite
 
 |	$ffffff pccolor
 |	0 0 pcat "<f1> mapa" pcprint
@@ -300,6 +360,8 @@
 	<up> =? ( 0.1 'vmov ! )
 	<dn> =? ( -0.1 'vmov ! )
 	>up< =? ( 0 'vmov ! ) >dn< =? ( 0 'vmov ! )
+|	<a> =? ( )
+|	<d> =? ( )
 	
 	<w> =? ( -4 'yhorizon +! )
 	<s> =? ( 4 'yhorizon +! )
@@ -315,13 +377,12 @@
 	"Laberinto" 800 600 SDLinit
 	pcfont
 	"r3/iti2024/laberinto/texturas.png" loadimg 'texs ! | 64x64x8
-	32 32 "r3/iti2024/laberinto/teseo.png" ssload 'sprimg !			|
-	500 'spr p.ini
-	100 H2d.ini 
+	32 32 "r3/iti2024/laberinto/teseo.png" ssload 'sprimg !	
+	100 'spr p.ini
 	
 	sh 2/ 'yhorizon !
 	5.5 'posX ! 5.5 'posY ! 0 rota
-	4.0 3.0 +persona
+|	4.0 3.0 +persona
 	6.0 8.0 +persona
 	5.5 5.0 +persona
 	4.0 5.5 +persona
