@@ -135,8 +135,8 @@
 	btnpad
 	%1000 and? ( 0 -2.0 xymove )
 	%100 and? ( 0 2.0 xymove  )
-	%10 and? ( 12 12 $3f ICS>anim setanim -2.0 0.0 xymove )
-	%1 and? ( 0 12 $3f ICS>anim setanim 2.0 0.0 xymove )
+	%10 and? ( 0 6 $3f ICS>anim setanim -2.0 0.0 xymove )
+	%1 and? ( 0 6 $3f ICS>anim setanim 2.0 0.0 xymove )
 	0? ( 0 0 0 ICS>anim setanim )
 	drop
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
@@ -228,7 +228,7 @@
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	
 	64 64 "r3/iti2024/zoilo/perro.png" ssload 'sprperro !
-	128 128 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
+	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	'bsprdrawsimple 'bsprdraw !
 	
 	1000 'obj p.ini
