@@ -5,6 +5,7 @@
 ^r3/win/sdl2mixer.r3
 ^r3/util/pcfont.r3
 ^r3/util/arr16.r3
+^r3/lib/rand.r3
 
 |------ sound
 #sndfiles 
@@ -44,6 +45,8 @@
 :.s 4 ncell+ ;
 
 #sprgame
+#sprfx
+
 #sprplayer
 
 #cucas 0 0 
@@ -152,55 +155,68 @@
 	dup @ 0? ( 2drop ; ) 
 	timer- -? ( 0 nip ) swap !
 	;
+
+|---------------------------------------------
+:semillero | x --
+	dup 100 0 sprgame ssprite
+	dup 164 1 sprgame ssprite
+	dup 228 1 sprgame ssprite
+	dup 292 2 sprgame ssprite
+	drop
+	;
+
+:fondo
+	$0 SDLcls
+	16 ( 800 <?
+		16 ( 500 <?
+			2dup 2 randmax sprfx ssprite
+			32 + 
+			) drop
+		32 + 
+		) drop 
+		
+	100 semillero
+	300 semillero
+	500 semillero
+	700 semillero
+	;
+	
+:gallina
+	dup 440 2.0 
+	msec 7 >> 3 mod 6 + sprgame sspritez
+	340 2.0 
+	msec 7 >> 3 mod 3 + 
+	sprgame sspritez
+	
+	;
+	
+:gallinas	
+	100 gallina
+	300 gallina
+	500 gallina
+	700 gallina
+	;
 	
 :game
 	timer.
-	$999999 SDLcls
-	0 0 1024 600 imgfondo SDLImages
-	|immgui 	
-	$0 pccolor
-	0 0 pcat
-	ntime "ntime:%d" pcprint pccr
-	ntime 3 << 'time1 + @ "actual:%h" pcprint
-
-	tclock
-	paso rt bt
-
-	'cucas p.draw
-	'fx p.draw
-	
-	0 player
-	1 player
-	2 player
-	3 player
-	
-	showtime
+	fondo
+	gallinas
 	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<a> =? ( 200 0 golpe )
-	<s> =? ( 200 1 golpe )
-	<d> =? ( 200 2 golpe )
-	<f> =? ( 200 3 golpe )
-	
 	drop ;
 
 :main
-	"Ritmo!!" 1024 600 SDLinit
+	"Picoteo" 800 500 SDLinit
 	|sdlfull
 	pcfont
 	
-	32 32 "r3/iti2024/rg/cuca1.png" ssload 'sprgame !
-	128 142 "r3/iti2024/rg/chancla.png" ssload 'sprplayer !
-	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
+	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
+	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
 	100 'cucas p.ini
 	100 'fx p.ini
-	
-|	0.0 300.0 +cuca
-|	0.0 400.0 +cuca
-|	0.0 500.0 +cuca
-	
+
 	44100 $8010 1 1024 Mix_OpenAudio
 	loadsnd
 	
