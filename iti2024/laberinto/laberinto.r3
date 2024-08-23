@@ -4,8 +4,8 @@
 ^r3/lib/rand.r3
 ^r3/lib/vec2.r3
 ^r3/util/arr16.r3
+^r3/util/hash2d.r3
 ^r3/util/pcfont.r3
-^r3/util/sort.r3
 
 #worldMap (
   4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 7 7 7 7 7 7 7 7
@@ -40,13 +40,11 @@
 #angP
 #dirX #dirY
 #planeX #planeY
-#invdet
-
-#mm 0
-
+#mm 2
 |-------------- sprites
 #sprimg
 #spr 0 0
+
 
 |-------------- raycasting
 
@@ -90,7 +88,7 @@
 	posX $ffff nand posY $ffff nand
 	( 2dup maphit 0?
 		drop step )
-	$1 and 'ntex ! |***************
+	$1 and 'ntex !
 	; 
 
 :perpWall | mapx mapy --
@@ -114,14 +112,21 @@
 	;
 
 #altura
-#linea * 8192 | 800 * 8 = 6400
+#lines * 6400 | 800 * 8
+#nlineas * 6400
 
+:line! | n altura tile x --
+	;
+	
+:drawwithsprites
+	;
+	
 #srcrec [ 0 0 1 64 ]
 #desrec [ 0 0 1 600 ]
 
 :face
-	altura 3 << 600 min $ff 600 */ 
-	side 1? ( drop 2/ ; ) drop ;
+	side 1? ( drop $7f ; ) drop 
+	$ff ;
 	
 :shadowface
 	texs face dup dup SDL_SetTextureColorMod ;
@@ -139,30 +144,24 @@
 	perpWall 'perpWallDist !
 	sh 16 << perpWallDist 0? ( 1 + ) / 'altura !
 
-	altura 48 <<
-	side 47 << or 
-	ntex 6 << calcWallX 10 >> $3f and + 12 << or
-	over or | x
-	'linea pick2 3 << + !
-	
-|	'desrec >a dup da!+ yhorizon altura 2/ - da!+ 4 a+ altura da!
-|	ntex 6 << calcWallX 10 >> $3f and + 'srcrec d! | xs
-|	shadowface
-|	SDLrenderer texs 'srcrec 'desrec SDL_RenderCopy
-	;
-
-:drawlv | l --
 	'desrec >a 
-	dup $fff and da!+ 
-	dup 48 >>
-	yhorizon over 2/ - da!+ 
-	4 a+ da!
-		
-	dup 12 >> $ffffff and  'srcrec d! | xs
-	47 >> $1 and 'side !
+	dup da!+
+	yhorizon altura 2/ - da!+ 
+	4 a+ 
+	altura da!
+	
+	ntex 6 << calcWallX 10 >> $3f and + 'srcrec d! | xs
+	
 	shadowface
 	SDLrenderer texs 'srcrec 'desrec SDL_RenderCopy
 	;
+
+ :render
+	$5a5a5a sdlcolor
+	0 yhorizon 800 sh yhorizon - sdlfrect
+	0 ( sw <? 
+		drawline
+		1+ ) drop ;
 
 |---------- struct sprite
 | 1 2  3    4   5   6  7  8  9
@@ -182,88 +181,32 @@
 
 #sprx
 #spry
-
+#invdet
 #trax 
 #traY
 #sprSX
 #sprH
 
-#listaspr * 8000
-#listaspr>
-
-:drawsprite | x y --
-|	0.5 +
-	posy - 'spry ! posx - 'sprx !
+:drawsprite | x y
+	posy - 'spry !
+	posx - 'sprx !
+	1.0 planeX dirY *. dirX planeY *. - 0? ( 1+ ) /. 'invdet !
 	dirY sprX *. dirX sprY *. - invdet *. 'trax !
 	planeY neg sprX *. planeX sprY *. + invdet *. 'tray !
-
-	trax tray 0? ( 1+ ) 
-	/. 1.0 + sw 2/ * 16 >> 'sprSX !
-	
-	sh 15 << traY 0? ( 1+ ) /. 16 >> |5 >> | 64pix H
+	trax tray 0? ( 1+ ) /. 1.0 + sw 2/ * 16 >> 
+	|? ( drop ; ) 
+	'sprSX !
+	sh 15 << traY 0? ( 1+ ) /. 4 >> | 32pix H 
 	-? ( drop ; ) | offscreen
 	'sprH !
 	
-	sprH 32 <<
-	sprSX $ffffffff and or
-	listaspr> !+ 'listaspr> !
-	
-|	sprSX yhorizon sprH 0 sprimg sspritez
+	sprSX yhorizon sprH 0 sprimg sspritez
 	;
-
-:drawlistspr
-	'listaspr ( listaspr> <? @+ 
-		dup 32 >> swap 32 << 32 >> | sprh sprx
-		yhorizon rot 0 sprimg sspritez
-		) drop ; 
-
-#fromlinea
-:drawtolinea | altura -- 
-	49 << | 2*
-	fromlinea
-	( @+ pick2 <=? drawlv ) drop
-	8 - 'fromlinea ! 
-	drop ;
 	
-
-:drawmix
-	'linea 'fromlinea !
-	'listaspr ( listaspr> <? @+ 
-		dup 32 >> | sprh
-		dup drawtolinea
-		swap 32 << 32 >> | sprh sprx
-		yhorizon rot 
-		12 << | tamanio
-		msec 7 >> $3 and | anim
-		sprimg sspritez || 11 =16-5 (32pixels)
-		) drop 
-	'linea 800 3 << + | ultima
-	fromlinea ( over <? @+ drawlv ) 2drop
-	; 
-	
-:pantalla
-	0 ( sw <? drawline 1+ ) drop 
-	sw 'linea shellsort1
-
-	'listaspr 'listaspr> !
-	'spr p.draw
-	'listaspr listaspr> over - 3 >> swap shellsort1
-	
-	$5a5a5a sdlcolor
-	0 yhorizon 800 sh yhorizon - sdlfrect
-	
-	drawmix
-	|drawlinea 
-	|drawlistspr
-	;
-
-	
-:persona | a -- 
+:persona
 	$ff00 sdlcolor
-
-	dup .x @ over .y @ 
-	drawsprite | normal
 	
+	dup .x @ over .y @ drawsprite
 	>a
 	mm 
 	1 and? ( |--- mapa
@@ -288,7 +231,9 @@
 	swap a!+ a!+
 	;
 	
-
+:objetos
+	'spr p.draw
+	;
 	
 |----------- mini mapa
 :drawcell | map y x --
@@ -327,10 +272,10 @@
 
 :rota
 	angP + dup 'angP !
-	sincos
-	dup 'dirY ! 0.66 *. 'planeX !
-	dup 'dirX ! neg 0.66 *. 'planeY !
-	1.0 planeX dirY *. dirX planeY *. - /. 'invdet !
+	1.0 polar | bangle largo -- dx dy
+	2dup 'dirY ! 'dirX !
+	0.66 *. 'planeX !
+	neg 0.66 *. 'planeY !
 	;
 
 #vrot
@@ -338,11 +283,12 @@
 
 :game
 	$0 SDLcls
-	pantalla
+	render
 	mm 
 	1 and? ( drawmap ) 
 	2 and? ( drawradar ) 
 	drop
+	objetos
 
 |	$ffffff pccolor
 |	0 0 pcat "<f1> mapa" pcprint
@@ -360,8 +306,6 @@
 	<up> =? ( 0.1 'vmov ! )
 	<dn> =? ( -0.1 'vmov ! )
 	>up< =? ( 0 'vmov ! ) >dn< =? ( 0 'vmov ! )
-|	<a> =? ( )
-|	<d> =? ( )
 	
 	<w> =? ( -4 'yhorizon +! )
 	<s> =? ( 4 'yhorizon +! )
@@ -377,12 +321,13 @@
 	"Laberinto" 800 600 SDLinit
 	pcfont
 	"r3/iti2024/laberinto/texturas.png" loadimg 'texs ! | 64x64x8
-	32 32 "r3/iti2024/laberinto/teseo.png" ssload 'sprimg !	
-	100 'spr p.ini
+	32 32 "r3/iti2024/laberinto/teseo.png" ssload 'sprimg !			|
+	500 'spr p.ini
+	100 H2d.ini 
 	
 	sh 2/ 'yhorizon !
 	5.5 'posX ! 5.5 'posY ! 0 rota
-|	4.0 3.0 +persona
+	4.0 3.0 +persona
 	6.0 8.0 +persona
 	5.5 5.0 +persona
 	4.0 5.5 +persona

@@ -133,10 +133,10 @@
 :player	
 	>a
 	btnpad
-	%1000 and? ( 0 -2.0 xymove )
-	%100 and? ( 0 2.0 xymove  )
-	%10 and? ( 0 6 $3f ICS>anim setanim -2.0 0.0 xymove )
-	%1 and? ( 0 6 $3f ICS>anim setanim 2.0 0.0 xymove )
+	%1000 and? ( 0 6 $ff ICS>anim setanim 0 -2.0 xymove )
+	%100 and? ( 0 6 $ff ICS>anim setanim 0 2.0 xymove  )
+	%10 and? ( 0 6 $ff ICS>anim setanim -2.0 0.0 xymove )
+	%1 and? ( 0 6 $ff ICS>anim setanim 2.0 0.0 xymove )
 	0? ( 0 0 0 ICS>anim setanim )
 	drop
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
