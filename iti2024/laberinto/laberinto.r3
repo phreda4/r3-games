@@ -88,7 +88,7 @@
 	posX $ffff nand posY $ffff nand
 	( 2dup maphit 0?
 		drop step )
-	$1 and 'ntex !
+	$3 and 'ntex !
 	; 
 
 :perpWall | mapx mapy --
