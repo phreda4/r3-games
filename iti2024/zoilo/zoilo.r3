@@ -124,18 +124,33 @@
 |----------------------------
 :disparo
 	$ffffff sdlcolor
-	8 + >a
-	a@+ int. xvp -
-	a@+ int. yvp -
-	|2dup "%d %d" .println
+	>a
+	a> .x @ int. xvp - 0 <? ( drop 0 ; ) sw >? ( drop 0 ; )
+	a> .y @ int. yvp - 0 <? ( 2drop 0 ; ) sh >? ( 2drop 0 ; )
 	3 3 sdlfrect 
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!
 	;	
 
-:+disparo | --
-	'disparo 'disp p!+ >a
-	xp a!+ 
-	yp a!+
+#dx #dy	
+
+:dirdis
+	dirp
+	0 'dx ! 0 'dy !
+	$1 and? ( 8.0 'dx ! )	
+	$2 and? ( -8.0 'dx ! )
+	$4 and? ( 8.0 'dy !  )
+	$8 and? ( -8.0 'dy ! )
+	drop
+	;
 	
+:+disparo | --
+	btnpad $10 and? ( drop ; ) drop
+	'disparo 'disp p!+ >a
+	xp a!+ yp 38.0 - a!+
+	3 3 << a+
+	dirdis 
+	dx a!+ dy a!+
 	;	
 	
 |------ PLAYER
@@ -163,28 +178,28 @@
 :anim!
 	a> .ani dup @ $ffffffff and rot or swap ! ;
 	
-:setanim | dir --
-	dirp =? ( drop ; ) 
-	0 =? ( 0 0 0 ICS>anim anim! )
-	1 =? ( 0 6 $ff ICS>anim anim! )
-	2 =? ( 0 6 $ff ICS>anim anim! )
-	3 =? ( 0 6 $ff ICS>anim anim! )
-	4 =? ( 0 6 $ff ICS>anim anim! )
-	'dirp ! ;
 	
-#dx #dy	
+:diranim | btn -- btn
+	0 'dx ! 0 'dy !
+	%1 and? ( 2.0 'dx ! )	
+	%10 and? ( -2.0 'dx ! )
+	%100 and? ( 2.0 'dy !  )
+	%1000 and? ( -2.0 'dy ! )
+	dirp =? ( drop ; ) 
+	0? ( 0 0 0 ICS>anim anim! drop ; )
+	$1 =? ( 0 6 $ff ICS>anim anim! )
+	$2 =? ( 0 6 $ff ICS>anim anim! )
+	$4 =? ( 0 6 $ff ICS>anim anim! )
+	$8 =? ( 0 6 $ff ICS>anim anim! )
+	'dirp !
+	;
+	
+
 
 |  x y anim 
 :player	
 	>a
-	0 'dx ! 0 'dy !
-	btnpad
-	%1000 and? ( 3 setanim -2.0 'dy ! )
-	%100 and? ( 2 setanim 2.0 'dy !  )
-	%10 and? ( 1 setanim -2.0 'dx ! )
-	%1 and? ( 0 setanim 2.0 'dx ! )
-	0? ( 0 setanim )
-	drop
+	btnpad $f and diranim 	
 	dx dy xymove
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	a> .x @ dup 'xp ! int. 
@@ -232,6 +247,11 @@
 	'disp p.draw
 	'fx p.draw		
 
+	$ffffff bcolor
+	0 0 bat
+	dirp "%h" bprint bcr
+	btnpad "%h" bprint bcr
+	'disp p.cnt "%d" bprint
 |	0 0 zoom	
 	SDLredraw
 	
@@ -245,7 +265,8 @@
 	>dn< =? ( btnpad %100 nand 'btnpad ! )
 	>le< =? ( btnpad %10 nand 'btnpad ! )
 	>ri< =? ( btnpad %1 nand 'btnpad ! )	
-	<esp> =? ( btnpad $10 nand 'btnpad ! +disparo )
+	<esp> =? ( +disparo btnpad $10 or 'btnpad ! )
+	>esp< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? ( randperro )
 |	<f> =? ( toglefs ) | fullscreen
 	drop 
@@ -255,6 +276,7 @@
 	'obj p.clear
 	'disp p.clear
 	'fx p.clear
+	1 'dirp !
 	;
 
 :randcosa	
@@ -280,7 +302,7 @@
 	
 	"media/ttf/Roboto-Medium.ttf" 12 TTF_OpenFont immSDL
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
-	
+	bfont1
 	64 64 "r3/iti2024/zoilo/perro.png" ssload 'sprperro !
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	64 64 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !

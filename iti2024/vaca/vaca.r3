@@ -13,6 +13,8 @@
 #fx 0 0
 #obj 0 0
 
+#btnpad
+
 | x y ang/z anim ss vx vy ar io
 | 1 2 3   4    5  6  7  8  9
 :.x 1 ncell+ ;
@@ -56,13 +58,11 @@
 	
 |------------------- obj
 :sobj
-	|dup .ani @ anim>n 
-	|over .end @ =? ( 2drop 0 ; ) drop 
 	drawspr
+	>a
 	|..... add velocity to position
-	dup .vx @ over .x +!
-	dup .vy @ over .y +!
-	drop
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!
 	;
 	
 :+obj | last ss anim zoom ang x y --
@@ -70,9 +70,39 @@
 	swap a!+ a!+	| x y 
 	32 << or a!+	| ang zoom
 	a!+ a!+			| anim sheet
-	0 a!+ 0 a!+ 	| vx vy
-	a!				| last
+	swap a!+ a!+ 	| vx vy
+	0 a!				| last
 	;
+
+:+cosechadora
+	2.0 0.0
+	sprites
+	4 2 $ff ICS>anim
+	1.0
+	0
+	10.0 
+	400.0 randmax 10.0 +
+	+obj ;
+|----------------------------- jugador
+|  x y anim 
+:jugador
+	drawspr	
+	>a
+	btnpad $f and 
+	$1 and? ( 1.0 a> .x +! )
+	$2 and? ( -1.0 a> .x +! )
+	$4 and? ( 1.0 a> .y +! )
+	$8 and? ( -1.0 a> .y +! )
+	drop
+	;	
+
+:+jugador | 'per x y --
+	'jugador 'obj p!+ >a
+	swap a!+ a!+
+	1.0 a!+ 
+	0 a!+ 
+	sprites a!
+	;	
 	
 |------------------- juego
 :dfondo
@@ -84,24 +114,31 @@
 	timer.
 	dfondo
 	'obj p.draw
+	
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
+	<up> =? ( btnpad %1000 or 'btnpad ! )
+	<dn> =? ( btnpad %100 or 'btnpad ! )
+	<le> =? ( btnpad %10 or 'btnpad ! )
+	<ri> =? ( btnpad %1 or 'btnpad ! )
+	>up< =? ( btnpad %1000 nand 'btnpad ! )
+	>dn< =? ( btnpad %100 nand 'btnpad ! )
+	>le< =? ( btnpad %10 nand 'btnpad ! )
+	>ri< =? ( btnpad %1 nand 'btnpad ! )	
+	
 	<f1> =? (
-			33
-			sprites
-			5 randmax 0 $ff ICS>anim
-			2.0 0
-			540.0 randmax 50.0 +
-			380.0 randmax 50.0 + +obj )
+			+cosechadora )
 	drop
 	;
 
 :reset
+	'obj p.clear
+	320.0 440.0 +jugador
 	;
 |-------------------
 : |<<< BOOT <<<
-	"Teniente Zabala" 640 480 SDLinit
+	"La vaca libertad" 640 480 SDLinit
 	bfont1
 	"r3\iti2024\vaca\fondo.png" loadimg 'ifondo !
 	64 64 "r3\iti2024\vaca\sprites.png" ssload 'sprites !

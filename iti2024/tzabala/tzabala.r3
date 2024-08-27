@@ -13,6 +13,8 @@
 #fx 0 0
 #obj 0 0
 
+#btnpad
+
 | x y ang/z anim ss vx vy ar io
 | 1 2 3   4    5  6  7  8  9
 :.x 1 ncell+ ;
@@ -62,17 +64,76 @@
 	|..... add velocity to position
 	dup .vx @ over .x +!
 	dup .vy @ over .y +!
+	
+	dup .x @ int. -10 <? ( 2drop 0 ; ) sw 10 + >? ( 2drop 0 ; ) drop
+	dup .y @ int. -10 <? ( 2drop 0 ; ) sh 10 + >? ( 2drop 0 ; ) drop
 	drop
 	;
 	
-:+obj | last ss anim zoom ang x y --
+:+obj | last anim zoom ang x y --
 	'sobj 'obj p!+ >a
 	swap a!+ a!+	| x y 
 	32 << or a!+	| ang zoom
-	a!+ a!+			| anim sheet
-	0 a!+ 0 a!+ 	| vx vy
-	a!				| last
+	a!+ sprites a!+			| anim sheet
+	swap a!+ a!+ 	| vx vy
+	a!+
 	;
+
+:+enemigo
+	;
+	
+#btna
+#xj #yj
+#dx #dy #ang
+
+:dirdis
+	0 'dx ! 0 'dy ! 0 'ang !
+	btna
+	$1 and? ( 8.0 'dx ! 0.25 'ang +! )
+	$2 and? ( -8.0 'dx ! -0.25 'ang +! )
+	$4 and? (  8.0 'dy ! )
+	$8 and? ( -8.0 'dy ! )
+	drop
+	
+	;
+	
+:+disparo
+	btnpad $10 and? ( drop ; ) drop
+	dirdis	
+	0
+	dx dy
+	8 0 $ff	ICS>anim
+	1.0 ang
+	xj yj
+	+obj
+	;
+	
+|----------------------------- jugador
+|  x y anim 
+:anim!
+	a> .ani dup @ $ffffffff and rot or swap ! ;
+	
+:jugador
+	drawspr	
+	>a
+	btnpad $f and 
+	$1 and? ( 1.0 a> .x +! 5 0 $ff ICS>anim anim! )
+	$2 and? ( -1.0 a> .x +! 6 0 $ff ICS>anim anim! )
+	$4 and? ( 1.0 a> .y +! 4 0 $ff ICS>anim anim! )
+	$8 and? ( -1.0 a> .y +! 7 0 $ff ICS>anim anim! )
+	1? ( dup 'btna ! )
+	drop
+	a> .x @ 'xj !
+	a> .y @ 'yj !
+	;	
+
+:+jugador | 'per x y --
+	'jugador 'obj p!+ >a
+	swap a!+ a!+
+	2.0 a!+ 
+	0 a!+ 
+	sprites a!
+	;	
 	
 |------------------- juego
 :dfondo
@@ -87,6 +148,16 @@
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
+	<up> =? ( btnpad $8 or 'btnpad ! )
+	<dn> =? ( btnpad $4 or 'btnpad ! )
+	<le> =? ( btnpad $2 or 'btnpad ! )
+	<ri> =? ( btnpad $1 or 'btnpad ! )
+	>up< =? ( btnpad $8 nand 'btnpad ! )
+	>dn< =? ( btnpad $4 nand 'btnpad ! )
+	>le< =? ( btnpad $2 nand 'btnpad ! )
+	>ri< =? ( btnpad $1 nand 'btnpad ! )	
+	<esp> =? ( +disparo btnpad $10 or 'btnpad ! )
+	>esp< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? (
 			33
 			sprites
@@ -98,6 +169,8 @@
 	;
 
 :reset
+	'obj p.clear
+	320.0 440.0 +jugador
 	;
 |-------------------
 : |<<< BOOT <<<
