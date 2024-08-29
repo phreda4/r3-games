@@ -54,7 +54,7 @@
 	a@+ int. a@+ int.  | x y
 	|over 8 << 
 	0.25
-	1.6
+	1.0
 	a@ timer+ dup a!+ 
 	anim>N sprgame sspriterz | x y zoom img --
 	
@@ -117,7 +117,6 @@
 	0 0 20 20 SDLFrect
 	;
 
-
 |------------- jugadores
 :hip | player --
 	3 <<
@@ -161,7 +160,7 @@
 |------ JUEGO
 :game
 	$0 SDLcls
-	|0 0 1024 600 imgfondo SDLImages
+	0 0 1024 600 imgfondo SDLImages
 	|immgui 	
 	
 	debug
@@ -197,7 +196,7 @@
 	pcfont
 	loadsnd
 	
-	32 32 "r3/iti2024/rg/cuca3.png" ssload 'sprgame !
+	64 64 "r3/iti2024/rg/cuca.png" ssload 'sprgame !
 	150 250 "r3/iti2024/rg/chancla.png" ssload 'sprplayer !
 	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
 	100 'cucas p.ini

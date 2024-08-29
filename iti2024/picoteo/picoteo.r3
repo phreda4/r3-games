@@ -158,10 +158,9 @@
 
 |---------------------------------------------
 :semillero | x --
-	dup 100 0 sprgame ssprite
-	dup 164 1 sprgame ssprite
-	dup 228 1 sprgame ssprite
-	dup 292 2 sprgame ssprite
+	dup 100 2.0 0 sprgame sspritez
+	dup 228 2.0 1 sprgame sspritez
+	dup 292 2.0 2 sprgame sspritez
 	drop
 	;
 
@@ -182,8 +181,8 @@
 	;
 	
 :gallina
-	dup 440 2.0 
-	msec 7 >> 3 mod 6 + sprgame sspritez
+	dup 450 2.0 
+	msec 7 >> 3 and 6 + sprgame sspritez
 	340 2.0 
 	msec 7 >> 3 mod 3 + 
 	sprgame sspritez
@@ -202,6 +201,9 @@
 	fondo
 	gallinas
 	
+	100 40 
+	msec 4 <<
+	0.4 10 sprgame sspriterz
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
