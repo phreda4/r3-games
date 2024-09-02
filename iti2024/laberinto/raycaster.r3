@@ -306,9 +306,8 @@
 :main
 	"Laberinto" 800 600 SDLinit
 	pcfont
-	"media/img/wolftexturesobj.png" loadimg 'texs ! | 64x64x8
-	|32 64 "media/img/test-ray.png" ssload 'sprimg !
-	32 48 "media/img/blue_8direction_standing-Sheet.png" ssload 'sprimg !
+	"r3/iti2024/laberinto/texturas.png" loadimg 'texs ! | 64x64x8
+	32 48 "r3/iti2024/laberinto/minotauro1.png" ssload 'sprimg !	
 	100 'spr p.ini
 	
 	sh 2/ 'yhorizon !
