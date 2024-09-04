@@ -10,7 +10,7 @@
 ^r3/util/bmap.r3
 
 |----
-#sprperro
+#spranimal
 #sprplayer
 #sprcosas
 
@@ -62,7 +62,7 @@
 	;	
 		
 |---------------------
-:perro
+:animal
 	>a
 	
 	a> .vx @ a> .x +!
@@ -75,8 +75,8 @@
 	+sprite | a x y --
 	;	
 
-:+perro | vx vy A x y  --
-	'perro 'obj p!+ >a
+:+animal | vx vy A x y  --
+	'animal 'obj p!+ >a
 	swap a!+ a!+
 	0 a!+ 
 	a!+ 
@@ -84,24 +84,24 @@
 	swap a!+ a!+
 	;
 
-:dirperro | -- vx
+:diranimal | -- vx
 	0.8 randmax 0.5 +
 	rand $10000 and? ( drop neg ; ) drop ;
 
-:aniperro |	vx --nani
-	-? ( 8 7 rot neg 9 >> $fff and ICS>anim ; ) 
-	0 7 rot 9 >> $fff and ICS>anim ;
+:anianimal |	vx --nani
+	-? ( 0 6 rot neg 9 >> $fff and ICS>anim ; ) 
+	6 6 rot 9 >> $fff and ICS>anim ;
 	
-:posperro | vx -- x
+:posanimal | vx -- x
 	-? ( drop xp 600.0 + ; ) drop xp 600.0 - ;
 	
-:randperro
-	dirperro		| vx
+:randanimal
+	diranimal		| vx
 	0.2 randmax		| vy
-	over aniperro 
-	pick2 posperro
+	over anianimal 
+	pick2 posanimal
 	600.0 randmax 300.0 - yp +
-	+perro
+	+animal
 	
 	;
 	
@@ -178,6 +178,7 @@
 :anim!
 	a> .ani dup @ $ffffffff and rot or swap ! ;
 	
+#dirq ( 0 6 14 0 0 0 0 0 10 0 0 0 0 0 0 0 )
 	
 :diranim | btn -- btn
 	0 'dx ! 0 'dy !
@@ -186,11 +187,12 @@
 	%100 and? ( 2.0 'dy !  )
 	%1000 and? ( -2.0 'dy ! )
 	dirp =? ( drop ; ) 
-	0? ( 0 0 0 ICS>anim anim! drop ; )
-	$1 =? ( 0 6 $ff ICS>anim anim! )
-	$2 =? ( 0 6 $ff ICS>anim anim! )
-	$4 =? ( 0 6 $ff ICS>anim anim! )
-	$8 =? ( 0 6 $ff ICS>anim anim! )
+	|0? ( 0 0 0 ICS>anim anim! drop ; )
+	0? ( drop dirp 'dirq + c@ 0 0 ICS>anim anim! ; ) 
+	$1 =? ( 6 4 $ff ICS>anim anim! ) | ri
+	$2 =? ( 14 4 $ff ICS>anim anim! ) | le
+	$4 =? ( 0 6 $ff ICS>anim anim! ) |dn 
+	$8 =? ( 10 4 $ff ICS>anim anim! ) |up
 	'dirp !
 	;
 	
@@ -221,13 +223,13 @@
 :jplayer
 	swap 32 - swap sprplayer ssprite ; | x y n ssprite
 
-:jperro
-	$ffff and sprperro ssprite ;
+:janimal
+	$ffff and spranimal ssprite ;
 
 :jcosa
 	$ffff and sprcosas ssprite ;
 	
-#listdsp 'jplayer 'jperro 'jcosa 'jcosa | otro
+#listdsp 'jplayer 'janimal 'jcosa 'jcosa | otro
 
 :bsprdrawsimple
 	dup 16 >> $3 and | $x0000 
@@ -267,7 +269,7 @@
 	>ri< =? ( btnpad %1 nand 'btnpad ! )	
 	<esp> =? ( +disparo btnpad $10 or 'btnpad ! )
 	>esp< =? ( btnpad $10 nand 'btnpad ! )
-	<f1> =? ( randperro )
+	<f1> =? ( randanimal )
 |	<f> =? ( toglefs ) | fullscreen
 	drop 
 	;
@@ -280,7 +282,7 @@
 	;
 
 :randcosa	
-	0
+	3 randmax
 	( 	1200.0 randmax 32.0 + 
 		600.0 randmax 64.0 +
 		2dup xyinmap@ $1000000000000 and? 
@@ -303,7 +305,7 @@
 	"media/ttf/Roboto-Medium.ttf" 12 TTF_OpenFont immSDL
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	bfont1
-	64 64 "r3/iti2024/zoilo/perro.png" ssload 'sprperro !
+	64 64 "r3/iti2024/zoilo/caballo.png" ssload 'spranimal !
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	64 64 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
 	'bsprdrawsimple 'bsprdraw !
