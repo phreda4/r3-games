@@ -128,7 +128,7 @@
 	rot 6 << 				| ntex
 	rot 10 >> $3f and + 12 << or | wallx 10 >>
 	over or 
-	'linea pick2 3 << + !
+	'linea pick2 ncell+ !
 	;
 
 |---------------
@@ -242,7 +242,7 @@
 |-----------------------
 :persona | a -- 
 	dup .a @ over .x @ pick2 .y @ drawsprite 
-	0.01 over .a +! |rotate
+|	0.01 over .a +! |rotate
 	drop	
 	;
 	
@@ -314,10 +314,10 @@
 	
 	5.5 'posX ! 5.5 'posY ! 0 rota
 	
-	0.000 4.0 3.0 +persona
-	0.250 6.0 8.0 +persona
-	0.125 5.5 5.0 +persona
-	0.700 4.0 5.5 +persona
+	0.5 20.0 3.0 +persona
+|	0.250 6.0 8.0 +persona
+|	0.125 5.5 5.0 +persona
+|	0.700 4.0 5.5 +persona
 
 	'game SDLshow 
 	SDLquit ;

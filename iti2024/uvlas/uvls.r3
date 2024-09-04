@@ -1,5 +1,6 @@
 | Ulises vs Las sirenas
 | IDFS 4to Soc
+| PHREDA 2024
 ^r3/win/sdl2gfx.r3
 ^r3/win/sdl2mixer.r3
 ^r3/util/pcfont.r3
@@ -15,6 +16,7 @@
 #sprvela
 #sprnube
 #sprnotas
+#sprbarra
 
 #lnubes 0 0 
 #lnotas 0 0
@@ -106,6 +108,9 @@
 	'lnotas p.draw
 	;
 
+:frente
+	100 20 4.0 2 sprbarra sspritez
+	;
 |----------------------------------
 :juego
 	timer.
@@ -113,7 +118,7 @@
 	notas
 	fondo
 	jugador
-	
+	frente
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
@@ -137,9 +142,10 @@
 	"r3/iti2024/uvlas/isla.png" loadimg 'imgisla !
 	"r3/iti2024/uvlas/nave.png" loadimg 'imgnave !
 	
-	353 127 "r3/iti2024/uvlas/nube.png" ssload 'sprnube !	
+	353 127 "r3/iti2024/uvlas/nube.png" ssload 'sprnube !
 	275 240 "r3/iti2024/uvlas/vela.png" ssload 'sprvela !
-	32 32 "r3/iti2024/uvlas/notas.png" ssload 'sprnotas !	
+	32 32 "r3/iti2024/uvlas/notas.png" ssload 'sprnotas !
+	32 32 "r3/iti2024/uvlas/barra.png" ssload 'sprbarra !
 
 	80 'lnubes p.ini
 	100 'lnotas p.ini

@@ -1,7 +1,9 @@
- | test plataform game
-| PHREDA 2020
+| juego nticx 2024
+| lestrigones
+| PHREDA 2024
 |
 ^r3/lib/gui.r3
+^r3/lib/rand.r3
 ^r3/util/arr16.r3
 ^r3/util/bfont.r3
 ^r3/win/sdl2gfx.r3
@@ -12,17 +14,12 @@
 #fx 0 0
 #obj 0 0
 
-| x y ang anim ss vx vy ar io
-| 1 2 3   4    5  6  7  8  9
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
-:.a 3 ncell+ ;
-:.ani 4 ncell+ ;
-:.ss 5 ncell+ ;
-:.vx 6 ncell+ ;
-:.vy 7 ncell+ ;
-:.end 8 ncell+ ;
-:.io 9 ncell+ ;
+:.z 3 ncell+ ;
+:.t 4 ncell+ ;
+:.vx 5 ncell+ ;
+:.vy 6 ncell+ ;
 
 :drawspr | arr -- arr
 	dup 8 + >a
@@ -31,118 +28,65 @@
 	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	;
-	
-#mapw 32 
-#maph 8
-#mapsx 16
-#mapsy 200
-	
-#map1 
-1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 2 0 2 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 0 0 0 0 0 1 0 2 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 
-#map 'map1
-
-:t2m | x y -- t
-	mapsy - 5 >> swap
-	mapsx - 5 >> swap
-	mapw * + 2 << map + ;
-
-:gettile | x y -- t
-	t2m @ ;
-
-:tile | y x t -- y x
-	0? ( drop ; )
-	over 5 << mapsx +
-	pick3 5 << mapsy +
-	rot 1- $3 and 
-	sprites ssprite
+|------------- NOTAS
+:coso | adr --
+	>a
+	a> .x @ int. -180 <? ( drop 0 ; ) drop
+	a> .vx @ a> .x +! a> .vy @ a> .y +!
+	8 a+
+	a@+ int. a@+ int. a@+ a@ sprites sspritez
 	;
-
-:drawmap
-	map >b
-	0 ( 8 <?
-		0 ( 19 <?
-			b@+ tile 
-			1+ ) drop
-		mapw 19 - 3 << b+
-		1+ ) drop ;
-
+	
+:+coso | --
+	'coso 'obj p!+ >a
+	800.0 a!+ 				| x
+	220.0 randmax 220.0 + a!+ 		| y
+	1.0 a!+ 	| zoom
+	2 randmax a!+ 			| nube
+	0.5 randmax 0.8 + neg a!+	| vx
+	0.01 randmax 0.005 -  a!	| vy
+	;
 |--------- PLAYER
-#ddx
-#dx #dy
+#dx #dy #js #jvs
 #xp #yp
-
-:roof? | -- techo?
-	xp 16 >> yp 16 >> 17 - gettile ;
-
-:floor? | -- piso?
-	xp 16 >> yp 16 >> 17 + gettile ;
-
-:wall? | dx -- wall?
-	xp 16 >> + yp 16 >> 10 + gettile ;
-
-#cae
-:jump
-	floor? 0? ( drop
-		1 'cae ! 0.8 'dy +!
-		roof? 1? ( dy -? ( 0 'dy ! ) drop ) drop
-		; ) drop
-	cae 1? ( 
-		0 'cae ! 0 'dy !
-		yp $fff00000 and 8.0 + 'yp !  | 
-		) drop
-	sdlkey
-	<up> =? ( -10.0 'dy ! )
-	drop
-	
-	;
-
-	
-:goleft
-	$10 wall? 0? ( drop ; ) drop
-	xp $fff00000 and 'xp !
-	drop 0 ;
-
-:gorigth
-	-$8 wall? 0? ( drop ; ) drop
-	xp $fff00000 and 'xp !
-	drop 0 ;
-
-:player
-    dx ddx 0? ( swap 0.8 *. )
-	+ 3.0 min -3.0 max
-	+? ( goleft )
-	-? ( gorigth )
-	'dx !
-	jump
-	dx 'xp +!
-	dy 'yp +!
-	;
+#ja
 
 :drawplayer
-	player
-	xp 16 >> yp 16 >> 16 -
-	2 sprites ssprite
+	xp int.
+	yp js + int.
+	2.0 
+	ja timer+ dup 'ja ! anim>n 	
+	sprites sspritez
+	
+|	dx 'xp +!
+	dy 'yp +!
+	
+	js 0? ( drop ; ) drop
+	jvs 'js +!
+	0.5 'jvs +!
+	js +? ( drop 0 'js ! ; ) drop
 	;
 
 :resetplayer
-	0 'ddx !
-	0 'dx ! 0 'dy !
-	64.0 'xp !
-	210.0 'yp !
+	128.0 'xp ! 290.0 'yp !
+	0 'dx ! 0 'dy ! 0 'js !
+	2 0 0 ICS>anim 'ja !
 	;
 	
+#xfondo
 :dfondo
 	$206cd2 sdlcolor
 	0 0 640 100 sdlfrect
-	320 140 msec 7 >> 7 mod sprfondo ssprite
+	
+	xfondo int. 140 msec 8 >> 7 mod sprfondo ssprite
+	xfondo int. 640 + 140 msec 8 >> 7 mod sprfondo ssprite
+	
+	xfondo dx -
+	-320.0 <? ( 640.0 + )
+	320.0 >? ( 640.0 - )
+	'xfondo !
+	
 	$A3672E sdlcolor
 	0 240 640 240 sdlfrect
 	;
@@ -154,21 +98,25 @@
 	0 0 bat
 	yp xp "%f %f" bprint bcr
 	dy dx "%f %f" bprint
-	drawmap
+	
+	'obj p.draw
 	drawplayer
 	
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
-	<le> =? ( -0.25 'ddx ! )
-	<ri> =? ( 0.25 'ddx ! )
-	>le< =? ( 0 'ddx ! )
-	>ri< =? ( 0 'ddx ! )
+	<le> =? ( -0.8 'dx ! )	>le< =? ( 0 'dx ! )
+	<ri> =? ( 0.8 'dx ! )	>ri< =? ( 0 'dx ! )
+	<up> =? ( -0.8 'dy ! )	>up< =? ( 0 'dy ! )
+	<dn> =? ( 0.8 'dy ! )	>dn< =? ( 0 'dy ! )
+	<esp> =? ( -10.0 'jvs ! jvs 'js +! )
+	<f1> =? ( +coso )
 	drop
 	;
 
 :reset
 	resetplayer
+	'obj p.clear
 	;
 	
 |-------------------
@@ -178,6 +126,7 @@
 	640 200 "r3\iti2024\lestrigones\fondo.png" ssload 'sprfondo !
 	32 32 "r3\iti2024\lestrigones\sprites.png" ssload 'sprites !
 	reset
+	100 'obj p.ini
 	'juego SDLshow
 	SDLquit 
 	;
