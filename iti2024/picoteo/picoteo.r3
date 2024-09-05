@@ -50,28 +50,65 @@
 
 #sprplayer
 
-#cucas 0 0 
+#maizs 0 0 
 #fx 0 0
 
 #jugador 0 0 0 0 0 0 0 0
 
+:son 0 playsnd ;
 
-:cuca
-	dup 8 + >a 
-	a@+ int. a@+ int.  | x y
-	a@ timer+ dup a!+ 
-	anim>N sprgame ssprite | x y ang zoom img --
-	
-	5.0 over .x +!
-	dup .x @ 1024.0 >? ( 2drop 0 ; ) drop
-	|dup .x @ 1000.0 >? ( drop .s @ playsnd 0 ; ) drop
-	drop	
+:son2 9 playsnd ;
+
+
+:maizmovy | y x adr --
+	dup 160.0 130.0 19 0.5 0.0 +vanim	
+	dup 190.0 160.0 20 0.5 0.5 +vanim	
+	'son 1.0 +vexe
+	dup 220.0 190.0 19 0.5 1.0 +vanim	
+	dup 250.0 220.0 20 0.5 1.5 +vanim	
+	'son 2.0 +vexe
+	dup 280.0 250.0 19 0.5 2.0 +vanim	
+	dup 310.0 280.0 20 0.5 2.5 +vanim	
+	'son2 3.0 +vexe
+	dup 400.0 
+	20.0 randmax 10.0 - +
+	310.0 20 0.5 3.0 +vanim	
+	drop
 	;
 	
-:+cuca | x y --
-	'cuca 'cucas p!+ >a
-	swap a!+ a!+
-	0 3 $7f ICS>anim a!+ 
+:maizmovx | y x adr --
+	dup pick2 50.0 - pick3 0  0.5 0.0 +vanim	
+	dup pick2 pick3 50.0 - 0  0.5 0.5 +vanim	
+	dup pick2 50.0 - pick3 0  0.5 1.0 +vanim	
+	dup pick2 pick3 50.0 - 0  0.5 1.5 +vanim	
+	dup pick2 50.0 - pick3 0  0.5 2.0 +vanim	
+	dup pick2 pick3 50.0 - 0  0.5 2.5 +vanim	
+	dup pick2 80.0 - 
+	20.0 randmax 10.0 - +
+	pick3 0  0.5 3.0 +vanim	
+	drop
+	;
+
+:maiz
+	dup 8 + >a 
+	a@+ int. a@+ int.  | x y
+	a> 6 <<
+	0.3
+	a@+ sprgame sspriterz | x y ang zoom img --
+	
+|	5.0 over .x +!
+|	dup .x @ 1024.0 >? ( 2drop 0 ; ) drop
+|	|dup .x @ 1000.0 >? ( drop .s @ playsnd 0 ; ) drop
+	drop	
+	;
+
+:+maiz | x y --
+	'maiz 'maizs p!+ >a
+	swap | y x
+	a> maizmovx
+	a> 8 + maizmovy
+	a!+ a!+
+	10 a!+ 
 	;
 	
 |------- game
@@ -104,10 +141,10 @@
 	dup 'ltime !
 	3 << 'time1 + @
 	-? ( drop 0 'ntime ! ; )
-	1 and? ( 0.0 120.0 +cuca )
-	2 and? ( 0.0 270.0 +cuca )
-	4 and? ( 0.0 420.0 +cuca )
-	8 and? ( 0.0 570.0 +cuca )
+|	1 and? ( 0.0 120.0 +cuca )
+|	2 and? ( 0.0 270.0 +cuca )
+|	4 and? ( 0.0 420.0 +cuca )
+|	8 and? ( 0.0 570.0 +cuca )
 	drop
 	;
 
@@ -183,72 +220,59 @@
 	
 :gallina
 	dup 450 2.0 
-	msec 7 >> 3 and 6 + sprgame sspritez
-	340 2.0 
-	msec 7 >> 3 mod 3 + 
+	msec 7 >> 3 and 6 + 
 	sprgame sspritez
-	
+	340 2.0 
+	|msec 7 >> 3 mod 3 + 
+	pick3 3 >> 'jugador + @ 3 +
+	sprgame sspritez
+	drop
 	;
 	
 :gallinas	
-	100 gallina
-	300 gallina
-	500 gallina
-	700 gallina
+	0 100 gallina
+	1 300 gallina
+	2 500 gallina
+	3 700 gallina
 	;
 	
-	
-#maizx
-#maizy 
-
 :game
 	timer. vupdate
 	fondo
 	
-	
-	maizx int. maizy int.
-	msec 4 <<
-	0.4 10 sprgame sspriterz
+	'maizs p.draw
 	
 	gallinas
 	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<f1> =? ( 
-'maizy 160.0 130.0 19 0.5 0.0 +vanim	
-'maizx 50.0  100.0 0  0.5 0.0 +vanim	
-'maizy 190.0 160.0 20 0.5 0.5 +vanim	
-'maizx 100.0 50.0  0  0.5 0.5 +vanim	
-'maizy 220.0 190.0 19 0.5 1.0 +vanim	
-'maizx 50.0  100.0 0  0.5 1.0 +vanim	
-'maizy 250.0 220.0 20 0.5 1.5 +vanim	
-'maizx 100.0 50.0  0  0.5 1.5 +vanim	
-'maizy 280.0 250.0 19 0.5 2.0 +vanim	
-'maizx 50.0  100.0 0  0.5 2.0 +vanim	
-'maizy 310.0 280.0 19 0.5 2.5 +vanim	
-'maizx 100.0 50.0  0  0.5 2.5 +vanim	
-
-|	+vanim | 100 10 1 2.0 1.0 -- 
-| +vexe | 'exe 3.0 --
-			)
+	<a> =? ( 1 'jugador ! )
+	>a< =? ( 0 'jugador ! )
+	<f1> =? ( 100.0 130.0 +maiz )
+	<f2> =? ( 300.0 130.0 +maiz )
+	<f3> =? ( 500.0 130.0 +maiz )
+	<f4> =? ( 700.0 130.0 +maiz )
+	
 	drop ;
 
 :main
 	"Picoteo" 800 500 SDLinit
+	44100 $8010 1 1024 Mix_OpenAudio
+	loadsnd
+
 	|sdlfull
 	pcfont
 	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
-	100 'cucas p.ini
+	1000 'maizs p.ini
 	100 'fx p.ini
-
-	44100 $8010 1 1024 Mix_OpenAudio
-	loadsnd
+	1000 vaini	| hasta 50 eventos
 	
-	50 vaini	| hasta 50 eventos
+	
 	vareset	
+	'maizs p.clear
 	
 	timer<
 	'game SDLshow
