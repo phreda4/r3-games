@@ -5,6 +5,7 @@
 ^r3/win/sdl2mixer.r3
 ^r3/util/pcfont.r3
 ^r3/util/arr16.r3
+^r3/util/varanim.r3
 
 |------ sound
 #sndfiles 
@@ -159,6 +160,7 @@
 	
 |------ JUEGO
 :game
+	vupdate
 	$0 SDLcls
 	0 0 1024 600 imgfondo SDLImages
 	|immgui 	
@@ -180,6 +182,7 @@
 	<s> =? ( 1 hip )
 	<d> =? ( 2 hip )
 	<f> =? ( 3 hip )
+	|<f1> =? ( )
 
 	drop ;
 	
@@ -201,6 +204,8 @@
 	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
 	100 'cucas p.ini
 	100 'fx p.ini
+	50 vaini
+	vareset
 	
 	reset
 	'game SDLshow

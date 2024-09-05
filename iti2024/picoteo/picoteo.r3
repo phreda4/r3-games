@@ -6,6 +6,7 @@
 ^r3/util/pcfont.r3
 ^r3/util/arr16.r3
 ^r3/lib/rand.r3
+^r3/util/varanim.r3
 
 |------ sound
 #sndfiles 
@@ -158,8 +159,8 @@
 
 |---------------------------------------------
 :semillero | x --
-	dup 100 2.0 0 sprgame sspritez
-	dup 228 2.0 1 sprgame sspritez
+	dup 80 2.0 0 sprgame sspritez
+	dup 200 2.0 1 sprgame sspritez
 	dup 292 2.0 2 sprgame sspritez
 	drop
 	;
@@ -196,17 +197,41 @@
 	700 gallina
 	;
 	
-:game
-	timer.
-	fondo
-	gallinas
 	
-	100 40 
+#maizx
+#maizy 
+
+:game
+	timer. vupdate
+	fondo
+	
+	
+	maizx int. maizy int.
 	msec 4 <<
 	0.4 10 sprgame sspriterz
+	
+	gallinas
+	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
+	<f1> =? ( 
+'maizy 160.0 130.0 19 0.5 0.0 +vanim	
+'maizx 50.0  100.0 0  0.5 0.0 +vanim	
+'maizy 190.0 160.0 20 0.5 0.5 +vanim	
+'maizx 100.0 50.0  0  0.5 0.5 +vanim	
+'maizy 220.0 190.0 19 0.5 1.0 +vanim	
+'maizx 50.0  100.0 0  0.5 1.0 +vanim	
+'maizy 250.0 220.0 20 0.5 1.5 +vanim	
+'maizx 100.0 50.0  0  0.5 1.5 +vanim	
+'maizy 280.0 250.0 19 0.5 2.0 +vanim	
+'maizx 50.0  100.0 0  0.5 2.0 +vanim	
+'maizy 310.0 280.0 19 0.5 2.5 +vanim	
+'maizx 100.0 50.0  0  0.5 2.5 +vanim	
+
+|	+vanim | 100 10 1 2.0 1.0 -- 
+| +vexe | 'exe 3.0 --
+			)
 	drop ;
 
 :main
@@ -221,6 +246,9 @@
 
 	44100 $8010 1 1024 Mix_OpenAudio
 	loadsnd
+	
+	50 vaini	| hasta 50 eventos
+	vareset	
 	
 	timer<
 	'game SDLshow
