@@ -76,7 +76,6 @@
 	32 << or a!+	| ang zoom
 	a!+ sprites a!+			| anim sheet
 	swap a!+ a!+ 	| vx vy
-	a!+
 	;
 
 :+enemigo
@@ -102,7 +101,7 @@
 	dirdis	
 	0
 	dx dy
-	8 0 $ff	ICS>anim
+	12 0 $ff	ICS>anim
 	1.0 ang
 	xj yj
 	+obj
@@ -117,10 +116,10 @@
 	drawspr	
 	>a
 	btnpad $f and 
-	$1 and? ( 1.0 a> .x +! 5 0 $ff ICS>anim anim! )
-	$2 and? ( -1.0 a> .x +! 6 0 $ff ICS>anim anim! )
-	$4 and? ( 1.0 a> .y +! 4 0 $ff ICS>anim anim! )
-	$8 and? ( -1.0 a> .y +! 7 0 $ff ICS>anim anim! )
+	$1 and? ( 1.0 a> .x +! 8 2 $ff ICS>anim anim! )
+	$2 and? ( -1.0 a> .x +! 10 2 $ff ICS>anim anim! )
+	$4 and? ( 1.0 a> .y +! 4 2 $ff ICS>anim anim! )
+	$8 and? ( -1.0 a> .y +! 6 2 $ff ICS>anim anim! )
 	1? ( dup 'btna ! )
 	drop
 	a> .x @ 'xj !
@@ -131,8 +130,10 @@
 	'jugador 'obj p!+ >a
 	swap a!+ a!+
 	2.0 a!+ 
-	0 a!+ 
-	sprites a!
+	6 1 $ff ICS>anim a!+ 
+	sprites a!+
+	
+	
 	;	
 	
 |------------------- juego
@@ -159,8 +160,8 @@
 	<esp> =? ( +disparo btnpad $10 or 'btnpad ! )
 	>esp< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? (
-			33
-			sprites
+			1.0 randmax 0.5 - 
+			1.0 randmax 0.5 - 
 			16 randmax 0 $ff ICS>anim
 			2.0 0
 			540.0 randmax 50.0 +
