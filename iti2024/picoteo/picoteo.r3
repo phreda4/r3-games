@@ -55,37 +55,34 @@
 
 #jugador 0 0 0 0 0 0 0 0
 
-:son 0 playsnd ;
+:son |0 playsnd 
+	;
 
-:son2 9 playsnd ;
+:son2 |9 playsnd 
+	;
 
 
 :maizmovy | y x adr --
-	dup 160.0 130.0 19 0.5 0.0 +vanim	
-	dup 190.0 160.0 20 0.5 0.5 +vanim	
 	'son 1.0 +vexe
-	dup 220.0 190.0 19 0.5 1.0 +vanim	
-	dup 250.0 220.0 20 0.5 1.5 +vanim	
 	'son 2.0 +vexe
-	dup 280.0 250.0 19 0.5 2.0 +vanim	
-	dup 310.0 280.0 20 0.5 2.5 +vanim	
 	'son2 3.0 +vexe
+	dup 310.0 130.0 0 3.0 0.0 +vanim
 	dup 400.0 
 	20.0 randmax 10.0 - +
-	310.0 20 0.5 3.0 +vanim	
+	310.0 0 0.5 3.0 +vanim	
 	drop
 	;
 	
 :maizmovx | y x adr --
-	dup pick2 50.0 - pick3 0  0.5 0.0 +vanim	
-	dup pick2 pick3 50.0 - 0  0.5 0.5 +vanim	
-	dup pick2 50.0 - pick3 0  0.5 1.0 +vanim	
-	dup pick2 pick3 50.0 - 0  0.5 1.5 +vanim	
-	dup pick2 50.0 - pick3 0  0.5 2.0 +vanim	
-	dup pick2 pick3 50.0 - 0  0.5 2.5 +vanim	
+	dup pick2 50.0 - pick3 20  0.5 0.0 +vanim	
+	dup pick2 pick3 50.0 - 19 0.5 0.5 +vanim	
+	dup pick2 50.0 - pick3 20 0.5 1.0 +vanim	
+	dup pick2 pick3 50.0 - 19 0.5 1.5 +vanim	
+	dup pick2 50.0 - pick3 20 0.5 2.0 +vanim	
+	dup pick2 pick3 50.0 - 19 0.5 2.5 +vanim	
 	dup pick2 80.0 - 
 	20.0 randmax 10.0 - +
-	pick3 0  0.5 3.0 +vanim	
+	pick3 20 0.5 3.0 +vanim	
 	drop
 	;
 
@@ -95,11 +92,7 @@
 	a> 6 <<
 	0.3
 	a@+ sprgame sspriterz | x y ang zoom img --
-	
-|	5.0 over .x +!
-|	dup .x @ 1024.0 >? ( 2drop 0 ; ) drop
-|	|dup .x @ 1000.0 >? ( drop .s @ playsnd 0 ; ) drop
-	drop	
+	drop
 	;
 
 :+maiz | x y --
