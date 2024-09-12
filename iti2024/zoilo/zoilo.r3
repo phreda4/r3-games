@@ -64,10 +64,8 @@
 |---------------------
 :animal
 	>a
-	
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
-	
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	$10000 or
 	a> .x @ int. xvp - 
@@ -101,8 +99,7 @@
 	over anianimal 
 	pick2 posanimal
 	600.0 randmax 300.0 - yp +
-	+animal
-	
+	+animal	
 	;
 	
 |----------------------------
@@ -122,16 +119,8 @@
 	;	
 
 |----------------------------
-:disparo
-	$ffffff sdlcolor
-	>a
-	a> .x @ int. xvp - 0 <? ( drop 0 ; ) sw >? ( drop 0 ; )
-	a> .y @ int. yvp - 0 <? ( 2drop 0 ; ) sh >? ( 2drop 0 ; )
-	3 3 sdlfrect 
-	a> .vx @ a> .x +!
-	a> .vy @ a> .y +!
-	;	
-
+#escopeta 0
+#balas 5
 #dx #dy	
 
 :dirdis
@@ -143,15 +132,55 @@
 	$8 and? ( -8.0 'dy ! )
 	drop
 	;
+
+:disparo
+	$ffffff sdlcolor
+	>a
+	a> .x @ int. xvp - 0 <? ( drop 0 ; ) sw >? ( drop 0 ; )
+	a> .y @ int. yvp - 0 <? ( 2drop 0 ; ) sh >? ( 2drop 0 ; )
+	3 3 sdlfrect 
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!
+	;	
+
 	
 :+disparo | --
-	btnpad $10 and? ( drop ; ) drop
 	'disparo 'disp p!+ >a
 	xp a!+ yp 38.0 - a!+
 	3 3 << a+
 	dirdis 
 	dx a!+ dy a!+
 	;	
+
+:cuchillo
+	$ffffff sdlcolor
+	>a
+	a> .a @ 0? ( ; ) dup 
+	a> .x @ xvp - 
+	a> .y @ yvp - 
+	sdlfellipse 
+	-1 a> .a +!
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!
+	;
+	
+:+cuchillo
+	dirdis 
+	'cuchillo 'disp p!+ 8 - >a
+	xp dx + int. a> .x !
+	yp 38.0 - dy + int. a> .y !
+	dx int. 2 >> a> .vx !
+	dy int. 2 >> a> .vy !
+	10 a> .a !
+	;	
+		
+:accion
+	btnpad $10 and? ( drop ; ) drop
+	escopeta 0? ( drop +cuchillo ; ) drop
+	balas 0? ( 'escopeta ! ; ) drop
+	+disparo 
+	-1 'balas +!
+	;
 	
 |------ PLAYER
 :viewpostmove
@@ -182,10 +211,10 @@
 	
 :diranim | btn -- btn
 	0 'dx ! 0 'dy !
-	%1 and? ( 2.0 'dx ! )	
-	%10 and? ( -2.0 'dx ! )
-	%100 and? ( 2.0 'dy !  )
-	%1000 and? ( -2.0 'dy ! )
+	$1 and? ( 2.0 'dx ! )	
+	$2 and? ( -2.0 'dx ! )
+	$4 and? ( 2.0 'dy !  )
+	$8 and? ( -2.0 'dy ! )
 	dirp =? ( drop ; ) 
 	|0? ( 0 0 0 ICS>anim anim! drop ; )
 	0? ( drop dirp 'dirq + c@ 0 0 ICS>anim anim! ; ) 
@@ -195,8 +224,6 @@
 	$8 =? ( 10 4 $ff ICS>anim anim! ) |up
 	'dirp !
 	;
-	
-
 
 |  x y anim 
 :player	
@@ -236,6 +263,19 @@
 	3 << 'listdsp + @ ex ;
 	
 |----------------------------------	
+:hud
+	64 32 2.0 escopeta 1 xor sprcosas sspritez
+	escopeta 0? ( drop ; ) drop
+	$ffffff bcolor
+	128 0 bat
+	balas "balas %d " bprint2 
+	
+|	dirp "%h " bprint 
+|	btnpad "%h " bprint 
+|	'disp p.cnt "%d" bprint
+
+	;
+	
 |----- JUGAR
 :jugar
 	timer.
@@ -249,27 +289,25 @@
 	'disp p.draw
 	'fx p.draw		
 
-	$ffffff bcolor
-	0 0 bat
-	dirp "%h" bprint bcr
-	btnpad "%h" bprint bcr
-	'disp p.cnt "%d" bprint
+	hud
 |	0 0 zoom	
 	SDLredraw
 	
 	SDLkey 
 	>esc< =? ( exit )
-	<up> =? ( btnpad %1000 or 'btnpad ! )
-	<dn> =? ( btnpad %100 or 'btnpad ! )
-	<le> =? ( btnpad %10 or 'btnpad ! )
-	<ri> =? ( btnpad %1 or 'btnpad ! )
-	>up< =? ( btnpad %1000 nand 'btnpad ! )
-	>dn< =? ( btnpad %100 nand 'btnpad ! )
-	>le< =? ( btnpad %10 nand 'btnpad ! )
-	>ri< =? ( btnpad %1 nand 'btnpad ! )	
-	<esp> =? ( +disparo btnpad $10 or 'btnpad ! )
-	>esp< =? ( btnpad $10 nand 'btnpad ! )
+	<up> =? ( btnpad $8 or 'btnpad ! )
+	<dn> =? ( btnpad $4 or 'btnpad ! )
+	<le> =? ( btnpad $2 or 'btnpad ! )
+	<ri> =? ( btnpad $1 or 'btnpad ! )
+	>up< =? ( btnpad $8 nand 'btnpad ! )
+	>dn< =? ( btnpad $4 nand 'btnpad ! )
+	>le< =? ( btnpad $2 nand 'btnpad ! )
+	>ri< =? ( btnpad $1 nand 'btnpad ! )	
+	<z> =? ( accion btnpad $10 or 'btnpad ! )
+	>z< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? ( randanimal )
+	<f2> =? ( 5 'balas ! )
+	<f3> =? ( escopeta 1 xor 'escopeta ! )
 |	<f> =? ( toglefs ) | fullscreen
 	drop 
 	;
@@ -293,7 +331,7 @@
 :juego
 	inisprite
 	reset
-	0 400.0 300.0 +jugador | 0 es jugador
+	0 600.0 360.0 +jugador | 0 es jugador
 	10 ( 1? 1 - randcosa ) drop
 	'jugar SDLshow
 	;	

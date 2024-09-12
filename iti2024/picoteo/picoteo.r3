@@ -58,7 +58,8 @@
 #jugador 0 0 0 0 0 0 0 0
 #puntaje 0 0 0 0 0 0 0 0
 
-:son |0 playsnd 
+:son 
+	0 playsnd 
 |"tic" .println
 	;
 
@@ -66,10 +67,12 @@
 	over 8 + @ 3 << 'puntaje + 1 swap +!
 	over @ .z 0 swap !	| zoom =0
 	drop
-	"pico" .println
+	11 playsnd
+	|"pico" .println
 	;
 	
 :llego |9 playsnd 
+	5 playsnd
 	dup 8 + @ 3 << 'jugador + @
 	1? ( toco ; ) drop
 	;
@@ -254,6 +257,7 @@
 	3 << 'jugador + 
 	dup @ 1? ( 2drop ; ) drop
 	20 swap ! | loop correct
+	10 playsnd
 	;
 	
 :feed
