@@ -5,6 +5,7 @@
 ^r3/win/sdl2mixer.r3
 ^r3/util/pcfont.r3
 ^r3/util/arr16.r3
+^r3/lib/rand.r3
 ^r3/util/varanim.r3
 
 |------ sound
@@ -41,42 +42,75 @@
 #cucas 0 0 
 #fx 0 0
 
-
-| 1 2  3   4   5   6   7 8  9  10 11    
-| x y 
-
-:.x 1 ncell+ ;
-:.y 2 ncell+ ;
-:.s 4 ncell+ ;
-
-
-:cuca
-	dup 8 + >a 
-	a@+ int. a@+ int.  | x y
-	|over 8 << 
-	0.25
-	1.0
-	a@ timer+ dup a!+ 
-	anim>N sprgame sspriterz | x y zoom img --
-	
-	2.0 over .x +!
-	dup .x @ 1024.0 >? ( 2drop 0 ; ) drop
-	|dup .x @ 1000.0 >? ( drop .s @ playsnd 0 ; ) drop
-	drop	
-	;
-	
-:+cuca | x y --
-	'cuca 'cucas p!+ >a
-	swap a!+ a!+
-	0 4 $3f ICS>anim a!+ 
-	;
-	
-|------- game
 #tic 		500 | miliseconds
 #tiempo		0	| tiempo ahora
 
 #jugador 0 0 0 0 0 0 0 0
-#jugadoe 0 0 0 0 0 0 0 0
+#puntaje 0 0 0 0 0 0 0 0
+
+| x y anim
+:.x 1 ncell+ ;
+:.y 2 ncell+ ;
+:.a 3 ncell+ ;
+
+:cuca
+	dup 8 + >a 
+	a@+ int. a@+ int.  | x y
+	0.25 1.0
+	a@ timer+ dup a!+ 
+	anim>N sprgame sspriterz | x y zoom img --
+	drop	
+	;
+
+:toco
+	over 8 + @ 3 << 'puntaje + 1 swap +!
+	|over @ .z 0 swap !	| zoom =0
+	drop
+	"toco" .println
+	;
+	
+:momento |9 playsnd 
+	dup 8 + @ 3 << 'jugador + @
+	1? ( toco ; ) drop
+	;
+	
+:cucamovy | y x adr --
+	dup pick3 50.0 - pick4 20 0.5 0.0 +vanim	
+	dup pick3 pick4 50.0 - 19 0.5 0.5 +vanim	
+	dup pick3 50.0 - pick4 20 0.5 1.0 +vanim	
+	dup pick3 pick4 50.0 - 19 0.5 1.5 +vanim	
+	dup pick3 50.0 - pick4 20 0.5 2.0 +vanim	
+	dup pick3 pick4 50.0 - 19 0.5 2.5 +vanim	
+
+|	dup 400.0 
+|	20.0 randmax 10.0 - +
+|	310.0 0 0.5 3.0 +vanim	
+	
+	drop ;
+
+:cucamovx | y x adr --
+	dup 900.0 -32.0 0 3.0 0.0 +vanim
+
+	pick3 a> 8 - 'momento 3.0 +vvvexe
+|	dup pick2 80.0 - 
+|	20.0 randmax 10.0 - +
+|	pick3 20 0.5 3.0 +vanim	
+
+	drop ;
+	
+
+:+cuca | n x y --
+	'cuca 'cucas p!+ >a
+	swap 
+	a> cucamovx
+	a> 8 + cucamovy
+	a!+ a!+
+	0 4 $3f ICS>anim a!+ 
+	a!+
+	;
+	
+|------- game
+
 
 |------- timeline
 
@@ -94,11 +128,11 @@
 :showtime
 	ntime ltime =? ( drop ; ) 
 	dup 'ltime ! 3 << 'time1 + @
-	-? ( drop 0 'ntime ! ; )
-	1 and? ( 0.0 120.0 +cuca )
-	2 and? ( 0.0 270.0 +cuca )
-	4 and? ( 0.0 420.0 +cuca )
-	8 and? ( 0.0 570.0 +cuca )
+	-? ( drop ; ) |0 'ntime ! ; )
+	1 and? ( 0 0.0 120.0 +cuca )
+	2 and? ( 1 0.0 270.0 +cuca )
+	4 and? ( 2 0.0 420.0 +cuca )
+	8 and? ( 3 0.0 570.0 +cuca )
 	drop
 	;
 	
@@ -119,29 +153,27 @@
 	;
 
 |------------- jugadores
-:hip | player --
-	3 <<
-	dup 'jugadoe + @ 1? ( 2drop ; ) drop
-	dup 8 $f0 ICS>anim
-	over 'jugador + ! 
-	1 swap 'jugadoe + !
-	;
+:hip | n -- 
+	3 << 'jugador + 
+	dup @ 1? ( 2drop ; ) drop
+	20 swap ! | tiempo 
+	;	
 	
-:stopp | player --
-	3 <<
-	dup 0 0 ICS>anim 
-	over 'jugador + ! 
-	0 swap 'jugadoe + !
-	;
 	
 :player | player --
+
 	950 				| x
-	80 pick2 150 * +	| y
-	pick2 3 << 'jugador + 
-	dup @ timer+ dup rot ! anim>n
-	dup $7 and 7 =? ( pick4 stopp ) drop
+	60 pick2 150 * +	| y
+	
+	pick2 3 << 'jugador + @ 
+	1? ( pick3 3 << 'jugador + -1 swap +! drop 1 ) 
+	pick3 2* +
 	sprplayer 
 	ssprite
+	
+	900 over 150 * 80 + pcat
+	dup 3 << 'puntaje + @ "%d" pcprint2
+	
 	drop
 	;
 
@@ -183,13 +215,10 @@
 	<d> =? ( 2 hip )
 	<f> =? ( 3 hip )
 	
-	<f1> =? ( )
-
 	drop ;
 	
 :reset
 	timer<
-	0 stopp 1 stopp 2 stopp 3 stopp
 	;
 		
 :main
@@ -205,7 +234,7 @@
 	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
 	100 'cucas p.ini
 	100 'fx p.ini
-	50 vaini
+	1000 vaini
 	vareset
 	
 	reset

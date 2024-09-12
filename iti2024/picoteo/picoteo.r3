@@ -38,12 +38,14 @@
 
 #imgfondo
 
-| 1 2  3   4   5   6   7 8  9  10 11    
-| x y 
+| 1 2 3 4   
+| x y s l
 
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
-:.s 4 ncell+ ;
+:.z 3 ncell+ ;	| zoom
+:.s 4 ncell+ ;	| n sprite
+:.l 5 ncell+ ;	| lugar
 
 #sprgame
 #sprfx
@@ -54,18 +56,29 @@
 #fx 0 0
 
 #jugador 0 0 0 0 0 0 0 0
+#puntaje 0 0 0 0 0 0 0 0
 
 :son |0 playsnd 
+|"tic" .println
 	;
 
-:son2 |9 playsnd 
+:toco
+	over 8 + @ 3 << 'puntaje + 1 swap +!
+	over @ .z 0 swap !	| zoom =0
+	drop
+	"pico" .println
+	;
+	
+:llego |9 playsnd 
+	dup 8 + @ 3 << 'jugador + @
+	1? ( toco ; ) drop
 	;
 
 
 :maizmovy | y x adr --
 	'son 1.0 +vexe
 	'son 2.0 +vexe
-	'son2 3.0 +vexe
+	pick3 a> 8 - 'llego 3.0 +vvvexe
 	dup 310.0 130.0 0 3.0 0.0 +vanim
 	dup 400.0 
 	20.0 randmax 10.0 - +
@@ -90,18 +103,20 @@
 	dup 8 + >a 
 	a@+ int. a@+ int.  | x y
 	a> 6 <<
-	0.3
+	a@+ | 0.3 zoom
 	a@+ sprgame sspriterz | x y ang zoom img --
 	drop
 	;
 
-:+maiz | x y --
+:+maiz | n x y --
 	'maiz 'maizs p!+ >a
 	swap | y x
 	a> maizmovx
 	a> 8 + maizmovy
 	a!+ a!+
+	0.3 a!+
 	10 a!+ 
+	a! | valor
 	;
 	
 |------- game
@@ -216,9 +231,15 @@
 	msec 7 >> 3 and 6 + 
 	sprgame sspritez
 	340 2.0 
-	|msec 7 >> 3 mod 3 + 
-	pick3 3 >> 'jugador + @ 3 +
-	sprgame sspritez
+	
+	pick3 3 << 'jugador + @ 
+	1? ( pick4 3 << 'jugador + -1 swap +! drop 1 ) 
+	
+	3 + sprgame sspritez
+	
+	dup 200 * 90 + 8 pcat
+	dup 3 << 'puntaje + @ "%d" pcprint2
+	
 	drop
 	;
 	
@@ -229,6 +250,19 @@
 	3 700 gallina
 	;
 	
+:pico | n -- 
+	3 << 'jugador + 
+	dup @ 1? ( 2drop ; ) drop
+	20 swap ! | loop correct
+	;
+	
+:feed
+	50 randmax 1? ( drop ; ) drop
+	4 randmax dup 	| lugar
+	200.0 * 100.0 + | x
+	130.0 +maiz
+	;
+	
 :game
 	timer. vupdate
 	fondo
@@ -237,15 +271,20 @@
 	
 	gallinas
 	
+	feed
+	
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<a> =? ( 1 'jugador ! )
-	>a< =? ( 0 'jugador ! )
-	<f1> =? ( 100.0 130.0 +maiz )
-	<f2> =? ( 300.0 130.0 +maiz )
-	<f3> =? ( 500.0 130.0 +maiz )
-	<f4> =? ( 700.0 130.0 +maiz )
+	<a> =? ( 0 pico )
+	<s> =? ( 1 pico )
+	<d> =? ( 2 pico )
+	<f> =? ( 3 pico )
+	
+	<f1> =? ( 0 100.0 130.0 +maiz )
+	<f2> =? ( 1 300.0 130.0 +maiz )
+	<f3> =? ( 2 500.0 130.0 +maiz )
+	<f4> =? ( 3 700.0 130.0 +maiz )
 	
 	drop ;
 
