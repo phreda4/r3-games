@@ -74,17 +74,32 @@
 	0 a!				| last
 	;
 
-:+cosechadora
-	2.0 0.0
+:+cosechader
+	-2.0 0.0
 	sprites
 	4 2 $ff ICS>anim
-	1.0
-	0
-	10.0 
-	400.0 randmax 10.0 +
+	1.0 0
+	670.0 
+	330.0 randmax 80.0 +
 	+obj ;
+	;
+	
+:+cosechadora
+	2 randmax 0? ( drop +cosechader ; ) drop
+	2.0 0.0
+	sprites
+	6 2 $ff ICS>anim
+	1.0 0
+	-30.0 
+	330.0 randmax 80.0 +
+	+obj ;
+	
+	
 |----------------------------- jugador
 |  x y anim 
+#anim
+#panim
+
 :jugador
 	drawspr	
 	>a
@@ -94,6 +109,10 @@
 	$4 and? ( 1.0 a> .y +! )
 	$8 and? ( -1.0 a> .y +! )
 	drop
+	anim
+	panim =? ( drop ; ) 
+	dup 'panim !
+	a> .ani !
 	;	
 
 :+jugador | 'per x y --
@@ -110,6 +129,10 @@
 	0 0 640 480 ifondo SDLImages
 	;
 	
+:horda
+	50 randmax 1? ( drop ; ) drop
+	+cosechadora ;
+	
 :juego
 	timer.
 	dfondo
@@ -118,18 +141,16 @@
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
-	<up> =? ( btnpad %1000 or 'btnpad ! )
-	<dn> =? ( btnpad %100 or 'btnpad ! )
-	<le> =? ( btnpad %10 or 'btnpad ! )
-	<ri> =? ( btnpad %1 or 'btnpad ! )
-	>up< =? ( btnpad %1000 nand 'btnpad ! )
-	>dn< =? ( btnpad %100 nand 'btnpad ! )
-	>le< =? ( btnpad %10 nand 'btnpad ! )
-	>ri< =? ( btnpad %1 nand 'btnpad ! )	
-	
-	<f1> =? (
-			+cosechadora )
+	<up> =? ( btnpad %1000 or 'btnpad ! 2 2 $ff ICS>anim 'anim ! )
+	<dn> =? ( btnpad %100 or 'btnpad ! 0 2 $ff ICS>anim 'anim ! )
+	<le> =? ( btnpad %10 or 'btnpad ! 2 2 $ff ICS>anim 'anim ! )
+	<ri> =? ( btnpad %1 or 'btnpad ! 0 2 $ff ICS>anim 'anim ! )
+	>up< =? ( btnpad %1000 nand 'btnpad ! 2 0 $ff ICS>anim 'anim ! )
+	>dn< =? ( btnpad %100 nand 'btnpad ! 0 0 $ff ICS>anim 'anim ! )
+	>le< =? ( btnpad %10 nand 'btnpad ! 2 0 $ff ICS>anim 'anim ! )
+	>ri< =? ( btnpad %1 nand 'btnpad ! 0 0 $ff ICS>anim 'anim ! )
 	drop
+	horda
 	;
 
 :reset
