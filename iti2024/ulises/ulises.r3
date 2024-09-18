@@ -6,7 +6,7 @@
 ^r3/util/bfont.r3
 ^r3/win/sdl2gfx.r3
 
-#sprfondo
+|#sprfondo
 #sprites
 
 #fx 0 0
@@ -31,13 +31,14 @@
 	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	;
-	
-#mapw 32 
-#maph 8
-#mapsx 16
-#mapsy 200
-	
-#map1 
+
+#map1 (
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+1 0 0 0 2 3 4 5 6 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 1
 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
@@ -46,35 +47,49 @@
 1 0 0 0 0 0 2 0 2 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 1 0 0 0 0 0 1 0 2 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+)
+	
+#mapw 32 
+#maph 14
+
+#mapsx 16
+#mapsy 48
+
+#mapvx 0
+#mapvy 0
+#mapvw 22
+#mapvh 14
 
 #map 'map1
 
-:t2m | x y -- t
+:t2m | vx vy -- t
 	mapsy - 5 >> swap
 	mapsx - 5 >> swap
-	mapw * + 2 << map + ;
+:]t2m | x y -- t
+	mapw * + map + ;
 
 :gettile | x y -- t
-	t2m @ ;
+	t2m c@ ;
 
-:tile | y x t -- y x
+:drawtile | y x t -- y x
 	0? ( drop ; )
 	over 5 << mapsx +
 	pick3 5 << mapsy +
-	rot 1- $3 and 
+	rot 1- $7 and 
 	sprites ssprite
 	;
 
 :drawmap
-	map >b
-	0 ( 8 <?
-		0 ( 19 <?
-			b@+ tile 
+	0 ( mapvh <?
+		0 ( mapvw <?
+			dup mapvx + mapw clamp0max
+			pick2 mapvy + maph clamp0max
+			]t2m c@ drawtile
 			1+ ) drop
-		mapw 19 - 3 << b+
 		1+ ) drop ;
 
 |--------- PLAYER
+#xvp 0
 #ddx
 #dx #dy
 #xp #yp
@@ -83,43 +98,45 @@
 	xp 16 >> yp 16 >> 17 - gettile ;
 
 :floor? | -- piso?
-	xp 16 >> yp 16 >> 17 + gettile ;
+	xp 16 >> 10 + yp 16 >> 16 + gettile 
+	xp 16 >>  yp 16 >> 16 + gettile
+	or
+	;
 
 :wall? | dx -- wall?
-	xp 16 >> + yp 16 >> 10 + gettile ;
+	xp 16 >> + yp 16 >> 8 + gettile ;
 
 #cae
 :jump
 	floor? 0? ( drop
 		1 'cae ! 0.8 'dy +!
-		roof? 1? ( dy -? ( 0 'dy ! ) drop ) drop
+		|roof? 1? ( dy -? ( 0 'dy ! ) drop ) drop
 		; ) drop
 	cae 1? ( 
 		0 'cae ! 0 'dy !
-		yp $fff00000 and 8.0 + 'yp !  | 
+		yp $fff00000 and 'yp !  | 
 		) drop
 	sdlkey
-	<up> =? ( -10.0 'dy ! )
+	<esp> =? ( -14.0 'dy ! )
 	drop
 	
 	;
 
 	
-:goleft
-	$10 wall? 0? ( drop ; ) drop
+:go>>
+	32 wall? 0? ( drop ; ) drop
 	xp $fff00000 and 'xp !
 	drop 0 ;
 
-:gorigth
-	-$8 wall? 0? ( drop ; ) drop
+:go<<
+	-8 wall? 0? ( drop ; ) drop
 	xp $fff00000 and 'xp !
 	drop 0 ;
 
 :player
     dx ddx 0? ( swap 0.8 *. )
 	+ 3.0 min -3.0 max
-	+? ( goleft )
-	-? ( gorigth )
+	+? ( go>> ) -? ( go<< )
 	'dx !
 	jump
 	dx 'xp +!
@@ -128,8 +145,17 @@
 
 :drawplayer
 	player
-	xp 16 >> yp 16 >> 16 -
-	2 sprites ssprite
+	xp 16 >> xvp -
+	yp 16 >> 16 -
+	2.0 10 sprites sspritez
+	
+	xp 16 >> xvp - 
+	640 128 - >? ( 2 'xvp +! )
+	128 <? ( -2 'xvp +! )
+	drop
+	
+	xvp 5 >> 'mapvx !
+	xvp $1f and neg 'mapsx !
 	;
 
 :resetplayer
@@ -137,22 +163,31 @@
 	0 'dx ! 0 'dy !
 	64.0 'xp !
 	210.0 'yp !
+	0 'xvp !
 	;
 	
 :dfondo
-	0 0 sprfondo sdlimage
+|	0 0 sprfondo sdlimage
 	;
+	
+|---------
+:debmouse
+	0 0 bat
+	yp xp "x:%f y:%f" bprint2 bcr
+|	dy dx "%f %f" bprint
+	;
+	
 	
 |---------- 
 :juego
 	timer.
-	0 sdlcls
+	$5a5a5a sdlcls
+	
 	dfondo
-	0 0 bat
-	yp xp "%f %f" bprint bcr
-	dy dx "%f %f" bprint
 	drawmap
 	drawplayer
+	
+	debmouse
 	
 	sdlredraw
 	sdlkey
@@ -172,7 +207,7 @@
 : |<<< BOOT <<<
 	"Ulises pierde" 640 480 SDLinit
 	bfont1
-	"r3\iti2024\ulises\fondo.png" loadimg 'sprfondo !
+|	"r3\iti2024\ulises\fondo.png" loadimg 'sprfondo !
 	32 32 "r3\iti2024\ulises\sprites.png" ssload 'sprites !
 	reset
 	'juego SDLshow

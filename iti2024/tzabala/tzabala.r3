@@ -14,6 +14,7 @@
 #obj 0 0
 
 #btnpad
+#xvp #yvp
 
 | x y ang/z anim ss vx vy ar io
 | 1 2 3   4    5  6  7  8  9
@@ -29,12 +30,13 @@
 
 :drawspr | arr -- arr
 	dup 8 + >a
-	a@+ int. a@+ int. | x y
+	a@+ int. xvp -
+	a@+ int. yvp - 
 	a@+ dup 32 >> swap $ffffffff and | rot zoom
 	a@ timer+ dup a!+ anim>n 			| n
 	a@+ sspriterz
 	;
-	
+
 |------------------- fx
 :fxobj | adr --
 	dup .ani @ anim>n 
@@ -65,8 +67,8 @@
 	dup .vx @ over .x +!
 	dup .vy @ over .y +!
 	
-	dup .x @ int. -10 <? ( 2drop 0 ; ) sw 10 + >? ( 2drop 0 ; ) drop
-	dup .y @ int. -10 <? ( 2drop 0 ; ) sh 10 + >? ( 2drop 0 ; ) drop
+	dup .x @ int. xvp - -10 <? ( 2drop 0 ; ) sw 10 + >? ( 2drop 0 ; ) drop
+	dup .y @ int. yvp - -10 <? ( 2drop 0 ; ) sh 10 + >? ( 2drop 0 ; ) drop
 	drop
 	;
 	
@@ -81,6 +83,48 @@
 
 :+enemigo
 	;
+
+|-------------- mapa estatico
+#listaobs ( 13 14 15 16 ) 
+
+:staticobj
+	drawspr drop ;
+
+:+estatico | o x y --
+	a[
+	'staticobj 'obj p!+ >a
+	swap a!+ a!+	| x y 
+	2.0 a!+	| ang zoom
+	1- 'listaobs + c@
+	0 $ff ICS>anim
+	a!+ sprites a!+			| anim sheet
+	]a
+	;
+	
+|------------- mapa
+#basex 320
+#basey 340
+
+#obstaculos
+1 -100 50 
+1 100 50
+2 -80 100
+2 80 100
+3 -80 300
+3 80 300
+4 -80 500
+4 80 500
+0
+
+
+:resetene
+	'obstaculos >a
+	( a@+ 1?
+		basex a@+ + fix. 
+		basey a@+ - fix. +estatico
+		) drop 
+	;
+	
 	
 #btna
 #xj #yj
@@ -110,6 +154,12 @@
 	
 |----------------------------- jugador
 |  x y anim 
+:setvp
+	xj int. basex - 'xvp !
+	yj int. basey - 'yvp !
+	;
+
+
 :anim!
 	a> .ani dup @ $ffffffff and rot or swap ! ;
 	
@@ -125,6 +175,7 @@
 	drop
 	a> .x @ 'xj !
 	a> .y @ 'yj !
+	setvp
 	;	
 
 :+jugador | x y --
@@ -144,7 +195,9 @@
 :juego
 	timer.
 	dfondo
+	2 'obj p.sort
 	'obj p.draw
+
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
@@ -159,8 +212,10 @@
 	<z> =? ( +disparo btnpad $10 or 'btnpad ! )
 	>z< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? (
-			1.0 randmax 0.5 - 
-			1.0 randmax 0.5 - 
+		0
+		|	1.0 randmax 0.5 - 
+		|	1.0 randmax 0.5 - 
+		0 0 
 			16 randmax 0 $ff ICS>anim
 			2.0 0
 			540.0 randmax 50.0 +
@@ -168,10 +223,14 @@
 	drop
 	;
 
+	
 :reset
 	'obj p.clear
-	320.0 440.0 +jugador
+	basex fix. basey fix. +jugador
+	0 0 'yvp ! 'xvp ! 
+	resetene
 	;
+	
 |-------------------
 : |<<< BOOT <<<
 	"Teniente Zabala" 640 480 SDLinit

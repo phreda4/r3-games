@@ -78,7 +78,7 @@
 	-2.0 0.0
 	sprites
 	4 2 $ff ICS>anim
-	1.0 0
+	2.0 0
 	670.0 
 	330.0 randmax 80.0 +
 	+obj ;
@@ -89,7 +89,7 @@
 	2.0 0.0
 	sprites
 	6 2 $ff ICS>anim
-	1.0 0
+	2.0 0
 	-30.0 
 	330.0 randmax 80.0 +
 	+obj ;
@@ -130,12 +130,13 @@
 	;
 	
 :horda
-	50 randmax 1? ( drop ; ) drop
+	80 randmax 1? ( drop ; ) drop
 	+cosechadora ;
 	
 :juego
 	timer.
 	dfondo
+	2 'obj p.sort
 	'obj p.draw
 	
 	sdlredraw

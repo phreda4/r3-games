@@ -32,6 +32,7 @@
 		>>0 ) drop ;
 
 :playsnd | n --
+	drop ;
 	3 << 'sndlist + @ SNDplay ;
 
 |------- graficos
@@ -81,7 +82,8 @@
 :maizmovy | y x adr --
 	'son 1.0 +vexe
 	'son 2.0 +vexe
-	pick3 a> 8 - 'llego 3.0 +vvvexe
+	pick3 a> 8 - 'llego 3.0 15 + | precision/2
+	+vvvexe
 	dup 310.0 130.0 0 3.0 0.0 +vanim
 	dup 400.0 
 	20.0 randmax 10.0 - +
@@ -230,10 +232,10 @@
 	;
 	
 :gallina
-	dup 450 2.0 
+	dup 456 2.0 
 	msec 7 >> 3 and 6 + 
 	sprgame sspritez
-	340 2.0 
+	350 2.0 
 	
 	pick3 3 << 'jugador + @ 
 	1? ( pick4 3 << 'jugador + -1 swap +! drop 1 ) 
@@ -256,7 +258,7 @@
 :pico | n -- 
 	3 << 'jugador + 
 	dup @ 1? ( 2drop ; ) drop
-	20 swap ! | loop correct
+	30 swap ! | precision
 	10 playsnd
 	;
 	
@@ -272,10 +274,9 @@
 	fondo
 	
 	'maizs p.draw
-	
 	gallinas
-	
 	feed
+
 	
 	SDLredraw
 	SDLkey
@@ -302,12 +303,11 @@
 	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
+
 	1000 'maizs p.ini
-	100 'fx p.ini
-	1000 vaini	| hasta 50 eventos
-	
-	
-	vareset	
+	500 'fx p.ini
+	500 vaini
+
 	'maizs p.clear
 	
 	timer<
