@@ -32,7 +32,7 @@
 		>>0 ) drop ;
 
 :playsnd | n --
-	drop ;
+drop ;
 	3 << 'sndlist + @ SNDplay ;
 
 |------- graficos
@@ -82,8 +82,7 @@
 :maizmovy | y x adr --
 	'son 1.0 +vexe
 	'son 2.0 +vexe
-	pick3 a> 8 - 'llego 3.0 15 + | precision/2
-	+vvvexe
+	pick3 a> 8 - 'llego 3.0 +vvvexe
 	dup 310.0 130.0 0 3.0 0.0 +vanim
 	dup 400.0 
 	20.0 randmax 10.0 - +
@@ -120,7 +119,7 @@
 	a> 8 + maizmovy
 	a!+ a!+
 	0.3 a!+
-	10 a!+ 
+	3 a!+ 
 	a! | valor
 	;
 	
@@ -200,7 +199,7 @@
 	500 80 pick2 150 * + 
 	pick2 3 << 'jugador + @ 
 	1? ( drop 1 )
-	sprplayer ssprite
+	sprplayer ssprite	
 	
 	3 << 'jugador +
 	dup @ 0? ( 2drop ; ) 
@@ -218,8 +217,10 @@
 :fondo
 	$0 SDLcls
 	16 ( 800 <?
-		16 ( 500 <?
-			2dup 2 randmax sprfx ssprite
+		16 ( 600 <?
+			2dup |2 randmax 
+			2dup xor $1 and
+			sprfx ssprite
 			32 + 
 			) drop
 		32 + 
@@ -232,15 +233,17 @@
 	;
 	
 :gallina
-	dup 456 2.0 
-	msec 7 >> 3 and 6 + 
-	sprgame sspritez
-	350 2.0 
+	dup 550 2.0 
+	msec 8 >> over xor 3 and 8 + 
+	sprgame sspritez	| patas
+
+	dup 428 2.0
+	7 sprgame sspritez
 	
+	340 2.0 
 	pick3 3 << 'jugador + @ 
 	1? ( pick4 3 << 'jugador + -1 swap +! drop 1 ) 
-	
-	3 + sprgame sspritez
+	4 + sprgame sspritez	| cabeza
 	
 	dup 200 * 90 + 8 pcat
 	dup 3 << 'puntaje + @ "%d" pcprint2
@@ -258,7 +261,7 @@
 :pico | n -- 
 	3 << 'jugador + 
 	dup @ 1? ( 2drop ; ) drop
-	30 swap ! | precision
+	20 swap ! | loop correct
 	10 playsnd
 	;
 	
@@ -274,9 +277,10 @@
 	fondo
 	
 	'maizs p.draw
+	
 	gallinas
+	
 	feed
-
 	
 	SDLredraw
 	SDLkey
@@ -294,7 +298,7 @@
 	drop ;
 
 :main
-	"Picoteo" 800 500 SDLinit
+	"Picoteo" 800 600 SDLinit
 	44100 $8010 1 1024 Mix_OpenAudio
 	loadsnd
 
@@ -303,11 +307,12 @@
 	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
-
 	1000 'maizs p.ini
-	500 'fx p.ini
-	500 vaini
-
+	100 'fx p.ini
+	1000 vaini	| hasta 50 eventos
+	
+	
+	vareset	
 	'maizs p.clear
 	
 	timer<

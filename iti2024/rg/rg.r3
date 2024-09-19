@@ -89,8 +89,15 @@
 	drop ;
 
 :cucamovx | y x adr --
-	dup 900.0 -32.0 0 3.0 0.0 +vanim
-
+	dup 220.0 -20.0 21 1.0 0.0 +vanim
+	dup 460.0 220.0 21 1.0 1.0 +vanim
+	dup 700.0 460.0 21 1.0 2.0 +vanim
+	
+	dup 1000.0 700.0 21 0.25 3.1 +vanim
+|	dup 20.0 randmax 10.0 - +
+|	800.0 20.0 randmax 10.0 - +
+|	700.0 21 0.25 3.0 +vanim
+	
 	pick3 a> 8 - 'momento 3.0 +vvvexe
 |	dup pick2 80.0 - 
 |	20.0 randmax 10.0 - +
@@ -162,11 +169,12 @@
 	
 :player | player --
 
-	950 				| x
-	60 pick2 150 * +	| y
+	740 				| x
+	70 pick2 140 * +	| y
 	
 	pick2 3 << 'jugador + @ 
-	1? ( pick3 3 << 'jugador + -1 swap +! drop 1 ) 
+	1? ( pick3 3 << 'jugador + -1 swap +! drop 1 
+		swap 40 + swap ) 
 	pick3 2* +
 	sprplayer 
 	ssprite
@@ -194,7 +202,7 @@
 :game
 	vupdate
 	$0 SDLcls
-	0 0 1024 600 imgfondo SDLImages
+|	0 0 800 600 imgfondo SDLImages
 	|immgui 	
 	
 	debug
@@ -222,7 +230,7 @@
 	;
 		
 :main
-	"Ritmo!!" 1024 600 SDLinit
+	"Ritmo!!" 800 600 SDLinit
 	44100 $8010 1 1024 Mix_OpenAudio
 	
 	|sdlfull
@@ -230,7 +238,7 @@
 	loadsnd
 	
 	64 64 "r3/iti2024/rg/cuca.png" ssload 'sprgame !
-	150 250 "r3/iti2024/rg/chancla.png" ssload 'sprplayer !
+	128 140 "r3/iti2024/rg/chanclas.png" ssload 'sprplayer !
 	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
 	100 'cucas p.ini
 	100 'fx p.ini
