@@ -6,6 +6,7 @@
 ^r3/util/sdlgui.r3
 ^r3/util/arr16.r3
 ^r3/lib/rand.r3
+^r3/util/hash2d.r3
 
 ^r3/util/bmap.r3
 
@@ -27,6 +28,12 @@
 #xp #yp 		| player
 #xvp #yvp		| viewport
 #xvpd #yvpd	| viewport dest
+
+#escopeta 1
+#balas 5
+#llaves 0
+#celu 0
+#vidas 3
 
 |person array
 | x y ang anim ss vx vy ar
@@ -64,6 +71,12 @@
 |---------------------
 :animal
 	>a
+	
+	a> 'obj p.nro  $4000 or | enemigo
+	16
+	a> .x @ int. a> .y @ int.
+	h2d+!	
+	
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
@@ -104,11 +117,16 @@
 	
 |----------------------------
 :cosa
-	8 + >a
-	a> 2 3 << + @
-	$20000 or
-	a@+ int. xvp -
-	a@+ int. yvp -
+	>a
+
+	a> 'obj p.nro  $2000 or | objeto
+	8
+	a> .x @ int. a> .y @ int.
+	h2d+!	
+	
+	a> .a @ $20000 or
+	a> .x @ int. xvp -
+	a> .y @ int. yvp -
 	+sprite	| a x y
 	;	
 
@@ -119,8 +137,6 @@
 	;	
 
 |----------------------------
-#escopeta 0
-#balas 5
 #dx #dy	
 
 :dirdis
@@ -141,6 +157,10 @@
 	3 3 sdlfrect 
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
+
+	a> 'disp p.nro $1000 or | disparo
+	8 a> .x @ int. a> .y @ int. h2d+!	
+
 	;	
 
 	
@@ -230,6 +250,9 @@
 	>a
 	btnpad $f and diranim 	
 	dx dy xymove
+	
+	0 16 a> .x @ int. a> .y @ int. 16 - h2d+! | jugador
+	
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	a> .x @ dup 'xp ! int. 
 	a> .y @ dup 'yp ! int. 
@@ -237,6 +260,7 @@
 	swap viewportx xvp -
 	swap viewporty yvp -
 	+sprite | a x y --
+	
 	;	
 
 :+jugador | 'per x y --
@@ -264,17 +288,57 @@
 	
 |----------------------------------	
 :hud
-	64 32 2.0 escopeta 1 xor sprcosas sspritez
-	escopeta 0? ( drop ; ) drop
+	64 24 2.0 escopeta 1 xor sprcosas sspritez
+	0 ( llaves <?
+		dup 32 * 128 + 24 2.0 5 sprcosas sspritez
+		1+ ) drop
+		
 	$ffffff bcolor
-	128 0 bat
-	balas "balas %d " bprint2 
+	0 32 bat
+	vidas "Vidas: %d " bprint2
+	escopeta 1? ( balas "balas %d " bprint2 ) drop	
 	
+	bcr bcr	
 |	dirp "%h " bprint 
 |	btnpad "%h " bprint 
 |	'disp p.cnt "%d" bprint
-
+	H2d.list "%d %h" bprint
 	;
+	
+|------------ colision
+:hitobj | nro --
+	'obj p.adr
+	dup .a @ 
+	|0 =? ( ) | escopeta
+	3 =? ( 5 'balas +! ) | balas 
+	4 =? ( 1 'celu +! ) | celu
+	5 =? ( 1 'llaves +! ) | llaves
+	drop
+	'obj p.del
+	;
+	
+:hitplayer
+	$1000 and? ( drop ; ) | disparo
+	$2000 and? ( $fff and hitobj ; ) |objeto
+	$4000 and? ( drop -1 'vidas +! ; ) | enemigo	
+	drop |??
+	;
+	
+:hitobj | obj1 obj2 --
+	0? ( drop hitplayer ; ) 
+	
+	
+	|2drop |
+	" %h %h " bprint
+	
+	;
+	
+:colisiones	
+	H2d.list 
+	( 1? swap
+		d@+ dup 16 >> $ffff and swap $ffff and 
+		hitobj
+		swap 1- ) 2drop ;
 	
 |----- JUGAR
 :jugar
@@ -282,6 +346,8 @@
 	0 SDLcls
 	immgui		| ini IMMGUI	
 
+	H2d.clear
+	
 	inisprite
 	'obj p.draw
 	xvp yvp drawmaps
@@ -291,6 +357,9 @@
 
 	hud
 |	0 0 zoom	
+
+	|--- colisiones
+	colisiones
 	SDLredraw
 	
 	SDLkey 
@@ -317,12 +386,18 @@
 	'disp p.clear
 	'fx p.clear
 	1 'dirp !
+	5 'balas !
+	0 'llaves !
+	0 'celu !
+	3 'vidas !
+	
 	;
 
 :randcosa	
-	3 randmax
-	( 	1200.0 randmax 32.0 + 
-		600.0 randmax 64.0 +
+	3 randmax 3 +
+	
+	( 	1200.0 randmax 32.0 + 16.0 32 * +
+		600.0 randmax 64.0 + 10.0  32 * +
 		2dup xyinmap@ $1000000000000 and? 
 		3drop ) drop
 	+cosa
@@ -351,6 +426,8 @@
 	500 'obj p.ini
 	100 'disp p.ini
 	100 'fx p.ini
+	1000 H2d.ini 
+	$ffff 'here +! | lista de contactos
 	
 	juego
 	SDLquit
