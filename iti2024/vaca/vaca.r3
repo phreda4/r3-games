@@ -12,8 +12,10 @@
 
 #fx 0 0
 #obj 0 0
-
+#xj #yj
 #btnpad
+#vidas 3
+#libres 0
 
 | x y ang/z anim ss vx vy ar io
 | 1 2 3   4    5  6  7  8  9
@@ -60,9 +62,12 @@
 :sobj
 	drawspr
 	>a
-	|..... add velocity to position
-	a> .vx @ a> .x +!
-	a> .vy @ a> .y +!
+	a> .vx @ a> .x +! a> .vy @ a> .y +!
+	
+	a> .x @ xj - abs 32.0 >? ( drop ; ) drop
+	a> .y @ yj - abs 32.0 >? ( drop ; ) drop
+	
+	-1 'vidas +!
 	;
 	
 :+obj | last ss anim zoom ang x y --
@@ -109,6 +114,9 @@
 	$4 and? ( 1.0 a> .y +! )
 	$8 and? ( -1.0 a> .y +! )
 	drop
+	a> .x @ 'xj !
+	a> .y @ 'yj !
+	yj 64.0 <? ( drop 0 ; ) drop
 	anim
 	panim =? ( drop ; ) 
 	dup 'panim !
@@ -122,6 +130,11 @@
 	0 a!+ 
 	sprites a!
 	;	
+
+:nuevavaca
+	1 'libres +!
+	320.0 440.0 +jugador
+	;
 	
 |------------------- juego
 :dfondo
@@ -133,11 +146,21 @@
 	80 randmax 1? ( drop ; ) drop
 	+cosechadora ;
 	
+:hud
+	0 0 bat
+	vidas " %d" bprint2 bcr bcr
+	600 0 bat
+	libres "%d" bprint2 bcr bcr
+	|yj xj "%f %f" bprint
+	;
+	
 :juego
 	timer.
 	dfondo
 	2 'obj p.sort
 	'obj p.draw
+	hud
+	yj 64.0 <? ( nuevavaca ) drop
 	
 	sdlredraw
 	sdlkey
