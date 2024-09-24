@@ -89,9 +89,9 @@
 	drop ;
 
 :cucamovx | y x adr --
-	dup 220.0 -20.0 21 1.0 0.0 +vanim
-	dup 460.0 220.0 21 1.0 1.0 +vanim
-	dup 700.0 460.0 21 1.0 2.0 +vanim
+	dup 220.0 -20.0 0 0.95 0.0 +vanim
+	dup 460.0 220.0 0 0.95 1.05 +vanim
+	dup 700.0 460.0 0 0.95 2.05 +vanim
 	
 	dup 1000.0 700.0 21 0.25 3.1 +vanim
 |	dup 20.0 randmax 10.0 - +
@@ -202,12 +202,12 @@
 :game
 	vupdate
 	$0 SDLcls
-|	0 0 800 600 imgfondo SDLImages
+	0 0 800 600 imgfondo SDLImages
 	|immgui 	
 	
-	debug
+	|debug
 	tclock
-	showtic
+	|showtic
 	'cucas p.draw
 	'fx p.draw
 	0 player 1 player 2 player 3 player
@@ -239,7 +239,7 @@
 	
 	64 64 "r3/iti2024/rg/cuca.png" ssload 'sprgame !
 	128 140 "r3/iti2024/rg/chanclas.png" ssload 'sprplayer !
-	"r3/iti2024/rg/cocina.png" loadimg 'imgfondo !
+	"r3/iti2024/rg/cocina.jpeg" loadimg 'imgfondo !
 	100 'cucas p.ini
 	100 'fx p.ini
 	1000 vaini

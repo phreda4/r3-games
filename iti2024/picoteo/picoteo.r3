@@ -119,7 +119,7 @@ drop ;
 	a> 8 + maizmovy
 	a!+ a!+
 	0.3 a!+
-	3 a!+ 
+	2 randmax 3 + a!+ 
 	a! | valor
 	;
 	
@@ -234,16 +234,16 @@ drop ;
 	
 :gallina
 	dup 550 2.0 
-	msec 8 >> over xor 3 and 8 + 
+	msec 8 >> over xor 3 and 9 + 
 	sprgame sspritez	| patas
 
 	dup 428 2.0
-	7 sprgame sspritez
+	8 sprgame sspritez
 	
 	340 2.0 
 	pick3 3 << 'jugador + @ 
 	1? ( pick4 3 << 'jugador + -1 swap +! drop 1 ) 
-	4 + sprgame sspritez	| cabeza
+	5 + sprgame sspritez	| cabeza
 	
 	dup 200 * 90 + 8 pcat
 	dup 3 << 'puntaje + @ "%d" pcprint2
