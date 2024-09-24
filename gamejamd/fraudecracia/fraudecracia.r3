@@ -4,8 +4,8 @@
 | PHREDA
 |-----
 ^r3/lib/rand.r3
-^r3/win/sdl2gfx.r3
-^r3/win/sdl2mixer.r3
+^r3/lib/sdl2gfx.r3
+^r3/lib/sdl2mixer.r3
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
 ^r3/util/varanim.r3

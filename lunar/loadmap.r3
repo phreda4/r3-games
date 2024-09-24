@@ -3,8 +3,8 @@
 |-----
 ^r3/lib/rand.r3
 ^r3/lib/3d.r3
-^r3/win/sdl2gfx.r3
-^r3/win/sdl2image.r3
+^r3/lib/sdl2gfx.r3
+^r3/lib/sdl2image.r3
 
 #prot
 #px 0 #py 0 #pz 0

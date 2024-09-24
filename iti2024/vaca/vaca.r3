@@ -5,7 +5,7 @@
 ^r3/util/arr16.r3
 ^r3/util/bfont.r3
 ^r3/util/hash2d.r3
-^r3/win/sdl2gfx.r3
+^r3/lib/sdl2gfx.r3
 
 #sprites
 #ifondo

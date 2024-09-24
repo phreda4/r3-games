@@ -1,9 +1,9 @@
 | ElCua
 |
-^r3/win/sdl2gfx.r3
-^r3/win/sdl2poly.r3
-^r3/win/sdl2image.r3
-^r3/win/sdl2mixer.r3
+^r3/lib/sdl2gfx.r3
+^r3/lib/sdl2poly.r3
+^r3/lib/sdl2image.r3
+^r3/lib/sdl2mixer.r3
 
 ^r3/util/boxtext.r3
 ^r3/util/tilesheet.r3
