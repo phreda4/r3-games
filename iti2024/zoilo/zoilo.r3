@@ -278,7 +278,7 @@
 	$ffff and spranimal ssprite ;
 
 :jcosa
-	$ffff and sprcosas ssprite ;
+	$ffff and 1.5 swap sprcosas sspritez ;
 	
 #listdsp 'jplayer 'janimal 'jcosa 'jcosa | otro
 
@@ -302,7 +302,7 @@
 |	dirp "%h " bprint 
 |	btnpad "%h " bprint 
 |	'disp p.cnt "%d" bprint
-	H2d.list "%d %h" bprint
+|	H2d.list "%d %h" bprint
 	;
 	
 |------------ colision
@@ -323,10 +323,32 @@
 	$4000 and? ( drop -1 'vidas +! ; ) | enemigo	
 	drop |??
 	;
+
+:2sort | a b -- a b
+	over <? ( ; ) swap ; 
+	
+:obj2del
+	2sort 
+	'obj p.del
+	'obj p.del
+	;
+	
+:hitdisp	
+	swap |$fff and 'obj p.adr 'obj p.del | borra bala
+	$4000 and? ( 
+		$fff and 'obj p.adr 'obj p.del  | borra enemigo
+		|swap $fff and 'obj p.adr |'obj p.del  | borra bala
+		|obj2del 
+		drop
+		; ) | borra enemigo
+	2drop
+	;
+	
 	
 :hitobj | obj1 obj2 --
+	2sort
 	0? ( drop hitplayer ; ) 
-	
+	$1000 and? ( hitdisp ; ) | disparo
 	
 	|2drop |
 	" %h %h " bprint
@@ -394,8 +416,7 @@
 	;
 
 :randcosa	
-	3 randmax 3 +
-	
+	 3 randmax 3 + 	
 	( 	1200.0 randmax 32.0 + 16.0 32 * +
 		600.0 randmax 64.0 + 10.0  32 * +
 		2dup xyinmap@ $1000000000000 and? 
@@ -420,14 +441,14 @@
 	bfont1
 	64 64 "r3/iti2024/zoilo/caballo.png" ssload 'spranimal !
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
-	64 64 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
+	32 32 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
 	'bsprdrawsimple 'bsprdraw !
 	
 	500 'obj p.ini
 	100 'disp p.ini
 	100 'fx p.ini
 	1000 H2d.ini 
-	$ffff 'here +! | lista de contactos
+	$fff 'here +! | lista de contactos
 	
 	juego
 	SDLquit

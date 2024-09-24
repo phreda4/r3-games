@@ -220,7 +220,7 @@
 |	$4000 and? ( drop -1 'vidas +! ; ) | enemigo	
 	drop |??
 	;
-	
+		
 :hitdisp
 	$fff and 'obj p.adr 'obj p.del | borra bala
 	$2000 and? ( drop ; )
