@@ -47,6 +47,10 @@
 :.vy 7 ncell+ ;
 :.va 8 ncell+ ;
 
+
+:anim!
+	a> .ani dup @ $ffffffff and rot or swap ! ;
+	
 #fullscr
 	
 :toglefs
@@ -69,6 +73,63 @@
 	;	
 		
 |---------------------
+#velz
+
+:anizombie | vx -- nani
+	dup abs 10 >> $fff and 'velz !
+	-? ( a> .a @ 2 +  2 velz ICS>anim ; ) 
+	a> .a @ 2 velz ICS>anim ; 
+
+:vagazombie
+	80 randmax 1? ( drop ; ) drop
+	0.4 randmax 0.2 -
+	anizombie anim!
+	a> .vx ! 
+	0.4 randmax 0.2 -
+	a> .vy ! 
+	;
+
+:zdir
+	xp a> .x @ - 	
+	yp a> .y @ - 
+	atan2 sincos 
+	0.3 randmax 1.0 +
+	rot over *. -rot *.
+	a> .vy ! 
+	anizombie anim!
+	a> .vx ! ;
+		
+:iazombie
+	xp a> .x @ - yp a> .y @  -
+	distfast
+	200.0 >? ( drop vagazombie ; ) drop
+	60 randmax 1? ( zdir ) drop
+	;
+	
+:zombie
+	>a
+	a> 'obj p.nro  $4000 or | enemigo
+	16 a> .x @ int. a> .y @ int. h2d+!	
+	iazombie
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!
+	a> .ani dup @ timer+ dup rot ! anim>n 			| n
+	$30000 or
+	a> .x @ int. xvp - 
+	a> .y @ int. yvp -
+	+sprite | a x y --
+	;	
+	
+
+:+zombie | a x y --
+	'zombie 'obj p!+ >a
+	swap a!+ a!+
+	a!+ 
+	0 a!+ 
+	0 a!+ 0 a!+ 0 a!+
+	;
+
+|----------------
 :animal
 	>a
 	
@@ -85,7 +146,7 @@
 	a> .y @ int. yvp -
 	+sprite | a x y --
 	;	
-
+	
 :+animal | vx vy A x y  --
 	'animal 'obj p!+ >a
 	swap a!+ a!+
@@ -224,8 +285,7 @@
 	a> .x +!
 	;
 
-:anim!
-	a> .ani dup @ $ffffffff and rot or swap ! ;
+
 	
 #dirq ( 0 6 14 0 0 0 0 0 10 0 0 0 0 0 0 0 )
 	
@@ -278,9 +338,13 @@
 	$ffff and spranimal ssprite ;
 
 :jcosa
-	$ffff and 1.5 swap sprcosas sspritez ;
+	$ffff and sprcosas ssprite ;
 	
-#listdsp 'jplayer 'janimal 'jcosa 'jcosa | otro
+:jzombie
+	$ffff and 1.5 swap sprcosas sspritez ;
+
+	
+#listdsp 'jplayer 'janimal 'jcosa 'jzombie | otro
 
 :bsprdrawsimple
 	dup 16 >> $3 and | $x0000 
@@ -337,9 +401,7 @@
 	swap |$fff and 'obj p.adr 'obj p.del | borra bala
 	$4000 and? ( 
 		$fff and 'obj p.adr 'obj p.del  | borra enemigo
-		|swap $fff and 'obj p.adr |'obj p.del  | borra bala
-		|obj2del 
-		drop
+		$fff and 'disp p.adr 'disp p.del  | borra bala
 		; ) | borra enemigo
 	2drop
 	;
@@ -412,7 +474,7 @@
 	0 'llaves !
 	0 'celu !
 	3 'vidas !
-	
+	timer<
 	;
 
 :randcosa	
@@ -423,12 +485,22 @@
 		3drop ) drop
 	+cosa
 	;
+:randzombie
+	2 randmax 2 << 6 +
+	2400.0 randmax 200.0 +
+	1200.0 randmax 300.0 +
+	+zombie ;
 	
 :juego
 	inisprite
 	reset
 	0 600.0 360.0 +jugador | 0 es jugador
-	10 ( 1? 1 - randcosa ) drop
+	
+	6 0 $ff ICS>anim 900.0 500.0 +zombie
+	8 0 $ff ICS>anim 600.0 700.0 +zombie
+	
+	40 ( 1? 1- randzombie ) drop
+	20 ( 1? 1 - randcosa ) drop
 	'jugar SDLshow
 	;	
 
