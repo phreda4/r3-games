@@ -1,4 +1,4 @@
-| Rythm game
+| Picoteo
 | PHREDA 2024
 |------------------
 ^r3/lib/sdl2gfx.r3
@@ -159,7 +159,6 @@ drop ;
 |	8 and? ( 0.0 570.0 +cuca )
 	drop
 	;
-
 	
 :tclock
 	tiempo timer+ 
@@ -169,27 +168,8 @@ drop ;
 	1 'ntime +! 
 	;
 
-:bt
-	estado 0? ( drop ; ) drop
-	$ff0000 
-	tiempo 100 >? ( swap $ff or swap ) drop
-	sdlcolor
-	400 40 48 40 SDLFrect
-	;
-	
-:rt
-	tiempo 100 >? ( drop ; ) drop
-	$ff sdlcolor
-	0 0 20 20 SDLFrect
-	;
-
-:paso
-	$ff00 sdlcolor
-	tiempo 2 >> 50 + 40 20 20 SDLFrect
-	;
-	
 |------------- jugadores
-	
+
 :golpe | time player --
 	3 << 'jugador +
 	dup @ 1? ( 3drop ; ) drop
@@ -310,7 +290,6 @@ drop ;
 	1000 'maizs p.ini
 	100 'fx p.ini
 	1000 vaini	| hasta 50 eventos
-	
 	
 	vareset	
 	'maizs p.clear

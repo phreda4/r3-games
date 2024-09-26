@@ -1,4 +1,4 @@
-| Rythm game
+| Malevolo cucarachon
 | PHREDA 2024
 |------------------
 ^r3/lib/sdl2gfx.r3
@@ -7,6 +7,7 @@
 ^r3/util/arr16.r3
 ^r3/lib/rand.r3
 ^r3/util/varanim.r3
+^r3/util/sdlgui.r3
 
 |------ sound
 #sndfiles 
@@ -36,6 +37,7 @@
 
 |------- graficos
 #imgfondo
+#imginicio
 #sprgame
 #sprplayer
 
@@ -116,13 +118,10 @@
 	a!+
 	;
 	
-|------- game
-
-
 |------- timeline
 
+#nivel0 " abdh abcdefghijklmno "
 #time1 $1 $2 $4 $5 $1 $8 $1 $7 $3 $2 $1 $4 $5 $f -1
-|#time1 1 2 1 2 1 2 1 2 1 2 -1
 
 #ltime
 #ntime
@@ -131,11 +130,13 @@
 	-1 'ltime ! 
 	0 'ntime !
 	;
-	
-:showtime
+
+#nivel 'nivel0
+
+:getframe
 	ntime ltime =? ( drop ; ) 
-	dup 'ltime ! 3 << 'time1 + @
-	-? ( drop ; ) |0 'ntime ! ; )
+	dup 'ltime ! nivel + c@
+	0? ( drop ; ) |0 'ntime ! ; )
 	1 and? ( 0 0.0 120.0 +cuca )
 	2 and? ( 1 0.0 270.0 +cuca )
 	4 and? ( 2 0.0 420.0 +cuca )
@@ -199,7 +200,7 @@
 	;
 	
 |------ JUEGO
-:game
+:juego
 	vupdate
 	$0 SDLcls
 	0 0 800 600 imgfondo SDLImages
@@ -212,7 +213,7 @@
 	'fx p.draw
 	0 player 1 player 2 player 3 player
 	
-	showtime
+	getframe
 	
 	SDLredraw
 	SDLkey
@@ -225,28 +226,60 @@
 	
 	drop ;
 	
-:reset
+:jugar
 	timer<
+	'juego SDLshow
 	;
 		
+:inicio
+	Immgui
+	0 0 800 600 imginicio SDLImages
+	
+	0 100 immat
+	800 immwidth
+	$ff00ff 'immcolortex !
+	"Malditas Cucarachas" immlabelc
+
+	
+	400 350 immat
+	400 immwidth
+	$7fff 'immcolorbtn !
+	$ff00 'immcolortex !
+	'jugar "Jugar" immebtn
+	600 400 immat
+	$7fff00 'immcolorbtn !
+	$ff0000 'immcolortex !
+	'exit "Salir" immebtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	
+	drop ;
+	
 :main
-	"Ritmo!!" 800 600 SDLinit
+	"MC" 800 600 SDLinit
 	44100 $8010 1 1024 Mix_OpenAudio
 	
 	|sdlfull
 	pcfont
 	loadsnd
 	
-	64 64 "r3/iti2024/rg/cuca.png" ssload 'sprgame !
-	128 140 "r3/iti2024/rg/chanclas.png" ssload 'sprplayer !
-	"r3/iti2024/rg/cocina.jpeg" loadimg 'imgfondo !
+	64 64 "r3/iti2024/mc/cuca.png" ssload 'sprgame !
+	128 140 "r3/iti2024/mc/chanclas.png" ssload 'sprplayer !
+	"r3/iti2024/mc/cocina.jpeg" loadimg 'imgfondo !
+	"r3/iti2024/mc/inicio.png" loadimg 'imginicio !
+
+	"r3/iti2024/mc/ZombieFoodDemoRegular.ttf" 
+	60 ttf_OpenFont immSDL
 	100 'cucas p.ini
 	100 'fx p.ini
 	1000 vaini
 	vareset
-	
-	reset
-	'game SDLshow
+
+	'inicio SDLshow
+	|jugar
 	SDLquit 
 	;
 
