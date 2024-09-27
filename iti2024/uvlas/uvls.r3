@@ -241,8 +241,8 @@
 	fillnubes
 	
 	timer<
-	|'inicio SDLshow
-	jugar	
+	'inicio SDLshow
+	|jugar	
 	SDLquit 
 	;
 
