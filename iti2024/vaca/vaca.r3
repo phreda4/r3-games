@@ -12,7 +12,7 @@
 
 #fx 0 0
 #obj 0 0
-#xj #yj
+#xj #yj #ja
 #btnpad
 #vidas 3
 #libres 0
@@ -39,13 +39,11 @@
 	
 |------------------- fx
 :fxobj | adr --
-	dup .ani @ anim>n 
-	over .end @ 
-	=? ( 2drop 0 ; ) drop 
 	drawspr
 	|..... add velocity to position
 	dup .vx @ over .x +!
 	dup .vy @ over .y +!
+	dup .x @ -64.0 <? ( 2drop 0 ; ) drop
 	drop
 	;
 
@@ -54,20 +52,22 @@
 	swap a!+ a!+	| x y 
 	32 << or a!+	| ang zoom
 	a!+ a!+			| anim sheet
-	0 a!+ 0 a!+ 	| vx vy
-	a!				| last
+	swap a!+ a!+ 	| vx vy
 	;
 	
 |------------------- obj
+#choco
+
 :sobj
 	drawspr
 	>a
 	a> .vx @ a> .x +! a> .vy @ a> .y +!
 	
-	a> .x @ xj - abs 32.0 >? ( drop ; ) drop
+	a> .x @ 
+	-64.0 <? ( drop 0 ; ) 750.0 >? ( drop 0 ; ) 
+	xj - abs 32.0 >? ( drop ; ) drop
 	a> .y @ yj - abs 32.0 >? ( drop ; ) drop
-	
-	-1 'vidas +!
+	a> .vx @ 'choco ! | guarda direccion para tirar la vaca
 	;
 	
 :+obj | last ss anim zoom ang x y --
@@ -84,7 +84,7 @@
 	sprites
 	4 2 $ff ICS>anim
 	2.0 0
-	670.0 
+	750.0 
 	330.0 randmax 80.0 +
 	+obj ;
 	;
@@ -107,7 +107,7 @@
 
 :jugador
 	drawspr	
-	>a
+	dup 'ja ! >a
 	btnpad $f and 
 	$1 and? ( 1.0 a> .x +! )
 	$2 and? ( -1.0 a> .x +! )
@@ -133,7 +133,27 @@
 
 :nuevavaca
 	1 'libres +!
-	320.0 440.0 +jugador
+
+	-3.0 0
+	sprites 
+	2 2 $ff ICS>anim
+	1.0 0 xj yj 
+	+fxobj | last ss anim zoom ang x y --
+	
+	320.0 440.0 +jugador ;
+	
+:perdiovaca
+	-1 'vidas +!
+	ja 'obj p.del
+	
+	choco 2* -1.9
+	sprites 
+	2 2 $ff ICS>anim
+	1.0 0 xj yj 
+	+fxobj | last ss anim zoom ang x y --
+	
+	440.0 'yj !
+	320.0 440.0 +jugador 
 	;
 	
 |------------------- juego
@@ -147,20 +167,23 @@
 	+cosechadora ;
 	
 :hud
-	0 0 bat
-	vidas " %d" bprint2 bcr bcr
-	600 0 bat
-	libres "%d" bprint2 bcr bcr
+	0 0 bat vidas " %d" bprint2 bcr bcr
+	600 0 bat libres "%d" bprint2 bcr bcr
 	|yj xj "%f %f" bprint
 	;
 	
 :juego
 	timer.
 	dfondo
+	0 'choco !
 	2 'obj p.sort
 	'obj p.draw
+	'fx p.draw
 	hud
+	
 	yj 64.0 <? ( nuevavaca ) drop
+	choco 1? ( perdiovaca ) drop
+	
 	
 	sdlredraw
 	sdlkey
@@ -188,6 +211,8 @@
 	"r3\iti2024\vaca\fondo.png" loadimg 'ifondo !
 	64 64 "r3\iti2024\vaca\sprites.png" ssload 'sprites !
 	100 'obj p.ini
+	100 'fx p.ini
+	
 	reset
 	'juego SDLshow
 	SDLquit 

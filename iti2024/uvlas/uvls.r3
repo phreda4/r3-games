@@ -9,8 +9,6 @@
 ^r3/util/pcfont.r3
 ^r3/util/arr16.r3
 
-#vida
-
 #spr
 
 #imgmar
@@ -26,6 +24,16 @@
 #lnubes 0 0 
 #lnotas 0 0
 #lfx 0 0 
+
+#xbarco #ybarco
+#jx 60.0 #jy 320.0
+#jvx 0 #jvy 0
+#js 0 #jvs 0
+#ja
+#vida
+#estado 
+#contacto
+#ijx #ijy
 
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
@@ -69,8 +77,13 @@
 	>a
 	a> .x @ int. -180 <? ( drop 0 ; ) drop
 	a> .vx @ a> .x +! a> .vy @ a> .y +!
-	8 a+
-	a@+ int. a@+ int. a@+ a@ sprnotas sspritez
+	a> .x @ int.
+	a> .y @ int.
+	over ijx - over ijy - 
+	distfast 20 <? ( 1 'contacto ! ) drop
+	a> .z @
+	a> .t @ 
+	sprnotas sspritez	
 	;
 	
 :+nota | --
@@ -87,22 +100,17 @@
 	50 randmax 0? ( +nota ) drop ;
 	
 |----------------------------------
-#xbarco #ybarco
-#jx 60.0 #jy 320.0
-#jvx 0 #jvy 0
-#js 0 #jvs 0
-#ja
-#estado 
 
 :anim!
 	ja $ffffffff and or 'ja ! ;
 	
 :anim
+	contacto 1? ( drop 26 7 $ff ICS>anim anim! ; ) drop
 	js 1? ( drop 5 8 $3f ICS>anim anim! ; ) drop
 	jvx 0? ( drop 0 0 $7f ICS>anim anim! ; ) drop
 	0 4 $7f ICS>anim anim!
 	;
-| 26 7 | danger
+
 | 13 12 | cayendo
 	
 :cayendo	
@@ -115,14 +123,18 @@
 	13 12 $3f ICS>anim anim!
 	1 'estado !
 	;
+:tocando
+	1 'vida +!
+	vida 96 >? ( 1 'estado ! ) drop
+	;
 	
 :jugador
-	jx int. xbarco + 200 + 
-	jy js + int. ybarco +
+	jx int. xbarco + 200 + dup 'ijx !
+	jy js + int. ybarco + dup 'ijy !
 	2.0 
 	ja timer+ dup 'ja ! anim>n
 	spr sspritez
-
+	contacto 1? ( tocando ) drop
 	estado 1? ( drop cayendo ; ) drop
 	jvx 'jx +!
 	jvy 'jy +!
@@ -146,21 +158,20 @@
 	2dup 'ybarco ! 'xbarco !
 	640 480 imgnave SDLImages
 	xbarco 368 + ybarco 130 + msec 7 >> $3 and sprvela ssprite
-	'lnotas p.draw
 	;
 
-
 :frente
-	100 20 4.0 vida 1 >> sprbarra sspritez
+	100 20 4.0 vida 4 >> sprbarra sspritez
 	;
 |----------------------------------
 :juego
 	timer. nubes notas
 	
 	fondo
+	0 'contacto !
+	'lnotas p.draw
 	jugador
 	frente
-	
 
 	SDLredraw
 	SDLkey
