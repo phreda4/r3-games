@@ -47,7 +47,6 @@
 :.vy 7 ncell+ ;
 :.va 8 ncell+ ;
 
-
 :anim!
 	a> .ani dup @ $ffffffff and rot or swap ! ;
 	
@@ -58,36 +57,20 @@
 	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
 	;
 	
-|-----------------------
-#rec [ 412 250 200 100 ]
-
-:zoom | x y  --
-	0 200 100 32 0 0 0 0 SDL_CreateRGBSurface  |
-	SDLrenderer 'rec
-	pick2 8 + @ d@ pick3 32 + @ pick4 24 + d@ | format | pixels | pitch
-	SDL_RenderReadPixels 
-	SDLrenderer over SDL_CreateTextureFromSurface | surf tex
-	swap SDL_FreeSurface
-	-rot 400 200 pick4 SDLImages
-	SDL_DestroyTexture
-	;	
-		
 |---------------------
 #velz
-
 :anizombie | vx -- nani
-	dup abs 10 >> $fff and 'velz !
+	dup abs 11 >> $fff and 'velz !
 	-? ( a> .a @ 2 +  2 velz ICS>anim ; ) 
 	a> .a @ 2 velz ICS>anim ; 
 
 :vagazombie
-	80 randmax 1? ( drop ; ) drop
+	100 randmax 1? ( drop ; ) drop
 	0.4 randmax 0.2 -
 	anizombie anim!
 	a> .vx ! 
 	0.4 randmax 0.2 -
-	a> .vy ! 
-	;
+	a> .vy ! ;
 
 :zdir
 	xp a> .x @ - 	
@@ -100,19 +83,33 @@
 	a> .vx ! ;
 		
 :iazombie
-	xp a> .x @ - yp a> .y @  -
+	xp a> .x @ - yp a> .y @  -	
 	distfast
-	200.0 >? ( drop vagazombie ; ) drop
-	60 randmax 1? ( zdir ) drop
+	200.0 >? ( drop vagazombie ; ) drop | lejos.. vagar
+	100 randmax 1? ( zdir ) drop | cerca del player.. seguir
+	;
+
+:obstaculo
+	a> .x @ a> .vx @ +
+	a> .y @ a> .vy @ +
+	xyinmap@
+	$1000000000000 nand? ( drop ; ) drop 
+	| pared 
+	0.0 a> .vx ! 0.0 a> .vy ! | detener
 	;
 	
 :zombie
 	>a
 	a> 'obj p.nro  $4000 or | enemigo
 	16 a> .x @ int. a> .y @ int. h2d+!	
+	
 	iazombie
+	
+	obstaculo
+	
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
+	
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	$30000 or
 	a> .x @ int. xvp - 
@@ -134,8 +131,7 @@
 	>a
 	
 	a> 'obj p.nro  $4000 or | enemigo
-	16
-	a> .x @ int. a> .y @ int.
+	16 a> .x @ int. a> .y @ int.
 	h2d+!	
 	
 	a> .vx @ a> .x +!
@@ -220,8 +216,8 @@
 	a> .vy @ a> .y +!
 
 	a> 'disp p.nro $1000 or | disparo
-	8 a> .x @ int. a> .y @ int. h2d+!	
-
+	4 a> .x @ int. a> .y @ int. h2d+!	
+	
 	;	
 
 	
@@ -487,8 +483,11 @@
 	;
 :randzombie
 	2 randmax 2 << 6 +
-	2400.0 randmax 200.0 +
-	1200.0 randmax 300.0 +
+	(
+		2400.0 randmax 200.0 +
+		1200.0 randmax 300.0 +
+		2dup xyinmap@ $1000000000000 and? 
+		3drop ) drop		
 	+zombie ;
 	
 :juego

@@ -48,7 +48,7 @@
 #tiempo		0	| tiempo ahora
 
 #jugador 0 0 0 0 0 0 0 0
-#puntaje 0 0 0 0 0 0 0 0
+#puntaje 0 3 0 43 0 0 0 0
 
 | x y anim
 :.x 1 ncell+ ;
@@ -171,7 +171,7 @@
 :player | player --
 
 	740 				| x
-	70 pick2 140 * +	| y
+	70 pick2 150 * +	| y
 	
 	pick2 3 << 'jugador + @ 
 	1? ( pick3 3 << 'jugador + -1 swap +! drop 1 
@@ -180,8 +180,9 @@
 	sprplayer 
 	ssprite
 	
-	900 over 150 * 80 + pcat
-	dup 3 << 'puntaje + @ "%d" pcprint2
+	$ffffff ttcolor
+	40 over 150 * 40 + ttat
+	dup 3 << 'puntaje + @ "%d" ttprint
 	
 	drop
 	;
@@ -200,18 +201,24 @@
 	;
 	
 |------ JUEGO
+#sect
+
 :juego
 	vupdate
 	$0 SDLcls
 	0 0 800 600 imgfondo SDLImages
 	|immgui 	
-	
 	|debug
+	
 	tclock
 	|showtic
+	
 	'cucas p.draw
 	'fx p.draw
-	0 player 1 player 2 player 3 player
+	0 player 
+	1 player 
+	2 player 
+	3 player	
 	
 	getframe
 	
@@ -230,26 +237,29 @@
 	timer<
 	'juego SDLshow
 	;
-		
+	
 :inicio
 	Immgui
 	0 0 800 600 imginicio SDLImages
 	
-	0 100 immat
+	0 80 immat
 	800 immwidth
 	$ff00ff 'immcolortex !
-	"Malditas Cucarachas" immlabelc
-
+	"MALEVOLO" immlabelc immdn
+	"CUCARACHON" immlabelc immdn 
+	immdn
 	
-	400 350 immat
 	400 immwidth
-	$7fff 'immcolorbtn !
-	$ff00 'immcolortex !
-	'jugar "Jugar" immebtn
-	600 400 immat
-	$7fff00 'immcolorbtn !
-	$ff0000 'immcolortex !
-	'exit "Salir" immebtn
+	200 350 immat
+|	400 350 immat
+|	$ff00 'immcolortex !
+	$ffffff 'immcolortex !
+	$7f00 'immcolorbtn !
+	'jugar "JUGAR" immbtn immdn
+|	600 400 immat
+|	$ff0000 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "SALIR" immbtn
 	
 	SDLredraw
 	SDLkey
@@ -268,11 +278,12 @@
 	
 	64 64 "r3/iti2024/mc/cuca.png" ssload 'sprgame !
 	128 140 "r3/iti2024/mc/chanclas.png" ssload 'sprplayer !
-	"r3/iti2024/mc/cocina.jpeg" loadimg 'imgfondo !
+	"r3/iti2024/mc/cocina.png" loadimg 'imgfondo !
 	"r3/iti2024/mc/inicio.png" loadimg 'imginicio !
 
-	"r3/iti2024/mc/ZombieFoodDemoRegular.ttf" 
-	60 ttf_OpenFont immSDL
+	|"r3/iti2024/mc/zombieguts.ttf"
+	"r3/iti2024/mc/BICHOCHOS_TYPE.ttf" 
+	70 ttf_OpenFont immSDL
 	100 'cucas p.ini
 	100 'fx p.ini
 	1000 vaini

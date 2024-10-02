@@ -7,6 +7,8 @@
 ^r3/util/arr16.r3
 ^r3/lib/rand.r3
 ^r3/util/varanim.r3
+^r3/util/sdlgui.r3
+
 
 |------ sound
 #sndfiles 
@@ -253,6 +255,7 @@ drop ;
 	;
 	
 :game
+	Immgui
 	timer. vupdate
 	fondo
 	
@@ -261,6 +264,9 @@ drop ;
 	gallinas
 	
 	feed
+	
+	300 260 ttat
+	"Cartel" ttprint
 	
 	SDLredraw
 	SDLkey
@@ -276,7 +282,39 @@ drop ;
 	<f4> =? ( 3 700.0 130.0 +maiz )
 	
 	drop ;
-
+	
+:jugar
+	'game SDLshow ;
+	
+:inicio
+	Immgui
+	|0 0 800 600 imginicio SDLImages
+	
+	0 80 immat
+	800 immwidth
+	$ff00ff 'immcolortex !
+	"PICOTEO" immlabelc immdn
+	immdn
+	
+	400 immwidth
+	200 350 immat
+|	400 350 immat
+|	$ff00 'immcolortex !
+	$ffffff 'immcolortex !
+	$7f00 'immcolorbtn !
+	'jugar "JUGAR" immbtn immdn
+|	600 400 immat
+|	$ff0000 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "SALIR" immbtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	
+	drop ;
+	
 :main
 	"Picoteo" 800 600 SDLinit
 	44100 $8010 1 1024 Mix_OpenAudio
@@ -287,6 +325,9 @@ drop ;
 	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
+	"r3/iti2024/picoteo/ZOMBIE.TTF" 
+	70 ttf_OpenFont immSDL
+	
 	1000 'maizs p.ini
 	100 'fx p.ini
 	1000 vaini	| hasta 50 eventos
@@ -295,7 +336,8 @@ drop ;
 	'maizs p.clear
 	
 	timer<
-	'game SDLshow
+	|'game SDLshow
+	'inicio SDLshow
 	SDLquit 
 	;
 
