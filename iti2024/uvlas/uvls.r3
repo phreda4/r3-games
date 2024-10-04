@@ -11,6 +11,7 @@
 
 #spr
 
+#imglogo
 #imgmar
 #imgnave
 #imgisla
@@ -20,6 +21,7 @@
 #sprnotas
 #sprbarra
 #sprboton
+#sprend
 
 #lnubes 0 0 
 #lnotas 0 0
@@ -34,6 +36,12 @@
 #estado 
 #contacto
 #ijx #ijy
+
+|------ sounido
+#sndlist * 160
+
+:playsnd | n --
+	3 << 'sndlist + @ SNDplay ;
 
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
@@ -125,6 +133,7 @@
 	;
 :tocando
 	1 'vida +!
+	1 playsnd
 	vida 96 >? ( 1 'estado ! ) drop
 	;
 	
@@ -150,7 +159,7 @@
 |----------------------------------
 :fondo
 	$93E2F7 SDLcls
-	'lnubes p.draw
+	'lnubes p.draw nubes 
 	0 0 640 480 imgmar SDLImages
 	0 0 640 480 imgisla SDLImages
 	550 290 2.0 40 spr sspritez	| sirena
@@ -163,9 +172,10 @@
 :frente
 	100 20 4.0 vida 4 >> sprbarra sspritez
 	;
-|----------------------------------
+	
+|-----------------
 :juego
-	timer. nubes notas
+	timer. notas
 	
 	fondo
 	0 'contacto !
@@ -185,7 +195,13 @@
 	drop ;
 
 :jugar
+	0 playsnd 
 	timer<
+	'lnotas p.clear
+	'lfx p.clear
+	60.0 'jx ! 320.0 'jy !
+	0 'jvx ! 0 'jvy !
+	0 'js ! 0 'jvs !
 	0 'vida !
 	0 0 $7f ICS>anim 'ja !
 	0 'estado !
@@ -195,36 +211,88 @@
 |-----------------
 :fondo
 	$93E2F7 SDLcls
-	'lnubes p.draw
+	'lnubes p.draw nubes
 	0 0 640 480 imgmar SDLImages
 	;
-
 
 :btnimg | x y n --
 	pick2 64 - pick2 32 - 128 64 guiBox
 	2.0 swap '1+ guiI sprboton sspritez
 	onClick ;
 	
+|-----------------
+#letras ( 1 2 3 -1 4 5 0 4 ) 
+#xcartel
+
+:letra | n -- n
+	7 over - 
+	dup 120 * xcartel +
+	msec 4 << pick2 0.2 * + sincos drop 40 * int. 200 +
+	rot 'letras + c@ 
+	-? ( 3drop ; )
+	sprend
+	ssprite
+	;
+	
+:finj
+	gui
+	fondo
+	8 ( 1? 1- letra ) drop
+	'exit 320 450 2 btnimg
+	xcartel 
+	2 - -960 <? ( 800 nip ) 
+	'xcartel !
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit ) 
+	drop
+	;
+	
+:finjuego
+	2 playsnd 
+	800 'xcartel !
+	'finj sdlshow
+	;
+	
+|-----------------
 :inicio
 	gui
 	fondo
-	
+	0 
+	msec 3 << sincos drop 30 * int. 40 + 
+	imglogo sdlimage
 	'jugar 320 340 0 btnimg
 	'exit 320 400 2 btnimg
 	
 	SDLredraw
 	SDLkey
-	<esp> =? ( jugar )
+	<f1> =? ( finjuego )
+	<esp> =? ( jugar finjuego )
 	>esc< =? ( exit ) 
 	drop
 	;
 	
+#sndfiles 
+"click.wav"
+"danio.wav"
+"muerte.wav"
+0
+
+:loadsnd
+	44100 $8010 1 1024 Mix_OpenAudio
+	'sndlist >a
+	'sndfiles
+	( dup c@ 1? drop
+		dup "r3/iti2024/uvlas/%s" sprint mix_loadWAV a!+
+		>>0 ) drop ;
+		
 :main
 	"Ulises Contra Las Sirenas" 640 480 SDLinit
 	pcfont
 	
 	32 32 "r3/iti2024/uvlas/sprites.png" ssload 'spr !
 	
+	"r3/iti2024/uvlas/logo.png" loadimg 'imglogo !
 	"r3/iti2024/uvlas/mar.png" loadimg 'imgmar !
 	"r3/iti2024/uvlas/isla.png" loadimg 'imgisla !
 	"r3/iti2024/uvlas/nave.png" loadimg 'imgnave !
@@ -234,7 +302,11 @@
 	32 32 "r3/iti2024/uvlas/notas.png" ssload 'sprnotas !
 	32 32 "r3/iti2024/uvlas/barra.png" ssload 'sprbarra !
 	64 32 "r3/iti2024/uvlas/boton.png" ssload 'sprboton !
-
+	200 200 "r3/iti2024/uvlas/you died.png" ssload 'sprend !
+	
+	
+	loadsnd
+	
 	80 'lnubes p.ini
 	100 'lnotas p.ini
 	100 'lfx p.ini
