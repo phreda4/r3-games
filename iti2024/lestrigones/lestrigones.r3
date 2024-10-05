@@ -8,11 +8,17 @@
 ^r3/util/bfont.r3
 ^r3/lib/sdl2gfx.r3
 
-#sprfondo
+#imgfondo
 #sprites
 
 #fx 0 0
 #obj 0 0
+
+|--------- PLAYER
+#vvx
+#dx #dy #js #jvs
+#xp #yp
+#ja
 
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
@@ -29,28 +35,20 @@
 	a@+ sspriterz
 	;
 
-|------------- NOTAS
-:coso | adr --
+:cosa
 	>a
-	a> .x @ int. -180 <? ( drop 0 ; ) drop
-	a> .vx @ a> .x +! a> .vy @ a> .y +!
-	8 a+
-	a@+ int. a@+ int. a@+ a@ sprites sspritez
+	a> .x @ vvx - int. 
+	a> .y @ int.
+	a> .z @ 
+	sprites ssprite
 	;
 	
-:+coso | --
-	'coso 'obj p!+ >a
-	800.0 a!+ 				| x
-	220.0 randmax 220.0 + a!+ 		| y
-	1.0 a!+ 	| zoom
-	2 randmax a!+ 			| nube
-	0.5 randmax 0.8 + neg a!+	| vx
-	0.01 randmax 0.005 -  a!	| vy
+:+cosa | ndib x y --
+	'cosa 'obj p!+ >a
+	swap a!+ a!+
+	a!+ 
 	;
-|--------- PLAYER
-#dx #dy #js #jvs
-#xp #yp
-#ja
+
 
 :drawplayer
 	xp int.
@@ -59,7 +57,8 @@
 	ja timer+ dup 'ja ! anim>n 	
 	sprites sspritez
 	
-|	dx 'xp +!
+	|dx 'xp +!
+	dx 'vvx +!
 	dy 'yp +!
 	
 	js 0? ( drop ; ) drop
@@ -69,31 +68,18 @@
 	;
 
 :resetplayer
-	128.0 'xp ! 290.0 'yp !
+
+	128.0 'xp ! 340.0 'yp !
 	0 'dx ! 0 'dy ! 0 'js !
 	2 0 0 ICS>anim 'ja !
 	;
 	
-#xfondo
 :dfondo
-	$206cd2 sdlcolor
-	0 0 640 100 sdlfrect
-	
-	xfondo int. 140 msec 8 >> 7 mod sprfondo ssprite
-	xfondo int. 640 + 140 msec 8 >> 7 mod sprfondo ssprite
-	
-	xfondo dx -
-	-320.0 <? ( 640.0 + )
-	320.0 >? ( 640.0 - )
-	'xfondo !
-	
-	$A3672E sdlcolor
-	0 240 640 240 sdlfrect
+	0 0 imgfondo sdlimage	
 	;
 |---------- 
 :juego
 	timer.
-	0 sdlcls
 	dfondo
 	0 0 bat
 	yp xp "%f %f" bprint bcr
@@ -110,23 +96,28 @@
 	<up> =? ( -0.8 'dy ! )	>up< =? ( 0 'dy ! )
 	<dn> =? ( 0.8 'dy ! )	>dn< =? ( 0 'dy ! )
 	<esp> =? ( -10.0 'jvs ! jvs 'js +! )
-	<f1> =? ( +coso )
 	drop
 	;
 
 :reset
 	resetplayer
 	'obj p.clear
+	50 ( 1? 1-
+		3 randmax
+		2000.0 randmax 400.0 +
+		100.0 randmax 350.0 +
+		+cosa
+		) drop
 	;
 	
 |-------------------
 : |<<< BOOT <<<
 	"lestrigones" 640 480 SDLinit
 	bfont1
-	640 200 "r3\iti2024\lestrigones\fondo.png" ssload 'sprfondo !
+	"r3\iti2024\lestrigones\fondo.png" loadimg 'imgfondo !
 	32 32 "r3\iti2024\lestrigones\sprites.png" ssload 'sprites !
-	reset
-	100 'obj p.ini
+	500 'obj p.ini
+	reset	
 	'juego SDLshow
 	SDLquit 
 	;

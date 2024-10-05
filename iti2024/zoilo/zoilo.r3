@@ -29,11 +29,11 @@
 #xvp #yvp		| viewport
 #xvpd #yvpd	| viewport dest
 
-#escopeta 0
-#celu 0
-#balas 0
+#escopeta 1
+#balas 5
 #llaves 0
-#vidas 100
+#celu 0
+#vidas 3
 
 |person array
 | x y ang anim ss vx vy ar
@@ -61,7 +61,7 @@
 #velz
 :anizombie | vx -- nani
 	dup abs 11 >> $fff and 'velz !
-	-? ( a> .a @ 2 + 2 velz ICS>anim ; ) 
+	-? ( a> .a @ 2 +  2 velz ICS>anim ; ) 
 	a> .a @ 2 velz ICS>anim ; 
 
 :vagazombie
@@ -100,13 +100,16 @@
 	
 :zombie
 	>a
-|	a> .a @ "%d " .print
 	a> 'obj p.nro  $4000 or | enemigo
 	16 a> .x @ int. a> .y @ int. h2d+!	
+	
 	iazombie
+	
 	obstaculo
+	
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
+	
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	$30000 or
 	a> .x @ int. xvp - 
@@ -118,8 +121,8 @@
 :+zombie | a x y --
 	'zombie 'obj p!+ >a
 	swap a!+ a!+
-	dup a!+ 
-	0 0 ICS>anim a!+ 
+	a!+ 
+	0 a!+ 
 	0 a!+ 0 a!+ 0 a!+
 	;
 
@@ -211,9 +214,12 @@
 	3 3 sdlfrect 
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
+
 	a> 'disp p.nro $1000 or | disparo
 	4 a> .x @ int. a> .y @ int. h2d+!	
-	;
+	
+	;	
+
 	
 :+disparo | --
 	'disparo 'disp p!+ >a
@@ -233,9 +239,6 @@
 	-1 a> .a +!
 	a> .vx @ a> .x +!
 	a> .vy @ a> .y +!
-
-	a> 'disp p.nro $1000 or | disparo
-	8 a> .x @ a> .y @ h2d+!	
 	;
 	
 :+cuchillo
@@ -250,10 +253,10 @@
 		
 :accion
 	btnpad $10 and? ( drop ; ) drop
-	escopeta 3 <>? ( drop +cuchillo ; ) drop
+	escopeta 0? ( drop +cuchillo ; ) drop
+	balas 0? ( 'escopeta ! ; ) drop
 	+disparo 
 	-1 'balas +!
-	balas 0? ( escopeta 1 and 'escopeta ! ) drop	
 	;
 	
 |------ PLAYER
@@ -277,7 +280,7 @@
 	a> .y +!
 	a> .x +!
 	;
-	
+
 #dirq ( 0 6 14 0 0 0 0 0 10 0 0 0 0 0 0 0 )
 	
 :diranim | btn -- btn
@@ -302,7 +305,7 @@
 	btnpad $f and diranim 	
 	dx dy xymove
 	
-	0 8 a> .x @ int. a> .y @ int. 16 - h2d+! | jugador
+	0 16 a> .x @ int. a> .y @ int. 16 - h2d+! | jugador
 	
 	a> .ani dup @ timer+ dup rot ! anim>n 			| n
 	a> .x @ dup 'xp ! int. 
@@ -310,7 +313,8 @@
 	xytrigger
 	swap viewportx xvp -
 	swap viewporty yvp -
-	+sprite | a x y --	
+	+sprite | a x y --
+	
 	;	
 
 :+jugador | 'per x y --
@@ -342,18 +346,17 @@
 	
 |----------------------------------	
 :hud
-	64 24 2.0 escopeta dup 2/ and 1 xor sprcosas sspritez
+	64 24 2.0 escopeta 1 xor sprcosas sspritez
 	0 ( llaves <?
 		dup 32 * 128 + 24 2.0 5 sprcosas sspritez
 		1+ ) drop
 		
 	$ffffff bcolor
-	0 32 bat vidas "V:%d " bprint2
-	escopeta  dup " %d " bprint2
-	1? ( balas "B:%d " bprint2 ) drop	
+	0 32 bat
+	vidas "Vidas: %d " bprint2
+	escopeta 1? ( balas "balas %d " bprint2 ) drop	
 	
-	
-|	bcr bcr	
+	bcr bcr	
 |	dirp "%h " bprint 
 |	btnpad "%h " bprint 
 |	'disp p.cnt "%d" bprint
@@ -364,9 +367,8 @@
 :hitobj | nro --
 	'obj p.adr
 	dup .a @ 
-	0 =? ( 5 'balas +! 1 escopeta or 'escopeta ! ) | escopeta
-	2 =? ( 10 'vidas +! )
-	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! ) | balas 
+	|0 =? ( ) | escopeta
+	3 =? ( 5 'balas +! ) | balas 
 	4 =? ( 1 'celu +! ) | celu
 	5 =? ( 1 'llaves +! ) | llaves
 	drop
@@ -404,8 +406,8 @@
 	0? ( drop hitplayer ; ) 
 	$1000 and? ( hitdisp ; ) | disparo
 	
-	2drop |
-	|" %h %h " bprint
+	|2drop |
+	" %h %h " bprint
 	
 	;
 	
@@ -451,8 +453,8 @@
 	<z> =? ( accion btnpad $10 or 'btnpad ! )
 	>z< =? ( btnpad $10 nand 'btnpad ! )
 	<f1> =? ( randanimal )
-	
-	<f2> =? ( escopeta 2 xor 'escopeta ! )
+	<f2> =? ( 5 'balas ! )
+	<f3> =? ( escopeta 1 xor 'escopeta ! )
 |	<f> =? ( toglefs ) | fullscreen
 	drop 
 	;
@@ -462,23 +464,21 @@
 	'disp p.clear
 	'fx p.clear
 	1 'dirp !
-	100 'vidas ! 
-	0 'balas !
+	5 'balas !
 	0 'llaves !
 	0 'celu !
-	100 'vidas !
+	3 'vidas !
 	timer<
 	;
 
 :randcosa	
-	 3 randmax 2 + 	
+	 3 randmax 3 + 	
 	( 	1200.0 randmax 32.0 + 16.0 32 * +
 		600.0 randmax 64.0 + 10.0  32 * +
 		2dup xyinmap@ $1000000000000 and? 
 		3drop ) drop
 	+cosa
 	;
-	
 :randzombie
 	2 randmax 2 << 6 +
 	(
@@ -493,11 +493,11 @@
 	reset
 	0 600.0 360.0 +jugador | 0 es jugador
 	
-	0 700.0 500.0 +cosa | escopeta
-	2 800.0 500.0 +cosa | botiquin
+	6 0 $ff ICS>anim 900.0 500.0 +zombie
+	8 0 $ff ICS>anim 600.0 700.0 +zombie
 	
 	40 ( 1? 1- randzombie ) drop
-	20 ( 1? 1- randcosa ) drop
+	20 ( 1? 1 - randcosa ) drop
 	'jugar SDLshow
 	;	
 

@@ -319,7 +319,7 @@
 	
 	sh 2/ 'yhorizon !
 	
-	5.5 'posX ! 5.5 'posY ! 0 rota
+	3.5 'posX ! 3.5 'posY ! 0 rota
 	
 	0.5 20.0 3.0 +persona
 |	0.250 6.0 8.0 +persona
