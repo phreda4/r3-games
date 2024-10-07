@@ -23,6 +23,9 @@
 #sprboton
 #sprend
 
+#musjuego
+#muslogo
+
 #lnubes 0 0 
 #lnotas 0 0
 #lfx 0 0 
@@ -195,6 +198,7 @@
 	drop ;
 
 :jugar
+	Mix_HaltMusic
 	0 playsnd 
 	timer<
 	'lnotas p.clear
@@ -205,6 +209,7 @@
 	0 'vida !
 	0 0 $7f ICS>anim 'ja !
 	0 'estado !
+	musjuego -1 Mix_PlayMusic
 	'juego SDLshow
 	;
 	
@@ -252,6 +257,8 @@
 	2 playsnd 
 	800 'xcartel !
 	'finj sdlshow
+	Mix_HaltMusic
+	muslogo -1 Mix_PlayMusic
 	;
 	
 |-----------------
@@ -261,12 +268,11 @@
 	0 
 	msec 3 << sincos drop 30 * int. 40 + 
 	imglogo sdlimage
-	'jugar 320 340 0 btnimg
+	[ jugar finjuego ; ] 320 340 0 btnimg
 	'exit 320 400 2 btnimg
 	
 	SDLredraw
 	SDLkey
-	<f1> =? ( finjuego )
 	<esp> =? ( jugar finjuego )
 	>esc< =? ( exit ) 
 	drop
@@ -285,7 +291,8 @@
 	( dup c@ 1? drop
 		dup "r3/iti2024/uvlas/%s" sprint mix_loadWAV a!+
 		>>0 ) drop ;
-		
+	
+
 :main
 	"Ulises Contra Las Sirenas" 640 480 SDLinit
 	pcfont
@@ -303,7 +310,9 @@
 	32 32 "r3/iti2024/uvlas/barra.png" ssload 'sprbarra !
 	64 32 "r3/iti2024/uvlas/boton.png" ssload 'sprboton !
 	200 200 "r3/iti2024/uvlas/you died.png" ssload 'sprend !
-	
+
+	"r3/iti2024/uvlas/SONIDOS DEL MAR Y GAVIOTAS.mp3" Mix_LoadMUS 'musjuego !
+	"r3/iti2024/uvlas/Canto de Sirena.mp3" Mix_LoadMUS 'muslogo !		
 	
 	loadsnd
 	
@@ -313,6 +322,7 @@
 	fillnubes
 	
 	timer<
+	muslogo -1 Mix_PlayMusic
 	'inicio SDLshow
 	|jugar	
 	SDLquit 

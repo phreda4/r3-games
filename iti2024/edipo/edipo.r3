@@ -45,7 +45,7 @@
 #xv
 #yv -460
 :fondo
-	xv yv 1280 960 imgfondo SDLImages
+	xv yv 2560 960 imgfondo SDLImages
 	;
 
 :frente
@@ -76,6 +76,7 @@
 	pcfont
 	32 50 "r3/iti2024/edipo/jugador.png" ssload 'sprimg !
 	"r3/iti2024/edipo/orilla.png" loadimg 'imgfondo !
+	
 	timer<
 	'juego SDLshow
 	SDLquit 
