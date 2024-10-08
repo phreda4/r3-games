@@ -1,10 +1,9 @@
+||MEM 1024
 | pampa zoilo
 | PHREDA 2024
 |------------------
 ^r3/lib/console.r3
 ^r3/lib/sdl2gfx.r3
-^r3/util/sdlgui.r3
-^r3/util/arr16.r3
 ^r3/lib/rand.r3
 ^r3/util/hash2d.r3
 
@@ -286,7 +285,6 @@
 	$4 and? ( 2.0 'dy !  )
 	$8 and? ( -2.0 'dy ! )
 	dirp =? ( drop ; ) 
-	|0? ( 0 0 0 ICS>anim anim! drop ; )
 	0? ( drop dirp 'dirq + c@ 0 0 ICS>anim anim! ; ) 
 	$1 =? ( 6 4 $ff ICS>anim anim! ) | ri
 	$2 =? ( 14 4 $ff ICS>anim anim! ) | le
@@ -521,3 +519,5 @@
 	juego
 	SDLquit
 	;
+
+: main ;

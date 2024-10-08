@@ -227,8 +227,11 @@ drop ;
 	1? ( pick4 3 << 'jugador + -1 swap +! drop 1 ) 
 	5 + sprgame sspritez	| cabeza
 	
-	dup 200 * 90 + 8 pcat
-	dup 3 << 'puntaje + @ "%d" pcprint2
+	0 ttcolor
+	dup 200 * 80 + 46
+	ttat
+	dup 3 << 'puntaje + @ "%d" 
+	ttprint
 	
 	drop
 	;
@@ -265,9 +268,7 @@ drop ;
 	
 	feed
 	
-	300 260 ttat
-	"Cartel" ttprint
-	
+
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
@@ -288,6 +289,7 @@ drop ;
 	
 :inicio
 	Immgui
+	0 sdlcls
 	|0 0 800 600 imginicio SDLImages
 	
 	0 80 immat
@@ -298,13 +300,10 @@ drop ;
 	
 	400 immwidth
 	200 350 immat
-|	400 350 immat
-|	$ff00 'immcolortex !
+	
 	$ffffff 'immcolortex !
 	$7f00 'immcolorbtn !
 	'jugar "JUGAR" immbtn immdn
-|	600 400 immat
-|	$ff0000 'immcolortex !
 	$7f0000 'immcolorbtn !
 	'exit "SALIR" immbtn
 	

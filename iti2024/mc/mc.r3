@@ -241,25 +241,15 @@
 :inicio
 	Immgui
 	0 0 800 600 imginicio SDLImages
+
+	$ffffff 'immcolortex !	
+	$0 'immcolorbtn !
+	200 immwidth
 	
-	0 80 immat
-	800 immwidth
-	$ff00ff 'immcolortex !
-	"MALEVOLO" immlabelc immdn
-	"CUCARACHON" immlabelc immdn 
-	immdn
-	
-	400 immwidth
-	200 350 immat
-|	400 350 immat
-|	$ff00 'immcolortex !
-	$ffffff 'immcolortex !
-	$7f00 'immcolorbtn !
-	'jugar "JUGAR" immbtn immdn
-|	600 400 immat
-|	$ff0000 'immcolortex !
-	$7f0000 'immcolorbtn !
-	'exit "SALIR" immbtn
+	320 364 immat
+	'jugar "JUGAR" immebtn immdn
+	320 464 immat
+	'exit "SALIR" immebtn
 	
 	SDLredraw
 	SDLkey
@@ -279,11 +269,11 @@
 	64 64 "r3/iti2024/mc/cuca.png" ssload 'sprgame !
 	128 140 "r3/iti2024/mc/chanclas.png" ssload 'sprplayer !
 	"r3/iti2024/mc/cocina.png" loadimg 'imgfondo !
-	"r3/iti2024/mc/inicio.png" loadimg 'imginicio !
+	"r3/iti2024/mc/inicio.jpeg" loadimg 'imginicio !
 
 	|"r3/iti2024/mc/zombieguts.ttf"
 	"r3/iti2024/mc/BICHOCHOS_TYPE.ttf" 
-	70 ttf_OpenFont immSDL
+	60 ttf_OpenFont immSDL
 	100 'cucas p.ini
 	100 'fx p.ini
 	1000 vaini
