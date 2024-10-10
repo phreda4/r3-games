@@ -340,14 +340,22 @@
 |----------------------------------	
 :hud
 	64 24 2.0 escopeta dup 2/ and 1 xor sprcosas sspritez
+	
 	0 ( llaves <?
 		dup 32 * 128 + 24 2.0 5 sprcosas sspritez
 		1+ ) drop
 
-	$ffffff bcolor
-	0 32 bat vidas "V:%d " bprint2
-	escopeta  dup " %d " bprint2
-	1? ( balas "B:%d " bprint2 ) drop	
+	$ff0000 sdlcolor
+	800	16 vidas 32 sdlFrect
+	
+	0 ( balas 4 + 5 / <?
+		dup 32 * 256 + 24 2.0 3 sprcosas sspritez
+		1+ ) drop
+	
+|	$ffffff bcolor
+|	0 32 bat vidas "V:%d " bprint2
+|	escopeta  dup " %d " bprint2
+|	1? ( balas "B:%d " bprint2 ) drop	
 	
 
 |	bcr bcr	
@@ -459,7 +467,6 @@
 	'disp p.clear
 	'fx p.clear
 	1 'dirp !
-	100 'vidas ! 
 	0 'balas !
 	0 'llaves !
 	0 'celu !
