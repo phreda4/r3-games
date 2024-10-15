@@ -4,10 +4,15 @@
 |------------------
 ^r3/lib/console.r3
 ^r3/lib/sdl2gfx.r3
+^r3/lib/sdl2mixer.r3
 ^r3/lib/rand.r3
 ^r3/util/hash2d.r3
 
 ^r3/util/bmap.r3
+
+#sndlist * 160
+:playsnd | n --
+	3 << 'sndlist + @ SNDplay ;
 
 |----
 #spranimal
@@ -190,6 +195,27 @@
 	;	
 
 |----------------------------
+:fxdisp
+	>a
+	a> .ani @ 0? ( ; ) drop
+	-1 a> .ani +! 
+	a> .vx @ a> .x +!
+	a> .vy @ a> .y +!	
+	a> .x @ int. xvp -
+	a> .y @ int. yvp - | x y
+	a> .a dup @ timer+ dup rot ! anim>n
+	sprcosas
+	ssprite
+	;
+	
+:+fx | dx dy cnt ani x y --
+	'fxdisp 'fx p!+ >a
+	swap a!+ a!+
+	a!+ a!+ 0 a!+
+	swap a!+ a!+
+	;
+	
+|----------------------------
 #dx #dy	
 
 :dirdis
@@ -220,6 +246,12 @@
 	3 3 << a+
 	dirdis 
 	dx a!+ dy a!+
+	0 playsnd
+	
+	dx 2/ dy 2/
+	10
+	15 0 0 ICS>anim
+	xp yp 38.0 - +fx | cnt ani x y --
 	;	
 
 :cuchillo
@@ -251,7 +283,7 @@
 	escopeta 3 <>? ( drop +cuchillo ; ) drop
 	+disparo 
 	-1 'balas +!
-	balas 0? ( escopeta 1 and 'escopeta ! ) drop	
+	balas 0? ( escopeta 1 and 'escopeta ! 1 playsnd ) drop	
 	;
 
 |------ PLAYER
@@ -284,7 +316,7 @@
 	$2 and? ( -2.0 'dx ! )
 	$4 and? ( 2.0 'dy !  )
 	$8 and? ( -2.0 'dy ! )
-	dirp =? ( drop ; ) 
+	|dirp =? ( drop ; ) 
 	0? ( drop dirp 'dirq + c@ 0 0 ICS>anim anim! ; ) 
 	$1 =? ( 6 4 $ff ICS>anim anim! ) | ri
 	$2 =? ( 14 4 $ff ICS>anim anim! ) | le
@@ -342,11 +374,12 @@
 	64 24 2.0 escopeta dup 2/ and 1 xor sprcosas sspritez
 	
 	0 ( llaves <?
-		dup 32 * 128 + 24 2.0 5 sprcosas sspritez
+		dup 32 * 128 + 24 2.0 4 sprcosas sspritez
 		1+ ) drop
 
-	$ff0000 sdlcolor
-	800	16 vidas 32 sdlFrect
+	500 63 vidas 1.0 100 */ 18 sprplayer sspritez
+|	$ff0000 sdlcolor
+|	800	16 vidas 32 sdlFrect
 	
 	0 ( balas 4 + 5 / <?
 		dup 32 * 256 + 24 2.0 3 sprcosas sspritez
@@ -372,8 +405,8 @@
 	0 =? ( 5 'balas +! 1 escopeta or 'escopeta ! ) | escopeta
 	2 =? ( 10 'vidas +! )
 	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! ) | balas 
-	4 =? ( 1 'celu +! ) | celu
-	5 =? ( 1 'llaves +! ) | llaves
+	4 =? ( 1 'llaves +! ) | llaves
+	5 =? ( 1 'celu +! ) | celu
 	drop
 	'obj p.del
 	;
@@ -455,9 +488,15 @@
 	>ri< =? ( btnpad $1 nand 'btnpad ! )	
 	<z> =? ( accion btnpad $10 or 'btnpad ! )
 	>z< =? ( btnpad $10 nand 'btnpad ! )
-	<f1> =? ( randanimal )
 	
-	<f2> =? ( escopeta 2 xor 'escopeta ! )
+|	<f1> =? ( randanimal )
+	<f1> =? (
+	50
+	15 0 0 ICS>anim
+	xp yp 38.0 - +fx | cnt ani x y --
+	)
+	
+|	<f2> =? ( escopeta 2 xor 'escopeta ! )
 |	<f> =? ( toglefs ) | fullscreen
 	drop 
 	;
@@ -496,7 +535,9 @@
 	inisprite
 	reset
 	0 600.0 360.0 +jugador | 0 es jugador
-
+	0 'dirp !
+	dirp 'dirq + c@ 0 0 ICS>anim anim!
+	
 	0 700.0 500.0 +cosa | escopeta
 	2 800.0 500.0 +cosa | botiquin
 
@@ -504,6 +545,21 @@
 	20 ( 1? 1- randcosa ) drop
 	'jugar SDLshow
 	;	
+
+|------ sound
+#sndfiles 
+"escopeta"
+"recarga"
+0
+
+:loadsnd
+	'sndlist >a
+	'sndfiles
+	( dup c@ 1? drop
+		dup "r3/iti2024/zoilo/%s.mp3" sprint mix_loadWAV a!+
+		>>0 ) drop ;
+
+
 
 :main
 	"r3sdl" 1024 600 SDLinit
@@ -516,7 +572,9 @@
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	32 32 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
 	'bsprdrawsimple 'bsprdraw !
-
+	
+	loadsnd
+	
 	500 'obj p.ini
 	100 'disp p.ini
 	100 'fx p.ini
