@@ -175,7 +175,7 @@
 :frente
 	100 20 4.0 vida 4 >> sprbarra sspritez
 	;
-	
+
 |-----------------
 :juego
 	timer. notas

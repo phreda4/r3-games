@@ -52,12 +52,31 @@ drop ;
 
 #sprgame
 #sprfx
-
 #sprplayer
 
 #maizs 0 0 
 #fx 0 0
 
+|------- FX
+:fxgr
+	>a
+	a> .s @ 0? ( ; ) drop
+	-1 a> .s +! 
+	a> .x @ int.
+	a> .y @ int. | x y
+	2.0
+	a> .z dup @ timer+ dup rot ! anim>n
+	sprfx
+	sspritez
+	;
+	
+:+fx | time ani x y --
+	'fxgr 'fx p!+ >a
+	swap a!+ a!+
+	a!+ a!+
+	;
+
+|--------------------------
 #jugador 0 0 0 0 0 0 0 0
 #puntaje 0 0 0 0 0 0 0 0
 
@@ -244,10 +263,17 @@ drop ;
 	;
 	
 :pico | n -- 
+	dup
 	3 << 'jugador + 
-	dup @ 1? ( 2drop ; ) drop
+	dup @ 1? ( 3drop ; ) drop
 	20 swap ! | loop correct
 	10 playsnd
+	
+	15
+	2 5 $ff ICS>anim
+	rot 200.0 * 100.0 + | x 
+	290.0 | y
+	+fx | time ani x y --
 	;
 	
 :feed
@@ -263,9 +289,8 @@ drop ;
 	fondo
 	
 	'maizs p.draw
-	
 	gallinas
-	
+	'fx p.draw
 	feed
 	
 
@@ -282,10 +307,23 @@ drop ;
 	<f3> =? ( 2 500.0 130.0 +maiz )
 	<f4> =? ( 3 700.0 130.0 +maiz )
 	
+	<f5> =? ( 
+		50
+	7 4 $ff ICS>anim
+	|a> .l @ 200.0 * 100.0 + | x 
+	300.0
+	350.0 | y
+	+fx | time ani x y --
+
+		) | time ani x y --
 	drop ;
 	
 :jugar
-	'game SDLshow ;
+	'maizs p.clear
+	'fx p.clear
+	trestart
+	'game SDLshow 
+	;
 	
 :inicio
 	Immgui
@@ -328,15 +366,15 @@ drop ;
 	70 ttf_OpenFont immSDL
 	
 	1000 'maizs p.ini
-	100 'fx p.ini
+	200 'fx p.ini
 	1000 vaini	| hasta 50 eventos
 	
 	vareset	
 	'maizs p.clear
 	
 	timer<
-	|'game SDLshow
-	'inicio SDLshow
+		|'inicio SDLshow
+	jugar
 	SDLquit 
 	;
 
