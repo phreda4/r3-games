@@ -181,10 +181,10 @@
 	a> 'aj ! a> .x @ 'xj ! a> .y @ 'yj !
 	
 	btnpad $f and 
-	$1 and? ( 1.0 a> .x +! 8 2 $ff ICS>anim anim! )
-	$2 and? ( -1.0 a> .x +! 10 2 $ff ICS>anim anim! )
-	$4 and? ( 1.0 a> .y +! 4 2 $ff ICS>anim anim! )
-	$8 and? ( -1.0 a> .y +! 6 2 $ff ICS>anim anim! )
+	$1 and? ( 1.0 a> .x +! 4 2 $ff ICS>anim anim! )
+	$2 and? ( -1.0 a> .x +! 6 2 $ff ICS>anim anim! )
+	$4 and? ( 1.0 a> .y +! 2 2 $ff ICS>anim anim! )
+	$8 and? ( -1.0 a> .y +! 0 2 $ff ICS>anim anim! )
 	1? ( dup 'btna ! )
 	drop
 	0 16 a> .x @ int. a> .y @ int. 10 + h2d+! | jugador
@@ -286,11 +286,14 @@
 |------------- mapa
 | x y
 #obstaculos
-2 0 50
-|1 -100 50 
-|1 300 50
-|1 300 70
+2 50 400
+3 450 300
+3 50 200
+3 450 100
+3 50 500
+2 450 600
 0
+
 
 :objmapa
 	'obstaculos >a
