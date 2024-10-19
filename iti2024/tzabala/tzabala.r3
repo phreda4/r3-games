@@ -15,6 +15,8 @@
 
 #btnpad
 #xvp #yvp
+#basex 320
+#basey 340
 
 | x y ang/z anim ss vx vy ar io
 | 1 2 3   4    5  6  7  8  9
@@ -75,7 +77,7 @@
 	swap a!+ a!+
 	1.0 a!+ | ang zoom
 	
-	17 3 $3f ICS>anim | 0 4
+	36 3 $3f ICS>anim | 0 4
 	a!+
 	sprites a!+
 	0 a!+ 0 a!+
@@ -83,7 +85,29 @@
 	;
 
 |-------------- mapa estatico
-#listaobs ( 13 14 15 16 ) 
+
+|------------- mapa
+#mapa
+"................................................."
+".                           *                   *"
+".               ++++        *                   *"
+".                           *                   *"
+".                           *                   *"
+".   +   ***   ,,                         *      *"
+".   +      *    ,                         *      *"
+".                           *                   *"
+".     ,                     *                   *"
+".     ,                      *                   *"
+".     ,    *                              *      *"
+".                                       *      *"
+".                  *                      *"
+".                  *                            *"
+".                  *                            *"
+"/////////////////////////////////////////////////"
+"/////////////////////////////////////////////////"
+"/////////////////////////////////////////////////"
+
+#listaobs ( 20 21 22 23 24 25 26 ) 
 
 :staticobj
 	drawspr 
@@ -106,7 +130,30 @@
 	]a
 	;
 	
+#xn #yn
+
+:addo
+|	dup .emit
+	dup $29 - | *+,-./012
+	basex xn + fix. 
+	basey yn - fix. 
+	+estatico
+	;
+
+:objline | adr -- adr
+	-200 'yn !
+	( c@+ 1? $2a >=? ( addo ) drop
+		50 'yn +!
+		) drop ;
 	
+:objmapa	
+	-350 'xn !
+	'mapa 
+	18 ( 1? swap
+		objline
+		50 'xn +!
+		swap 1- ) 2drop ;	
+		
 #btna
 #xj #yj #aj
 #dx #dy #ang
@@ -156,15 +203,13 @@
 	dirdis	
 	0
 	dx dy
-	12 0 $ff ICS>anim
+	31 0 $ff ICS>anim
 	1.0 ang
 	xj yj
 	+odisparo 
 	;
 	
 |----------------------------- jugador
-#basex 320
-#basey 340
 
 |  x y anim 
 :setvp
@@ -283,24 +328,6 @@
 	drop
 	;
 	
-|------------- mapa
-| x y
-#obstaculos
-2 50 400
-3 450 300
-3 50 200
-3 450 100
-3 50 500
-2 450 600
-0
-
-
-:objmapa
-	'obstaculos >a
-	( a@+ 1?
-		basex a@+ + fix. 
-		basey a@+ - fix. +estatico
-		) drop  ;
 
 	
 :reset
@@ -316,7 +343,7 @@
 	bfont1
 	"r3\iti2024\tzabala\fondo.png" loadimg 'ifondo !
 	32 32 "r3\iti2024\tzabala\sprites.png" ssload 'sprites !
-	100 'obj p.ini
+	1000 'obj p.ini
 	500 H2d.ini 
 	$fff 'here +! | lista de contactos
 	reset
