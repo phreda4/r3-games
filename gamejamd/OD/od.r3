@@ -205,19 +205,16 @@
 	;
 
 :randwind
-	vareset
 	'x 400.0 randmax 300.0 + x 9 2.0 0.0 +vanim
 	'y 200.0 randmax 50.0 + y 9 2.0 0.0 +vanim
 	'randwind 2.0 +vexe ;
 	
 :startwind
-	vareset
 	'x 550.0 -500.0 3 3.0 0.0 +vanim 
 	'y 220.0 -100.0 3 3.0 0.0 +vanim 
 	'randwind 3.0 +vexe ;
 
 :endwind
-	vareset
 	'x 1250.0 x 3 3.0 1.0 +vanim 
 	'y -100.0 y 3 3.0 1.0 +vanim 
 	'exit 5.0 +vexe ;
@@ -377,7 +374,7 @@
 	tt. ;
 	
 :animc
-	vareset
+|	vareset
 	'ys yh neg 0 0 0.5 0 +vanim
 	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 0.5 +vexe
 	0 'ys ! 
