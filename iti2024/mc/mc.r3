@@ -10,26 +10,14 @@
 ^r3/util/sdlgui.r3
 
 |------ sound
-#sndfiles 
-"808_2.mp3"
-"808_3.mp3"
-"808_4.mp3"
-"808_5.mp3"
-"808_6.mp3"
-"808_7.mp3"
-"808_C.mp3"
-"808_K.mp3"
-"808_O.mp3"
-"808_S.mp3"
-"808_R.mp3"
-0
+#sndfiles "808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 0
 #sndlist * 160
 
 :loadsnd
 	'sndlist >a
 	'sndfiles
 	( dup c@ 1? drop
-		dup "media/snd/808/%s" sprint mix_loadWAV a!+
+		dup "media/snd/808/%s.mp3" sprint mix_loadWAV a!+
 		>>0 ) drop ;
 
 :playsnd | n --
@@ -48,12 +36,14 @@
 #tiempo		0	| tiempo ahora
 
 #jugador 0 0 0 0 0 0 0 0
-#puntaje 0 3 0 43 0 0 0 0
+#puntaje 0 0 0 0 0 0 0 0
 
 | x y anim
 :.x 1 ncell+ ;
 :.y 2 ncell+ ;
 :.a 3 ncell+ ;
+:.s 4 ncell+ ;	| n sprite
+:.l 5 ncell+ ;	| lugar
 
 :cuca
 	dup 8 + >a 
@@ -66,9 +56,8 @@
 
 :toco
 	over 8 + @ 3 << 'puntaje + 1 swap +!
-	|over @ .z 0 swap !	| zoom =0
+	over @ .a 4 13 $ff ICS>anim swap !	| zoom =0
 	drop
-	"toco" .println
 	;
 	
 :momento |9 playsnd 
@@ -83,28 +72,15 @@
 	dup pick3 pick4 50.0 - 19 0.5 1.5 +vanim	
 	dup pick3 50.0 - pick4 20 0.5 2.0 +vanim	
 	dup pick3 pick4 50.0 - 19 0.5 2.5 +vanim	
-
-|	dup 400.0 
-|	20.0 randmax 10.0 - +
-|	310.0 0 0.5 3.0 +vanim	
-	
 	drop ;
 
 :cucamovx | y x adr --
 	dup 220.0 -20.0 0 0.95 0.0 +vanim
 	dup 460.0 220.0 0 0.95 1.05 +vanim
 	dup 700.0 460.0 0 0.95 2.05 +vanim
-	
 	dup 1000.0 700.0 21 0.25 3.1 +vanim
-|	dup 20.0 randmax 10.0 - +
-|	800.0 20.0 randmax 10.0 - +
-|	700.0 21 0.25 3.0 +vanim
-	
-	pick3 a> 8 - 'momento 3.0 +vvvexe
-|	dup pick2 80.0 - 
-|	20.0 randmax 10.0 - +
-|	pick3 20 0.5 3.0 +vanim	
 
+	pick3 a> 8 - 'momento 3.0 +vvvexe
 	drop ;
 	
 
@@ -115,35 +91,32 @@
 	a> 8 + cucamovy
 	a!+ a!+
 	0 4 $3f ICS>anim a!+ 
+	0.1 a!+
 	a!+
 	;
 	
 |------- timeline
+#nivel0 " o o o      "
+#nivel1 " abdh abcdefghijklmno "
 
-#nivel0 " abdh abcdefghijklmno "
-#time1 $1 $2 $4 $5 $1 $8 $1 $7 $3 $2 $1 $4 $5 $f -1
+#nivs 'nivel0 'nivel1 0
+#niv 0
 
+#finsec
 #ltime
 #ntime
 
 :trestart
-	-1 'ltime ! 
-	0 'ntime !
+	-1 'ltime ! 0 'ntime !
+	0 'finsec !
+	'fx p.clear
+	'cucas p.clear
+	timer<
+	vareset
 	;
 
 #nivel 'nivel0
 
-:getframe
-	ntime ltime =? ( drop ; ) 
-	dup 'ltime ! nivel + c@
-	0? ( drop ; ) |0 'ntime ! ; )
-	1 and? ( 0 0.0 120.0 +cuca )
-	2 and? ( 1 0.0 270.0 +cuca )
-	4 and? ( 2 0.0 420.0 +cuca )
-	8 and? ( 3 0.0 570.0 +cuca )
-	drop
-	;
-	
 :tclock
 	timer.
 	tiempo timer+ 
@@ -151,6 +124,19 @@
 	tic - 'tiempo ! 
 	1 'ntime +! 
 	;
+
+:getframe
+	tclock
+	ntime ltime =? ( drop ; ) 
+	dup 'ltime ! nivel + c@
+	0? ( drop 1 'finsec ! ; )
+	1 and? ( 0 0.0 120.0 +cuca )
+	2 and? ( 1 0.0 270.0 +cuca )
+	4 and? ( 2 0.0 420.0 +cuca )
+	8 and? ( 3 0.0 570.0 +cuca )
+	drop
+	;
+	
 
 :showtic
 	$ff00 sdlcolor
@@ -169,7 +155,6 @@
 	
 	
 :player | player --
-
 	740 				| x
 	70 pick2 150 * +	| y
 	
@@ -187,40 +172,20 @@
 	drop
 	;
 
-:debug
-	$ffffff pccolor
-	0 0 pcat
-	ntime "ntime:%d" pcprint pccr
-	ntime 3 << 'time1 + @ "actual:%h" pcprint pccr
-	'jugador
-	@+ "%h " pcprint
-	@+ "%h " pcprint
-	@+ "%h " pcprint
-	@+ "%h " pcprint
-	drop
-	;
-	
 |------ JUEGO
-#sect
-
 :juego
 	vupdate
-	$0 SDLcls
+|	$0 SDLcls
 	0 0 800 600 imgfondo SDLImages
-	|immgui 	
-	|debug
-	
-	tclock
-	|showtic
-	
+
 	'cucas p.draw
+
+	0 player 1 player 2 player 3 player	
 	'fx p.draw
-	0 player 
-	1 player 
-	2 player 
-	3 player	
 	
 	getframe
+	
+	finsec 1? ( exit ) drop
 	
 	SDLredraw
 	SDLkey
@@ -233,9 +198,37 @@
 	
 	drop ;
 	
+:ini
+	Immgui
+	0 sdlcls
+	
+	
+	sdlredraw
+	sdlkey
+	>esc< =? ( exit )
+	drop
+	;
+	
+:fin
+	Immgui
+	0 sdlcls
+	
+	sdlredraw
+	sdlkey
+	>esc< =? ( exit )
+	drop
+	;
+		
+	
 :jugar
-	timer<
+	0 'niv !
+	
+
+	'nivs niv 3 << + @ 'nivel !
+	trestart	
+	'ini sdlshow
 	'juego SDLshow
+	'fin sdlshow
 	;
 	
 :inicio
@@ -279,8 +272,9 @@
 	1000 vaini
 	vareset
 
-	'inicio SDLshow
-	|jugar
+	|'inicio SDLshow
+	jugar
+	
 	SDLquit 
 	;
 

@@ -11,26 +11,14 @@
 
 
 |------ sound
-#sndfiles 
-"808_2.mp3"
-"808_3.mp3"
-"808_4.mp3"
-"808_5.mp3"
-"808_6.mp3"
-"808_7.mp3"
-"808_C.mp3"
-"808_K.mp3"
-"808_O.mp3"
-"808_S.mp3"
-"808_R.mp3"
-0
+#sndfiles "808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 0
 #sndlist * 160
 
 :loadsnd
 	'sndlist >a
 	'sndfiles
 	( dup c@ 1? drop
-		dup "media/snd/808/%s" sprint mix_loadWAV a!+
+		dup "media/snd/808/%s.mp3" sprint mix_loadWAV a!+
 		>>0 ) drop ;
 
 :playsnd | n --
@@ -96,8 +84,7 @@ drop ;
 :llego |9 playsnd 
 	5 playsnd
 	dup 8 + @ 3 << 'jugador + @
-	1? ( toco ; ) drop
-	;
+	1? ( toco ; ) drop ;
 
 
 :maizmovy | y x adr --
@@ -158,8 +145,8 @@ drop ;
 
 |------- timeline
 
-#time1 $1 $2 $4 $5 $1 $8 $1 $7 $3 $2 $1 $4 $5 $f -1
-|#time1 1 2 1 2 1 2 1 2 1 2 -1
+#nivel0 " abdh abcdefghijklmno "
+#nivel0 " ooooo oo  "
 
 #ltime
 #ntime
@@ -169,18 +156,8 @@ drop ;
 	0 'ntime !
 	;
 	
-:showtime
-	ntime ltime =? ( drop ; ) 
-	dup 'ltime !
-	3 << 'time1 + @
-	-? ( drop 0 'ntime ! ; )
-|	1 and? ( 0.0 120.0 +cuca )
-|	2 and? ( 0.0 270.0 +cuca )
-|	4 and? ( 0.0 420.0 +cuca )
-|	8 and? ( 0.0 570.0 +cuca )
-	drop
-	;
-	
+#nivel 'nivel0
+
 :tclock
 	tiempo timer+ 
 	largo <? ( 'tiempo ! ; )
@@ -188,9 +165,20 @@ drop ;
 	tiempo 'thit ! 
 	1 'ntime +! 
 	;
-
+	
+:getframe
+	tclock
+	ntime ltime =? ( drop ; ) 
+	dup 'ltime ! nivel + c@
+	0? ( drop ; )
+	1 and? ( 0 100.0 130.0 +maiz )
+	2 and? ( 1 300.0 130.0 +maiz )
+	4 and? ( 2 500.0 130.0 +maiz )
+	8 and? ( 3 700.0 130.0 +maiz )	
+	drop
+	;
+	
 |------------- jugadores
-
 :golpe | time player --
 	3 << 'jugador +
 	dup @ 1? ( 3drop ; ) drop
@@ -256,10 +244,7 @@ drop ;
 	;
 	
 :gallinas	
-	0 100 gallina
-	1 300 gallina
-	2 500 gallina
-	3 700 gallina
+	0 100 gallina 1 300 gallina 2 500 gallina 3 700 gallina
 	;
 	
 :pico | n -- 
@@ -290,8 +275,9 @@ drop ;
 	
 	'maizs p.draw
 	gallinas
+	getframe	
 	'fx p.draw
-	feed
+	|feed
 	
 
 	SDLredraw
