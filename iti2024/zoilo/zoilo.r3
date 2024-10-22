@@ -38,6 +38,7 @@
 #balas 0
 #llaves 0
 #vidas 100
+#zombies 0
 
 |person array
 | x y ang anim ss vx vy ar
@@ -402,7 +403,7 @@
 :hitobj | nro --
 	'obj p.adr
 	dup .a @ 
-	0 =? ( 5 'balas +! 1 escopeta or 'escopeta ! ) | escopeta
+	0 =? ( 5 'balas +! 3 escopeta or 'escopeta ! ) | escopeta+balas
 	2 =? ( 10 'vidas +! )
 	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! ) | balas 
 	4 =? ( 1 'llaves +! ) | llaves
@@ -432,6 +433,7 @@
 	$4000 and? ( 
 		$fff and 'obj p.adr 'obj p.del  | borra enemigo
 		$fff and 'disp p.adr 'disp p.del  | borra bala
+		1 'zombies +!
 		; ) | borra enemigo
 	2drop
 	;
@@ -455,7 +457,7 @@
 		swap 1- ) 2drop ;
 
 |----- JUGAR
-:jugar
+:sjugar
 	timer.
 	0 SDLcls
 	immgui		| ini IMMGUI	
@@ -490,29 +492,13 @@
 	>z< =? ( btnpad $10 nand 'btnpad ! )
 	
 |	<f1> =? ( randanimal )
-	<f1> =? (
-	50
-	15 0 0 ICS>anim
-	xp yp 38.0 - +fx | cnt ani x y --
-	)
-	
 |	<f2> =? ( escopeta 2 xor 'escopeta ! )
-|	<f> =? ( toglefs ) | fullscreen
-	drop 
+	<f> =? ( toglefs ) | fullscreen
+	drop
+	vidas 0 <=? ( exit ) drop
 	;
 
-:reset
-	'obj p.clear
-	'disp p.clear
-	'fx p.clear
-	1 'dirp !
-	0 'balas !
-	0 'llaves !
-	0 'celu !
-	100 'vidas !
-	timer<
-	;
-
+|------------- hacer mapa
 :randcosa	
 	 3 randmax 2 + 	
 	( 	1200.0 randmax 32.0 + 16.0 32 * +
@@ -531,21 +517,78 @@
 		3drop ) drop		
 	+zombie ;
 
-:juego
+:sfin
+	Immgui
+	0 sdlcls
+	|0 0 800 600 imginicio SDLImages
+	
+	0 80 immat
+	1024 immwidth
+	$ff00ff 'immcolortex !
+	"Zoilo" immlabelc immdn
+	immdn
+	zombies "Zombis muertos...%d" immlabelc
+	
+	400 immwidth
+	312 450 immat
+	
+	$ffffff 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:jugar
 	inisprite
-	reset
+	'obj p.clear 'disp p.clear 'fx p.clear
+	1 'dirp ! 0 'balas ! 0 'llaves ! 0 'celu ! 
+	100 'vidas ! 0 'zombies !
+	timer<
 	0 600.0 360.0 +jugador | 0 es jugador
 	0 'dirp !
 	dirp 'dirq + c@ 0 0 ICS>anim anim!
-	
+
 	0 700.0 500.0 +cosa | escopeta
 	2 800.0 500.0 +cosa | botiquin
 
 	40 ( 1? 1- randzombie ) drop
 	20 ( 1? 1- randcosa ) drop
-	'jugar SDLshow
-	;	
-
+	
+	'sjugar SDLshow
+	'sfin sdlshow
+	;
+	
+|------ inicio
+:sinicio
+	Immgui
+	0 sdlcls
+	|0 0 800 600 imginicio SDLImages
+	
+	0 80 immat
+	1024 immwidth
+	$ff00ff 'immcolortex !
+	"Zoilo" immlabelc immdn
+	immdn
+	
+	400 immwidth
+	312 350 immat
+	
+	$ffffff 'immcolortex !
+	$7f00 'immcolorbtn !
+	'jugar "JUGAR" immbtn immdn
+	$7f0000 'immcolorbtn !
+	'exit "SALIR" immbtn
+	
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	<f1> =? ( jugar )
+	
+	drop ;
+	
 |------ sound
 #sndfiles 
 "escopeta"
@@ -559,13 +602,12 @@
 		dup "r3/iti2024/zoilo/%s.mp3" sprint mix_loadWAV a!+
 		>>0 ) drop ;
 
-
-
 :main
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
 
-	"media/ttf/Roboto-Medium.ttf" 12 TTF_OpenFont immSDL
+	"media/ttf/Roboto-Medium.ttf" 60 TTF_OpenFont immSDL
+	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	bfont1
 	64 64 "r3/iti2024/zoilo/caballo.png" ssload 'spranimal !
@@ -581,7 +623,8 @@
 	1000 H2d.ini 
 	$fff 'here +! | lista de contactos
 
-	juego
+	|jugar
+	'sinicio sdlshow
 	SDLquit
 	;
 
