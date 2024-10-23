@@ -10,14 +10,21 @@
 ^r3/util/sdlgui.r3
 
 |------ sound
-#sndfiles "808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 0
+#sndfiles 
+"inicio"
+"fin"
+"chancletazo"
+"saltocuca"
+"smashcuca"
+|"808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 
+0
 #sndlist * 160
 
 :loadsnd
 	'sndlist >a
 	'sndfiles
 	( dup c@ 1? drop
-		dup "media/snd/808/%s.mp3" sprint mix_loadWAV a!+
+		dup "r3/iti2024/mc/%s.mp3" sprint mix_loadWAV a!+
 		>>0 ) drop ;
 
 :playsnd | n --
@@ -198,10 +205,11 @@
 	
 	drop ;
 	
-:ini
-	Immgui
-	0 sdlcls
-	
+:sini
+	vupdate
+|	0 sdlcls
+	0 0 800 600 imgfondo SDLImages
+	0 player 1 player 2 player 3 player	
 	
 	sdlredraw
 	sdlkey
@@ -209,9 +217,11 @@
 	drop
 	;
 	
-:fin
-	Immgui
-	0 sdlcls
+:sfin
+	vupdate
+|	0 sdlcls
+	0 0 800 600 imgfondo SDLImages
+	0 player 1 player 2 player 3 player	
 	
 	sdlredraw
 	sdlkey
@@ -222,13 +232,20 @@
 	
 :jugar
 	0 'niv !
-	
+	'puntaje >a 8 ( 1? 1- 0 a!+ ) drop
 
 	'nivs niv 3 << + @ 'nivel !
+
+	0 playsnd 
+	'exit 3.0 +vexe	
+	'sini sdlshow
+	
 	trestart	
-	'ini sdlshow
 	'juego SDLshow
-	'fin sdlshow
+	
+	1 playsnd 
+	'exit 3.0 +vexe	
+	'sfin sdlshow
 	;
 	
 :inicio
@@ -272,8 +289,8 @@
 	1000 vaini
 	vareset
 
-	|'inicio SDLshow
-	jugar
+	'inicio SDLshow
+	|jugar
 	
 	SDLquit 
 	;

@@ -11,18 +11,19 @@
 
 
 |------ sound
-#sndfiles "808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 0
+#sndfiles "inicio" 
+|"808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 
+0
 #sndlist * 160
 
 :loadsnd
 	'sndlist >a
 	'sndfiles
 	( dup c@ 1? drop
-		dup "media/snd/808/%s.mp3" sprint mix_loadWAV a!+
+		dup "r3/iti2024/picoteo/%s.mp3" sprint mix_loadWAV a!+
 		>>0 ) drop ;
 
 :playsnd | n --
-drop ;
 	3 << 'sndlist + @ SNDplay ;
 
 |------- graficos
@@ -67,9 +68,10 @@ drop ;
 |--------------------------
 #jugador 0 0 0 0 0 0 0 0
 #puntaje 0 0 0 0 0 0 0 0
+#patas 0 0 0 0 0 0 0 0
 
 :son 
-	0 playsnd 
+|	0 playsnd 
 |"tic" .println
 	;
 
@@ -77,12 +79,12 @@ drop ;
 	over 8 + @ 3 << 'puntaje + 1 swap +!
 	over @ .z 0 swap !	| zoom =0
 	drop
-	11 playsnd
+|	11 playsnd
 	|"pico" .println
 	;
 	
 :llego |9 playsnd 
-	5 playsnd
+|	5 playsnd
 	dup 8 + @ 3 << 'jugador + @
 	1? ( toco ; ) drop ;
 
@@ -145,15 +147,23 @@ drop ;
 
 |------- timeline
 
-#nivel0 " abdh abcdefghijklmno "
-#nivel0 " ooooo oo  "
+#nivel0 " o o o      "
+#nivel1 " abdh abcdefghijklmno "
 
+#nivs 'nivel0 'nivel1 0
+#niv 0
+
+#finsec
 #ltime
 #ntime
 
 :trestart
-	-1 'ltime ! 
-	0 'ntime !
+	-1 'ltime ! 0 'ntime !
+	0 'finsec !
+	'fx p.clear
+	'maizs p.clear
+	timer<
+	vareset	
 	;
 	
 #nivel 'nivel0
@@ -170,7 +180,7 @@ drop ;
 	tclock
 	ntime ltime =? ( drop ; ) 
 	dup 'ltime ! nivel + c@
-	0? ( drop ; )
+	0? ( drop 1 'finsec ! ; )
 	1 and? ( 0 100.0 130.0 +maiz )
 	2 and? ( 1 300.0 130.0 +maiz )
 	4 and? ( 2 500.0 130.0 +maiz )
@@ -221,9 +231,9 @@ drop ;
 	700 semillero
 	;
 	
-:gallina
+:gallina | n x --
 	dup 550 2.0 
-	msec 8 >> over xor 3 and 9 + 
+	pick4 3 << 'patas + @ 3 and 9 +
 	sprgame sspritez	| patas
 
 	dup 428 2.0
@@ -245,6 +255,8 @@ drop ;
 	
 :gallinas	
 	0 100 gallina 1 300 gallina 2 500 gallina 3 700 gallina
+	20 randmax 1? ( drop ; ) drop
+	4 randmax 3 << 'patas + 1 swap +!
 	;
 	
 :pico | n -- 
@@ -252,7 +264,7 @@ drop ;
 	3 << 'jugador + 
 	dup @ 1? ( 3drop ; ) drop
 	20 swap ! | loop correct
-	10 playsnd
+|	10 playsnd
 	
 	15
 	2 5 $ff ICS>anim
@@ -278,7 +290,7 @@ drop ;
 	getframe	
 	'fx p.draw
 	|feed
-	
+	finsec 1? ( exit ) drop
 
 	SDLredraw
 	SDLkey
@@ -304,11 +316,41 @@ drop ;
 		) | time ani x y --
 	drop ;
 	
+:sini
+	fondo
+	gallinas
+	sdlredraw
+	vupdate
+	;
+	
+:sfin
+	Immgui
+	fondo
+	gallinas
+	0 180 immat
+	800 immwidth
+	$ff00ff 'immcolortex !
+	"PICOTEO" immlabelc immdn
+	immdn
+	"FIN DE JUEGO" immlabelc immdn
+	sdlredraw
+	vupdate
+	;
+		
 :jugar
 	'maizs p.clear
 	'fx p.clear
 	trestart
-	'game SDLshow 
+	vareset	
+	0 playsnd 
+	'exit 3.0 +vexe
+	'sini sdlshow
+	'game SDLshow
+	
+	vareset	
+	0 playsnd 
+	'exit 3.0 +vexe
+	'sfin sdlshow
 	;
 	
 :inicio
@@ -359,8 +401,10 @@ drop ;
 	'maizs p.clear
 	
 	timer<
-		|'inicio SDLshow
-	jugar
+	
+	'inicio SDLshow
+	|jugar
+	
 	SDLquit 
 	;
 
