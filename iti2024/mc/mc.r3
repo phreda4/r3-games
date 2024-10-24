@@ -65,6 +65,7 @@
 	over 8 + @ 3 << 'puntaje + 1 swap +!
 	over @ .a 4 13 $ff ICS>anim swap !	| zoom =0
 	drop
+	4 playsnd
 	;
 	
 :momento |9 playsnd 
@@ -86,7 +87,12 @@
 	dup 460.0 220.0 0 0.95 1.05 +vanim
 	dup 700.0 460.0 0 0.95 2.05 +vanim
 	dup 1000.0 700.0 21 0.25 3.1 +vanim
-
+	
+	[ 3 playsnd ; ] 
+	dup 1.0 +vexe
+	dup 2.0 +vexe
+	3.0 +vexe
+	
 	pick3 a> 8 - 'momento 3.0 +vvvexe
 	drop ;
 	
@@ -157,6 +163,7 @@
 :hip | n -- 
 	3 << 'jugador + 
 	dup @ 1? ( 2drop ; ) drop
+	2 playsnd
 	20 swap ! | tiempo 
 	;	
 	
@@ -236,16 +243,16 @@
 
 	'nivs niv 3 << + @ 'nivel !
 
-	0 playsnd 
-	'exit 3.0 +vexe	
-	'sini sdlshow
+|	0 playsnd 
+|	'exit 3.0 +vexe	
+|	'sini sdlshow
 	
 	trestart	
 	'juego SDLshow
 	
 	1 playsnd 
-	'exit 3.0 +vexe	
-	'sfin sdlshow
+|	'exit 3.0 +vexe	
+|	'sfin sdlshow
 	;
 	
 :inicio

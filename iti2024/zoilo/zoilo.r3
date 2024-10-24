@@ -527,7 +527,7 @@
 	$ff00ff 'immcolortex !
 	"Zoilo" immlabelc immdn
 	immdn
-	zombies "Zombis muertos...%d" immlabelc
+	zombies "Zombis muertos   %d" immlabelc
 	
 	400 immwidth
 	312 450 immat
@@ -570,7 +570,7 @@
 	0 80 immat
 	1024 immwidth
 	$ff00ff 'immcolortex !
-	"Zoilo" immlabelc immdn
+	"Zoilo vs Zombies" immlabelc immdn
 	immdn
 	
 	400 immwidth
@@ -606,7 +606,10 @@
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
 
-	"media/ttf/Roboto-Medium.ttf" 60 TTF_OpenFont immSDL
+|	"r3/iti2024/zoilo/8bWONDER.TTF" 40
+|	"r3/iti2024/zoilo/Desert Road.otf" 60
+	"r3/iti2024/zoilo/fields of wildflowers.ttf" 60
+	TTF_OpenFont immSDL
 	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	bfont1

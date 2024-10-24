@@ -11,7 +11,7 @@
 
 
 |------ sound
-#sndfiles "inicio" 
+#sndfiles "inicio" "click"
 |"808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 
 0
 #sndlist * 160
