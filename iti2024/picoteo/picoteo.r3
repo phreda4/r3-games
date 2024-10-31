@@ -134,45 +134,38 @@
 	;
 	
 |------- game
-#pulso 1.0 
-#largo 500 | miliseconds
-
-#thit
-#dif
-
+#msbeat 1000 | miliseconds
 #tiempo
 
-#estado
-#ritmo
+#ltime
+#ntime
 
 |------- timeline
+#finsec
 
-#nivel0 " o o o      "
+#nivel0 " o o o   "
 #nivel1 " abdh abcdefghijklmno "
 
 #nivs 'nivel0 'nivel1 0
 #niv 0
 
-#finsec
-#ltime
-#ntime
-
 :trestart
-	-1 'ltime ! 0 'ntime !
+	-1 'ltime ! 
+	0 'ntime !
 	0 'finsec !
 	'fx p.clear
 	'maizs p.clear
-	timer<
+	timer<	
 	vareset	
+	0 'tiempo !
 	;
 	
 #nivel 'nivel0
 
 :tclock
 	tiempo timer+ 
-	largo <? ( 'tiempo ! ; )
-	largo - 'tiempo ! 
-	tiempo 'thit ! 
+	msbeat <? ( 'tiempo ! ; )
+	msbeat - 'tiempo ! 
 	1 'ntime +! 
 	;
 	
@@ -338,18 +331,18 @@
 	;
 		
 :jugar
-	'maizs p.clear
-	'fx p.clear
 	trestart
-	vareset	
 	0 playsnd 
 	'exit 3.0 +vexe
 	'sini sdlshow
+	
+	trestart
 	'game SDLshow
 	
 	vareset	
 	0 playsnd 
 	'exit 3.0 +vexe
+	
 	'sfin sdlshow
 	;
 	

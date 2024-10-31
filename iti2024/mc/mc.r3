@@ -120,12 +120,13 @@
 #ntime
 
 :trestart
-	-1 'ltime ! 0 'ntime !
-	0 'finsec !
 	'fx p.clear
 	'cucas p.clear
+	-1 'ltime ! 0 'ntime !
+	0 'finsec !
 	timer<
 	vareset
+	0 'tiempo !
 	;
 
 #nivel 'nivel0
@@ -243,6 +244,7 @@
 
 	'nivs niv 3 << + @ 'nivel !
 
+|trestart
 |	0 playsnd 
 |	'exit 3.0 +vexe	
 |	'sini sdlshow
