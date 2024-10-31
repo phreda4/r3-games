@@ -11,9 +11,7 @@
 
 
 |------ sound
-#sndfiles "inicio" "click"
-|"808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 
-0
+#sndfiles "inicio" "click" "fin" "pica" "pico" 0
 #sndlist * 160
 
 :loadsnd
@@ -70,28 +68,23 @@
 #puntaje 0 0 0 0 0 0 0 0
 #patas 0 0 0 0 0 0 0 0
 
-:son 
-|	0 playsnd 
-|"tic" .println
-	;
-
 :toco
 	over 8 + @ 3 << 'puntaje + 1 swap +!
 	over @ .z 0 swap !	| zoom =0
 	drop
-|	11 playsnd
-	|"pico" .println
 	;
 	
-:llego |9 playsnd 
-|	5 playsnd
+:llego 
 	dup 8 + @ 3 << 'jugador + @
 	1? ( toco ; ) drop ;
 
 
+:son 3 playsnd ;
+
 :maizmovy | y x adr --
 	'son 1.0 +vexe
 	'son 2.0 +vexe
+	'son 3.0 +vexe
 	pick3 a> 8 - 'llego 3.0 +vvvexe
 	dup 310.0 130.0 0 3.0 0.0 +vanim
 	dup 400.0 
@@ -257,7 +250,7 @@
 	3 << 'jugador + 
 	dup @ 1? ( 3drop ; ) drop
 	20 swap ! | loop correct
-|	10 playsnd
+	4 playsnd
 	
 	15
 	2 5 $ff ICS>anim
@@ -297,7 +290,6 @@
 	<f2> =? ( 1 300.0 130.0 +maiz )
 	<f3> =? ( 2 500.0 130.0 +maiz )
 	<f4> =? ( 3 700.0 130.0 +maiz )
-	
 	<f5> =? ( 
 		50
 	7 4 $ff ICS>anim
@@ -305,45 +297,46 @@
 	300.0
 	350.0 | y
 	+fx | time ani x y --
-
 		) | time ani x y --
+		
 	drop ;
 	
-:sini
-	fondo
-	gallinas
-	sdlredraw
-	vupdate
-	;
+#xt #yt 200
+#title
 	
-:sfin
-	Immgui
-	fondo
-	gallinas
-	0 180 immat
-	800 immwidth
-	$ff00ff 'immcolortex !
-	"PICOTEO" immlabelc immdn
-	immdn
-	"FIN DE JUEGO" immlabelc immdn
-	sdlredraw
-	vupdate
-	;
-		
+:stt
+	fondo gallinas
+	$ffffff ttcolor	xt yt ttat title ttprint
+	sdlredraw vupdate ;
+	
 :jugar
+	'puntaje >a 8 ( 1? 1- 0 a!+ ) drop
 	trestart
 	0 playsnd 
+	800 'xt !
+	'xt 200 800 8 1.0 0.5 +vanim	
+	'xt -500 200 7 1.0 2.0 +vanim	
+	"PREPARADOS" 'title !
 	'exit 3.0 +vexe
-	'sini sdlshow
+	'stt sdlshow
 	
 	trestart
 	'game SDLshow
 	
 	vareset	
-	0 playsnd 
+	2 playsnd 
+	'xt 200 800 8 1.0 0 +vanim	
+	'xt -500 200 7 1.0 2.0 +vanim	
+	"FIN DE JUEGO" 'title !
 	'exit 3.0 +vexe
+	'stt sdlshow
+	;
 	
-	'sfin sdlshow
+#fullscr
+
+:toglefs
+	fullscr 1 xor 'fullscr !
+	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
 	;
 	
 :inicio
@@ -370,11 +363,12 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
-	
+	<f> =? ( toglefs )
 	drop ;
 	
 :main
 	"Picoteo" 800 600 SDLinit
+	SDLrenderer 800 600 SDL_RenderSetLogicalSize | fullscreen
 	44100 $8010 1 1024 Mix_OpenAudio
 	loadsnd
 
@@ -388,7 +382,7 @@
 	
 	1000 'maizs p.ini
 	200 'fx p.ini
-	1000 vaini	| hasta 50 eventos
+	1000 vaini
 	
 	vareset	
 	'maizs p.clear

@@ -55,13 +55,6 @@
 :anim!
 	a> .ani dup @ $ffffffff and rot or swap ! ;
 
-#fullscr
-
-:toglefs
-	fullscr 1 xor 'fullscr !
-	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
-	;
-
 |---------------------
 #velz
 :limv 
@@ -489,7 +482,7 @@
 	
 |	<f1> =? ( randanimal )
 |	<f2> =? ( escopeta 2 xor 'escopeta ! )
-	<f> =? ( toglefs ) | fullscreen
+
 	drop
 	vidas 0 <=? ( exit ) drop
 	;
@@ -554,6 +547,14 @@
 	'sfin sdlshow
 	;
 	
+
+#fullscr
+
+:toglefs
+	fullscr 1 xor 'fullscr !
+	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
+	;
+	
 |------ inicio
 :sinicio
 	Immgui
@@ -579,7 +580,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
-	
+	<f> =? ( toglefs ) | fullscreen	
 	drop ;
 	
 |------ sound

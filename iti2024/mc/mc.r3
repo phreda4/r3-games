@@ -213,12 +213,16 @@
 	
 	drop ;
 	
+#xt 200  #yt 200
+#title
+	
+	
 :sini
 	vupdate
 |	0 sdlcls
 	0 0 800 600 imgfondo SDLImages
 	0 player 1 player 2 player 3 player	
-	
+	$ffffff ttcolor	xt yt ttat title ttprint	
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
@@ -230,13 +234,12 @@
 |	0 sdlcls
 	0 0 800 600 imgfondo SDLImages
 	0 player 1 player 2 player 3 player	
-	
+	$ffffff ttcolor	xt yt ttat title ttprint
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
 	drop
-	;
-		
+	;	
 	
 :jugar
 	0 'niv !
@@ -244,17 +247,32 @@
 
 	'nivs niv 3 << + @ 'nivel !
 
-|trestart
-|	0 playsnd 
-|	'exit 3.0 +vexe	
-|	'sini sdlshow
+trestart
+	0 playsnd 
+	
+	-60 'yt !
+	'yt 280 -60 8 1.0 0.5 +vanim	
+	'yt 660 280 7 1.0 2.5 +vanim	
+	"PREPARADOS" 'title !
+	'exit 4.0 +vexe	
+	'sini sdlshow
 	
 	trestart	
 	'juego SDLshow
 	
 	1 playsnd 
-|	'exit 3.0 +vexe	
-|	'sfin sdlshow
+	'yt 280 -60 8 1.0 0.0 +vanim	
+	'yt 660 280 7 1.0 2.0 +vanim	
+	"FIN DE JUEGO" 'title !
+	'exit 3.0 +vexe	
+	'sfin sdlshow
+	;
+	
+#fullscr
+
+:toglefs
+	fullscr 1 xor 'fullscr !
+	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
 	;
 	
 :inicio
@@ -274,11 +292,12 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
-	
+	<f> =? ( toglefs )	
 	drop ;
 	
 :main
 	"MC" 800 600 SDLinit
+	SDLrenderer 800 600 SDL_RenderSetLogicalSize | fullscreen
 	44100 $8010 1 1024 Mix_OpenAudio
 	
 	|sdlfull
