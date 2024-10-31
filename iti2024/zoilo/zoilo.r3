@@ -64,8 +64,14 @@
 
 |---------------------
 #velz
+:limv 
+	dup abs	
+	0.05 <? ( drop $1f ; ) 
+	0.1 <? ( drop $3f ; ) 
+	drop $ff ;
+	
 :anizombie | vx -- nani
-	dup abs 11 >> $fff and 'velz !
+	limv 'velz !
 	-? ( a> .a @ 2 + 2 velz ICS>anim ; ) 
 	a> .a @ 2 velz ICS>anim ; 
 
@@ -98,14 +104,12 @@
 	a> .x @ a> .vx @ +
 	a> .y @ a> .vy @ +
 	xyinmap@
-	$1000000000000 nand? ( drop ; ) drop 
-	| pared 
+	$1000000000000 nand? ( drop ; ) drop | pared 
 	0.0 a> .vx ! 0.0 a> .vy ! | detener
 	;
 
 :zombie
 	>a
-|	a> .a @ "%d " .print
 	a> 'obj p.nro  $4000 or | enemigo
 	16 a> .x @ int. a> .y @ int. h2d+!	
 	iazombie
@@ -180,7 +184,8 @@
 
 	a> 'obj p.nro  $2000 or | objeto
 	8
-	a> .x @ int. a> .y @ int.
+	a> .x @ int. 
+	a> .y @ int.
 	h2d+!	
 
 	a> .a @ $20000 or
@@ -404,7 +409,7 @@
 	'obj p.adr
 	dup .a @ 
 	0 =? ( 5 'balas +! 3 escopeta or 'escopeta ! ) | escopeta+balas
-	2 =? ( 10 'vidas +! )
+	2 =? ( 10 'vidas +! )	| botiquin
 	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! ) | balas 
 	4 =? ( 1 'llaves +! ) | llaves
 	5 =? ( 1 'celu +! ) | celu
@@ -422,12 +427,6 @@
 :2sort | a b -- a b
 	over <? ( ; ) swap ; 
 
-:obj2del
-	2sort 
-	'obj p.del
-	'obj p.del
-	;
-
 :hitdisp	
 	swap |$fff and 'obj p.adr 'obj p.del | borra bala
 	$4000 and? ( 
@@ -438,15 +437,12 @@
 	2drop
 	;
 
-
 :hitobj | obj1 obj2 --
 	2sort
 	0? ( drop hitplayer ; ) 
 	$1000 and? ( hitdisp ; ) | disparo
-
 	2drop |
 	|" %h %h " bprint
-
 	;
 
 :colisiones	
@@ -459,7 +455,7 @@
 |----- JUGAR
 :sjugar
 	timer.
-	0 SDLcls
+	|0 SDLcls
 	immgui		| ini IMMGUI	
 
 	H2d.clear
@@ -499,22 +495,19 @@
 	;
 
 |------------- hacer mapa
-:randcosa	
-	 3 randmax 2 + 	
-	( 	1200.0 randmax 32.0 + 16.0 32 * +
-		600.0 randmax 64.0 + 10.0  32 * +
-		2dup xyinmap@ $1000000000000 and? 
-		3drop ) drop
-	+cosa
-	;
+:xyrand
+	whbmap
+	swap randmax
+	swap randmax
+	bmap2xy ;
+	
+:randcosa | n --
+	( xyrand 2dup xyinmap@ $1000000000000 and? 3drop ) drop
+	+cosa ;
 	
 :randzombie
 	2 randmax 2 << 6 +
-	(
-		2400.0 randmax 200.0 +
-		1200.0 randmax 300.0 +
-		2dup xyinmap@ $1000000000000 and? 
-		3drop ) drop		
+	( xyrand 2dup xyinmap@ $1000000000000 and? 3drop ) drop		
 	+zombie ;
 
 :sfin
@@ -527,7 +520,7 @@
 	$ff00ff 'immcolortex !
 	"Zoilo" immlabelc immdn
 	immdn
-	zombies "Zombis muertos   %d" immlabelc
+	zombies "Zombis muertos...%d" immlabelc
 	
 	400 immwidth
 	312 450 immat
@@ -542,21 +535,21 @@
 	drop ;
 	
 :jugar
-	inisprite
 	'obj p.clear 'disp p.clear 'fx p.clear
 	1 'dirp ! 0 'balas ! 0 'llaves ! 0 'celu ! 
 	100 'vidas ! 0 'zombies !
 	timer<
-	0 600.0 360.0 +jugador | 0 es jugador
+	0 20 12 bmap2xy	+jugador | 0 es jugador
 	0 'dirp !
 	dirp 'dirq + c@ 0 0 ICS>anim anim!
 
 	0 700.0 500.0 +cosa | escopeta
-	2 800.0 500.0 +cosa | botiquin
+	100 ( 1? 1- randzombie ) drop |	zombies
+	50 ( 1? 1- 2 randcosa ) drop |	2 botiquin
+	50 ( 1? 1- 3 randcosa ) drop |	3 balas 
+	3 ( 1? 1- 4 randcosa ) drop |	4 llaves
+	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
 
-	40 ( 1? 1- randzombie ) drop
-	20 ( 1? 1- randcosa ) drop
-	
 	'sjugar SDLshow
 	'sfin sdlshow
 	;
@@ -570,7 +563,7 @@
 	0 80 immat
 	1024 immwidth
 	$ff00ff 'immcolortex !
-	"Zoilo vs Zombies" immlabelc immdn
+	"Zoilo" immlabelc immdn
 	immdn
 	
 	400 immwidth
@@ -606,17 +599,15 @@
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
 
-|	"r3/iti2024/zoilo/8bWONDER.TTF" 40
-|	"r3/iti2024/zoilo/Desert Road.otf" 60
-	"r3/iti2024/zoilo/fields of wildflowers.ttf" 60
-	TTF_OpenFont immSDL
+	"media/ttf/Roboto-Medium.ttf" 60 TTF_OpenFont immSDL
 	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
+	'bsprdrawsimple 'bsprdraw !
+	
 	bfont1
 	64 64 "r3/iti2024/zoilo/caballo.png" ssload 'spranimal !
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	32 32 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
-	'bsprdrawsimple 'bsprdraw !
 	
 	loadsnd
 	
@@ -626,8 +617,9 @@
 	1000 H2d.ini 
 	$fff 'here +! | lista de contactos
 
-	|jugar
-	'sinicio sdlshow
+	|'sinicio sdlshow
+	jugar
+	
 	SDLquit
 	;
 
