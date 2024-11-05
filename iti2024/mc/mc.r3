@@ -33,6 +33,7 @@
 |------- graficos
 #imgfondo
 #imginicio
+#imgpodio
 #sprgame
 #sprplayer
 
@@ -109,7 +110,7 @@
 	;
 	
 |------- timeline
-#nivel0 " o o o      "
+#nivel0 " a b d o o o      "
 #nivel1 " abdh abcdefghijklmno "
 
 #nivs 'nivel0 'nivel1 0
@@ -216,7 +217,6 @@
 #xt 200  #yt 200
 #title
 	
-	
 :sini
 	vupdate
 |	0 sdlcls
@@ -241,13 +241,29 @@
 	drop
 	;	
 	
+:spodio	
+	vupdate
+	0 0 800 600 imgpodio SDLImages
+|	0 player 1 player 2 player 3 player	
+	$ffffff ttcolor	xt yt ttat title ttprint
+	
+	180 240 0.11 10 sprplayer sspriter
+	400 80 0.11 9 sprplayer sspriter
+	700 160 0.11 11 sprplayer sspriter
+	
+	sdlredraw
+	sdlkey
+	>esc< =? ( exit )
+	drop
+	;
+	
 :jugar
 	0 'niv !
 	'puntaje >a 8 ( 1? 1- 0 a!+ ) drop
 
 	'nivs niv 3 << + @ 'nivel !
 
-trestart
+	trestart
 	0 playsnd 
 	
 	-60 'yt !
@@ -266,6 +282,8 @@ trestart
 	"FIN DE JUEGO" 'title !
 	'exit 3.0 +vexe	
 	'sfin sdlshow
+	
+	'spodio sdlshow
 	;
 	
 #fullscr
@@ -306,8 +324,9 @@ trestart
 	
 	64 64 "r3/iti2024/mc/cuca.png" ssload 'sprgame !
 	128 140 "r3/iti2024/mc/chanclas.png" ssload 'sprplayer !
-	"r3/iti2024/mc/cocina.png" loadimg 'imgfondo !
 	"r3/iti2024/mc/inicio.jpeg" loadimg 'imginicio !
+	"r3/iti2024/mc/cocina.png" loadimg 'imgfondo !
+	"r3/iti2024/mc/podio.png" loadimg 'imgpodio !
 
 	|"r3/iti2024/mc/zombieguts.ttf"
 	"r3/iti2024/mc/BICHOCHOS_TYPE.ttf" 

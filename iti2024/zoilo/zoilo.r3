@@ -10,6 +10,7 @@
 
 ^r3/util/bmap.r3
 
+#fondomus
 #sndlist * 160
 :playsnd | n --
 	3 << 'sndlist + @ SNDplay ;
@@ -84,7 +85,10 @@
 	rot over *. -rot *.
 	a> .vy ! 
 	anizombie anim!
-	a> .vx ! ;
+	a> .vx ! 
+	20 randmax 1? ( drop ; ) drop
+	5 randmax 5 + playsnd
+	;
 
 :iazombie
 	xp a> .x @ - yp a> .y @  -	
@@ -207,12 +211,23 @@
 	ssprite
 	;
 	
-:+fx | dx dy cnt ani x y --
+:+fx | ani x y --
 	'fxdisp 'fx p!+ >a
 	swap a!+ a!+
 	a!+ a!+ 0 a!+
 	swap a!+ a!+
 	;
+	
+:cuerpo
+	>a
+	a> .a @ $40000 or
+	a> .x @ int. xvp -
+	a> .y @ int. yvp -
+	+sprite	| a x y
+	;
+
+:+cuerpo | ani x y --
+	'cuerpo 'obj p!+ >a swap a!+ a!+ a!+ ;
 	
 |----------------------------
 #dx #dy	
@@ -350,7 +365,7 @@
 
 |--------- dibujo de sprite en bmap
 :jplayer
-	swap 32 - swap sprplayer ssprite ; | x y n ssprite
+	swap 32 - swap 1.1 swap sprplayer sspritez ; | x y n ssprite
 
 :janimal
 	$ffff and spranimal ssprite ;
@@ -359,13 +374,16 @@
 	$ffff and sprcosas ssprite ;
 
 :jzombie
-	$ffff and 1.5 swap sprcosas sspritez ;
+	$ffff and 1.55 swap sprcosas sspritez ;
+
+:jzombiem
+	$ffff and 1.55 swap sprcosas sspritez ;
 
 
-#listdsp 'jplayer 'janimal 'jcosa 'jzombie | otro
+#listdsp 'jplayer 'janimal 'jcosa 'jzombie 'jzombiem | otro
 
 :bsprdrawsimple
-	dup 16 >> $3 and | $x0000 
+	dup 16 >> $f and | $x0000 
 	3 << 'listdsp + @ ex ;
 
 |----------------------------------	
@@ -401,10 +419,10 @@
 :hitobj | nro --
 	'obj p.adr
 	dup .a @ 
-	0 =? ( 5 'balas +! 3 escopeta or 'escopeta ! ) | escopeta+balas
+	0 =? ( 5 'balas +! 3 escopeta or 'escopeta ! 2 playsnd ) | escopeta+balas
 	2 =? ( 10 'vidas +! )	| botiquin
-	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! ) | balas 
-	4 =? ( 1 'llaves +! ) | llaves
+	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! 2 playsnd ) | balas 
+	4 =? ( 1 'llaves +! 3 playsnd ) | llaves
 	5 =? ( 1 'celu +! ) | celu
 	drop
 	'obj p.del
@@ -413,7 +431,10 @@
 :hitplayer
 	$1000 and? ( drop ; ) | disparo
 	$2000 and? ( $fff and hitobj ; ) |objeto
-	$4000 and? ( drop -1 'vidas +! ; ) | enemigo	
+	$4000 and? ( drop 
+		-1 'vidas +! 
+		11 randmax 5 + playsnd
+		; ) | enemigo	
 	drop |??
 	;
 
@@ -423,9 +444,16 @@
 :hitdisp	
 	swap |$fff and 'obj p.adr 'obj p.del | borra bala
 	$4000 and? ( 
-		$fff and 'obj p.adr 'obj p.del  | borra enemigo
+		$fff and 'obj p.adr 
+
+		dup .ani @ 52 >>> 6 - 2 >> | 0/1
+		16 +
+		over .x @ pick2 .y @ +cuerpo
+		
+		'obj p.del  | borra enemigo
 		$fff and 'disp p.adr 'disp p.del  | borra bala
 		1 'zombies +!
+		4 playsnd
 		; ) | borra enemigo
 	2drop
 	;
@@ -540,10 +568,16 @@
 	100 ( 1? 1- randzombie ) drop |	zombies
 	50 ( 1? 1- 2 randcosa ) drop |	2 botiquin
 	50 ( 1? 1- 3 randcosa ) drop |	3 balas 
-	3 ( 1? 1- 4 randcosa ) drop |	4 llaves
+	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
 	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
 
+|	32 Mix_VolumeMusic 	
+	fondomus -1 mix_playmusic
+	
 	'sjugar SDLshow
+	
+	Mix_HaltMusic
+	
 	'sfin sdlshow
 	;
 	
@@ -587,6 +621,21 @@
 #sndfiles 
 "escopeta"
 "recarga"
+"tomabalas"
+"tomallave"
+"zombimuere"
+"sonidos/Zombie Growl 1" | aviso 5..10
+"sonidos/Zombie Growl 2"
+"sonidos/Zombie Growl 3"
+"sonidos/Zombie Growl 4"
+"sonidos/Zombie Growl 5"
+"sonidos/Zombie Growl 6"
+"sonidos/Zombie Grunt 1" | muerde 11..16
+"sonidos/Zombie Grunt 2"
+"sonidos/Zombie Grunt 3"
+"sonidos/Zombie Grunt 4"
+"sonidos/Zombie Grunt 5"
+"sonidos/Zombie Grunt 6"
 0
 
 :loadsnd
@@ -600,7 +649,8 @@
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
 
-	"media/ttf/Roboto-Medium.ttf" 60 TTF_OpenFont immSDL
+	"r3/iti2024/zoilo/Yang Laen.otf" 60
+	TTF_OpenFont immSDL
 	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	'bsprdrawsimple 'bsprdraw !
@@ -611,6 +661,7 @@
 	32 32 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
 	
 	loadsnd
+	"r3/iti2024/zoilo/fondomus.mp3" mix_loadmus 'fondomus !
 	
 	500 'obj p.ini
 	100 'disp p.ini
@@ -618,8 +669,8 @@
 	1000 H2d.ini 
 	$fff 'here +! | lista de contactos
 
-	|'sinicio sdlshow
-	jugar
+	'sinicio sdlshow
+	|jugar
 	
 	SDLquit
 	;

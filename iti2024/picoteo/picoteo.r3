@@ -25,8 +25,8 @@
 	3 << 'sndlist + @ SNDplay ;
 
 |------- graficos
-
-#imgfondo
+#imginicio
+#imgpodio
 
 | 1 2 3 4   
 | x y s l
@@ -219,11 +219,12 @@
 	
 :gallina | n x --
 	dup 550 2.0 
-	pick4 3 << 'patas + @ 3 and 9 +
+	pick4 3 << 'patas + @ 3 and 12 +
 	sprgame sspritez	| patas
 
 	dup 428 2.0
-	8 sprgame sspritez
+	pick4 8 +
+	sprgame sspritez	| cuerpo
 	
 	340 2.0 
 	pick3 3 << 'jugador + @ 
@@ -309,6 +310,28 @@
 	$ffffff ttcolor	xt yt ttat title ttprint
 	sdlredraw vupdate ;
 	
+:gallina | n x y --
+	5 pick2 pick2 32 - sprgame ssprite
+	12 pick2 pick2 32 + sprgame ssprite
+	rot 8 + sprgame ssprite	| cuerpo
+	;
+		
+:spodio	
+	vupdate
+	0 0 800 600 imgpodio SDLImages
+	0 100 200 gallina
+	1 300 200 gallina
+	2 500 200 gallina
+	3 700 200 gallina
+	$ffffff ttcolor	xt yt ttat title ttprint
+	
+	sdlredraw
+	sdlkey
+	>esc< =? ( exit )
+	drop
+	;
+	
+	
 :jugar
 	'puntaje >a 8 ( 1? 1- 0 a!+ ) drop
 	trestart
@@ -330,6 +353,8 @@
 	"FIN DE JUEGO" 'title !
 	'exit 3.0 +vexe
 	'stt sdlshow
+	
+	'spodio sdlshow
 	;
 	
 #fullscr
@@ -341,8 +366,8 @@
 	
 :inicio
 	Immgui
-	0 sdlcls
-	|0 0 800 600 imginicio SDLImages
+	|0 sdlcls
+	0 0 800 600 imginicio SDLImages
 	
 	0 80 immat
 	800 immwidth
@@ -375,6 +400,8 @@
 	|sdlfull
 	pcfont
 	
+	"r3/iti2024/picoteo/podio.png" loadimg 'imgpodio !
+	"r3/iti2024/picoteo/inicio.jpeg" loadimg 'imginicio !	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
 	"r3/iti2024/picoteo/ZOMBIE.TTF" 
