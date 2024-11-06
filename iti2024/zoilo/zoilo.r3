@@ -86,7 +86,7 @@
 	a> .vy ! 
 	anizombie anim!
 	a> .vx ! 
-	20 randmax 1? ( drop ; ) drop
+	50 randmax 1? ( drop ; ) drop
 	5 randmax 5 + playsnd
 	;
 
@@ -433,7 +433,7 @@
 	$2000 and? ( $fff and hitobj ; ) |objeto
 	$4000 and? ( drop 
 		-1 'vidas +! 
-		11 randmax 5 + playsnd
+		6 randmax 11 + playsnd
 		; ) | enemigo	
 	drop |??
 	;
@@ -571,14 +571,14 @@
 	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
 	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
 
-|	32 Mix_VolumeMusic 	
+	32 Mix_VolumeMusic drop
 	fondomus -1 mix_playmusic
 	
 	'sjugar SDLshow
-	
-	Mix_HaltMusic
-	
+
 	'sfin sdlshow
+	|0 Mix_VolumeMusic 	
+	Mix_HaltMusic
 	;
 	
 
@@ -624,13 +624,12 @@
 "tomabalas"
 "tomallave"
 "zombimuere"
-"sonidos/Zombie Growl 1" | aviso 5..10
-"sonidos/Zombie Growl 2"
-"sonidos/Zombie Growl 3"
-"sonidos/Zombie Growl 4"
-"sonidos/Zombie Growl 5"
-"sonidos/Zombie Growl 6"
-"sonidos/Zombie Grunt 1" | muerde 11..16
+"sonidos/Zombie Grown 1" | aviso 5..10
+"sonidos/Zombie Grown 2"
+"sonidos/Zombie Grown 3"
+"sonidos/Zombie Grown 4"
+"sonidos/Zombie Grown 5"
+"sonidos/Zombie Grunt 1" | muerde 10..15
 "sonidos/Zombie Grunt 2"
 "sonidos/Zombie Grunt 3"
 "sonidos/Zombie Grunt 4"

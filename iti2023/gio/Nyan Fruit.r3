@@ -300,12 +300,12 @@
 :jugar
 	juegoreset
 	|Mix_HaltMusic
-|	32 Mix_VolumeMusic 	
+|	32 Mix_VolumeMusic drop	
 |	musjuego -1 mix_playmusic
 	
 	'juego SDLshow
 |	Mix_HaltMusic
-|	128 Mix_VolumeMusic 
+|	128 Mix_VolumeMusic drop
 |	musmenu -1 mix_playmusic 
 	'finjuego SDLShow
 	;
