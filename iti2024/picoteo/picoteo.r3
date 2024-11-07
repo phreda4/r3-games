@@ -13,6 +13,7 @@
 |------ sound
 #sndfiles "inicio" "click" "fin" "pica" "pico" 0
 #sndlist * 160
+#musfin
 
 :loadsnd
 	'sndlist >a
@@ -136,7 +137,7 @@
 |------- timeline
 #finsec
 
-#nivel0 " o o o   "
+#nivel0 " abdh  clcl  ejej  o o oo clejclej oooo        "
 #nivel1 " abdh abcdefghijklmno "
 
 #nivs 'nivel0 'nivel1 0
@@ -338,6 +339,7 @@
 	;
 	
 :hacepodio	
+	musfin -1 mix_playmusic
 	'podio >a
 	'puntaje >b
 	0 ( 4 <? 
@@ -346,6 +348,7 @@
 		1+ ) drop
 	4 'podio shellsort	
 	'spodio sdlshow
+	Mix_HaltMusic
 	;
 	
 	
@@ -388,7 +391,7 @@
 	
 	0 80 immat
 	800 immwidth
-	$ff00ff 'immcolortex !
+	$ffff00 'immcolortex !
 	"PICOTEO" immlabelc immdn
 	immdn
 	
@@ -416,7 +419,8 @@
 
 	|sdlfull
 	pcfont
-	
+	"r3/iti2024/picoteo/musicafin.mp3" mix_loadmus 'musfin	!
+
 	"r3/iti2024/picoteo/podio.png" loadimg 'imgpodio !
 	"r3/iti2024/picoteo/inicio.jpeg" loadimg 'imginicio !	
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !

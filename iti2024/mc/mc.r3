@@ -13,6 +13,7 @@
 |------ sound
 #sndfiles "inicio" "fin" "chancletazo" "saltocuca" "smashcuca" 0
 #sndlist * 160
+#musfin
 
 :loadsnd
 	'sndlist >a
@@ -246,6 +247,7 @@
 	;
 
 :hacepodio	
+	musfin -1 mix_playmusic
 	'podio >a
 	'puntaje >b
 	0 ( 4 <? 
@@ -254,6 +256,7 @@
 		1+ ) drop
 	4 'podio shellsort	
 	'spodio sdlshow
+	Mix_HaltMusic
 	;
 
 
@@ -322,6 +325,7 @@
 	|sdlfull
 	pcfont
 	loadsnd
+	"r3/iti2024/mc/musicafin.mp3" mix_loadmus 'musfin	!	
 	
 	64 64 "r3/iti2024/mc/cuca.png" ssload 'sprgame !
 	128 140 "r3/iti2024/mc/chanclas.png" ssload 'sprplayer !
