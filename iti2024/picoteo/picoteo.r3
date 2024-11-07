@@ -386,14 +386,13 @@
 	
 :inicio
 	Immgui
-	|0 sdlcls
 	0 0 800 600 imginicio SDLImages
 	
-	0 80 immat
-	800 immwidth
-	$ffff00 'immcolortex !
-	"PICOTEO" immlabelc immdn
-	immdn
+|	0 80 immat
+|	800 immwidth
+|	$ffff00 'immcolortex !
+|	"PICOTEO" immlabelc immdn
+|	immdn
 	
 	400 immwidth
 	200 350 immat
@@ -426,7 +425,7 @@
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
 	"r3/iti2024/picoteo/ZOMBIE.TTF" 
-	70 ttf_OpenFont immSDL
+	66 ttf_OpenFont immSDL
 	
 	1000 'maizs p.ini
 	200 'fx p.ini

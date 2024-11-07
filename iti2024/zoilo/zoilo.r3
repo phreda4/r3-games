@@ -86,7 +86,7 @@
 	a> .vy ! 
 	anizombie anim!
 	a> .vx ! 
-	50 randmax 1? ( drop ; ) drop
+	70 randmax 1? ( drop ; ) drop
 	5 randmax 5 + playsnd
 	;
 
@@ -433,7 +433,7 @@
 	$2000 and? ( $fff and hitobj ; ) |objeto
 	$4000 and? ( drop 
 		-1 'vidas +! 
-		6 randmax 11 + playsnd
+		6 randmax 10 + playsnd
 		; ) | enemigo	
 	drop |??
 	;
@@ -565,9 +565,9 @@
 	dirp 'dirq + c@ 0 0 ICS>anim anim!
 
 	0 700.0 500.0 +cosa | escopeta
-	100 ( 1? 1- randzombie ) drop |	zombies
-	50 ( 1? 1- 2 randcosa ) drop |	2 botiquin
-	50 ( 1? 1- 3 randcosa ) drop |	3 balas 
+	150 ( 1? 1- randzombie ) drop |	zombies
+	25 ( 1? 1- 2 randcosa ) drop |	2 botiquin
+	25 ( 1? 1- 3 randcosa ) drop |	3 balas 
 	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
 	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
 
@@ -624,11 +624,11 @@
 "tomabalas"
 "tomallave"
 "zombimuere"
-"sonidos/Zombie Grown 1" | aviso 5..10
-"sonidos/Zombie Grown 2"
-"sonidos/Zombie Grown 3"
-"sonidos/Zombie Grown 4"
-"sonidos/Zombie Grown 5"
+"sonidos/Zombie Groan 1" | aviso 5..10
+"sonidos/Zombie Groan 2"
+"sonidos/Zombie Groan 3"
+"sonidos/Zombie Groan 4"
+"sonidos/Zombie Groan 5"
 "sonidos/Zombie Grunt 1" | muerde 10..15
 "sonidos/Zombie Grunt 2"
 "sonidos/Zombie Grunt 3"
