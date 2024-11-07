@@ -8,16 +8,10 @@
 ^r3/lib/rand.r3
 ^r3/util/varanim.r3
 ^r3/util/sdlgui.r3
+^r3/util/sort.r3
 
 |------ sound
-#sndfiles 
-"inicio"
-"fin"
-"chancletazo"
-"saltocuca"
-"smashcuca"
-|"808_2" "808_3" "808_4" "808_5" "808_6" "808_7" "808_C" "808_K" "808_O" "808_S" "808_R" 
-0
+#sndfiles "inicio" "fin" "chancletazo" "saltocuca" "smashcuca" 0
 #sndlist * 160
 
 :loadsnd
@@ -110,7 +104,7 @@
 	;
 	
 |------- timeline
-#nivel0 " a b d o o o      "
+#nivel0 " abdh  clcl  ejej  o o oo clejclej oooo        "
 #nivel1 " abdh abcdefghijklmno "
 
 #nivs 'nivel0 'nivel1 0
@@ -222,41 +216,47 @@
 |	0 sdlcls
 	0 0 800 600 imgfondo SDLImages
 	0 player 1 player 2 player 3 player	
-	$ffffff ttcolor	xt yt ttat title ttprint	
-	sdlredraw
-	sdlkey
-	>esc< =? ( exit )
-	drop
-	;
-	
-:sfin
-	vupdate
-|	0 sdlcls
-	0 0 800 600 imgfondo SDLImages
-	0 player 1 player 2 player 3 player	
 	$ffffff ttcolor	xt yt ttat title ttprint
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
 	drop
-	;	
-	
+	;
+
+
+#podio 0 0 0 0 0 0 0 0
+
 :spodio	
 	vupdate
 	0 0 800 600 imgpodio SDLImages
-|	0 player 1 player 2 player 3 player	
-	$ffffff ttcolor	xt yt ttat title ttprint
 	
-	180 240 0.11 10 sprplayer sspriter
-	400 80 0.11 9 sprplayer sspriter
-	700 160 0.11 11 sprplayer sspriter
+	180 510 0.11 'podio 40 + @ 9 + sprplayer sspriter
+	426 360 0.11 'podio 8 + @ 9 + sprplayer sspriter
+	686 450 0.11 'podio 24 + @ 9 + sprplayer sspriter
+
+	$0 ttcolor	
+	150 350 ttat "3" ttprint
+	400 200 ttat "1" ttprint
+	660 290 ttat "2" ttprint
 	
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
 	drop
 	;
-	
+
+:hacepodio	
+	'podio >a
+	'puntaje >b
+	0 ( 4 <? 
+		b@+ neg a!+	| valor
+		dup a!+ 
+		1+ ) drop
+	4 'podio shellsort	
+	'spodio sdlshow
+	;
+
+
 :jugar
 	0 'niv !
 	'puntaje >a 8 ( 1? 1- 0 a!+ ) drop
@@ -281,9 +281,10 @@
 	'yt 660 280 7 1.0 2.0 +vanim	
 	"FIN DE JUEGO" 'title !
 	'exit 3.0 +vexe	
-	'sfin sdlshow
+	'sini sdlshow
 	
-	'spodio sdlshow
+	hacepodio
+	
 	;
 	
 #fullscr

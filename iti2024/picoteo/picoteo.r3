@@ -8,7 +8,7 @@
 ^r3/lib/rand.r3
 ^r3/util/varanim.r3
 ^r3/util/sdlgui.r3
-
+^r3/util/sort.r3
 
 |------ sound
 #sndfiles "inicio" "click" "fin" "pica" "pico" 0
@@ -302,6 +302,8 @@
 		
 	drop ;
 	
+#podio 0 0 0 0 0 0 0 0
+	
 #xt #yt 200
 #title
 	
@@ -311,24 +313,39 @@
 	sdlredraw vupdate ;
 	
 :gallina | n x y --
-	5 pick2 pick2 32 - sprgame ssprite
-	12 pick2 pick2 32 + sprgame ssprite
+	2dup 42 - 5 sprgame ssprite
+	2dup 58 + 12 sprgame ssprite
 	rot 8 + sprgame ssprite	| cuerpo
 	;
 		
+:npodio
+	4 << 8 + 'podio + @ ;
+	
 :spodio	
 	vupdate
 	0 0 800 600 imgpodio SDLImages
-	0 100 200 gallina
-	1 300 200 gallina
-	2 500 200 gallina
-	3 700 200 gallina
-	$ffffff ttcolor	xt yt ttat title ttprint
+
+	3 npodio 100 280 gallina |4
+	2 npodio 330 270 gallina |3
+	0 npodio 420 130 gallina |1
+	1 npodio 520 210 gallina |2
+|	$ffffff ttcolor	xt yt ttat title ttprint
 	
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
 	drop
+	;
+	
+:hacepodio	
+	'podio >a
+	'puntaje >b
+	0 ( 4 <? 
+		b@+ neg a!+	| valor
+		dup a!+ 
+		1+ ) drop
+	4 'podio shellsort	
+	'spodio sdlshow
 	;
 	
 	
@@ -354,7 +371,7 @@
 	'exit 3.0 +vexe
 	'stt sdlshow
 	
-	'spodio sdlshow
+	hacepodio	
 	;
 	
 #fullscr
@@ -417,7 +434,7 @@
 	timer<
 	
 	'inicio SDLshow
-	|jugar
+|	jugar
 	
 	SDLquit 
 	;
