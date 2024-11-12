@@ -9,6 +9,7 @@
 ^r3/util/hash2d.r3
 
 ^r3/util/bmap.r3
+^r3/util/varanim.r3
 
 #fondomus
 #sndlist * 160
@@ -589,6 +590,84 @@
 	SDL_windows fullscr $1 and SDL_SetWindowFullscreen 
 	;
 	
+|------------------- credito
+#texto 
+""
+"Zoilo" 
+""
+"Equipo de desarrollo"
+""
+"Santiago"
+"Braian Canal"
+".."
+""
+"Profesores"
+"Maria Clara Sorensen"
+"Pablo Hugo Reda"
+""
+"Curso 2er Año"
+"Itinirario formativo de"
+"asistencia en informatica"
+""
+"EESN 1"
+"San Cayetano"
+"Buenos Aires"
+""
+"2024"
+""
+
+#clinea 23 
+#hlinea 10
+#nlinea	
+#ys 0
+#yh 70
+
+:linestr | nro -- ""
+	-? ( drop "" ; )
+	clinea >=? ( drop "" ; )
+	'texto swap n>>0 ;
+
+:printline | ynow nro str -- ynow nro
+	ttsize | w h |... center 1024,yh
+	yh swap - 1 >> pick4 + swap
+	1024 swap - 1 >> swap ttat
+	tt. ;
+	
+:animc
+	'ys yh neg 0 0 1.5 0 +vanim
+	[ nlinea 1 + clinea >=? ( hlinea neg 1 + nip ) 'nlinea ! animc ; ] 1.5 +vexe
+	0 'ys ! 
+	;
+	
+:drawlines
+	ys 0 ( hlinea <? 
+		nlinea over + linestr printline
+		1 + swap yh + swap ) 2drop ;
+
+:screditos
+	immgui
+	vupdate
+	$0 SDLcls
+	
+	$ffffff ttcolor
+	drawlines
+	
+	380 immwidth
+	$7f0000 'immcolorbtn !
+	620 50 immat 'exit "CONTINUAR..." immbtn
+	
+	SDLredraw	
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+	
+:creditos
+	animc
+	hlinea neg 1 + 'nlinea !
+	'screditos sdlshow	
+	vareset
+	;
+	
 |------ inicio
 :sinicio
 	Immgui
@@ -607,6 +686,8 @@
 	$ffffff 'immcolortex !
 	$7f00 'immcolorbtn !
 	'jugar "JUGAR" immbtn immdn
+	$7f 'immcolorbtn !
+	'creditos "CREDITOS" immbtn immdn
 	$7f0000 'immcolorbtn !
 	'exit "SALIR" immbtn
 	
@@ -648,8 +729,8 @@
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
 
-	"r3/iti2024/zoilo/Yang Laen.otf" 60
-	TTF_OpenFont immSDL
+	"r3/iti2024/zoilo/Yang Laen.otf" 48
+	TTF_OpenFont immSDL 
 	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
 	'bsprdrawsimple 'bsprdraw !
@@ -661,6 +742,8 @@
 	
 	loadsnd
 	"r3/iti2024/zoilo/fondomus.mp3" mix_loadmus 'fondomus !
+	
+	64 vaini
 	
 	500 'obj p.ini
 	100 'disp p.ini
