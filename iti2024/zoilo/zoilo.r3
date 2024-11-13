@@ -389,24 +389,30 @@
 
 |----------------------------------	
 :hud
+
+	512 24 2.0 100 vidas - 5 100 */ 18 + sprcosas sspritez
+
 	64 24 2.0 escopeta dup 2/ and 1 xor sprcosas sspritez
 	
 	0 ( llaves <?
 		dup 32 * 128 + 24 2.0 4 sprcosas sspritez
 		1+ ) drop
 
-	500 63 vidas 1.0 100 */ 18 sprplayer sspritez
+|	500 63 vidas 1.0 100 */ 18 sprplayer sspritez
+
 |	$ff0000 sdlcolor
 |	800	16 vidas 32 sdlFrect
 	
-	0 ( balas 4 + 5 / <?
-		dup 32 * 256 + 24 2.0 3 sprcosas sspritez
-		1+ ) drop
+|	0 ( balas 4 + 5 / <?
+|		dup 32 * 256 + 24 2.0 3 sprcosas sspritez
+|		1+ ) drop
 	
-|	$ffffff bcolor
+	$ffffff bcolor
+	10 0 bat
+	balas "%d " bprint2
 |	0 32 bat vidas "V:%d " bprint2
 |	escopeta  dup " %d " bprint2
-|	1? ( balas "B:%d " bprint2 ) drop	
+|	1? (  ) drop	
 	
 
 |	bcr bcr	
@@ -421,7 +427,7 @@
 	'obj p.adr
 	dup .a @ 
 	0 =? ( 5 'balas +! 3 escopeta or 'escopeta ! 2 playsnd ) | escopeta+balas
-	2 =? ( 10 'vidas +! )	| botiquin
+	2 =? ( 10 vidas + 100 clampmax 'vidas ! )	| botiquin
 	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! 2 playsnd ) | balas 
 	4 =? ( 1 'llaves +! 3 playsnd ) | llaves
 	5 =? ( 1 'celu +! ) | celu
@@ -574,11 +580,8 @@
 
 	32 Mix_VolumeMusic drop
 	fondomus -1 mix_playmusic
-	
 	'sjugar SDLshow
-
 	'sfin sdlshow
-	|0 Mix_VolumeMusic 	
 	Mix_HaltMusic
 	;
 	
@@ -597,9 +600,8 @@
 ""
 "Equipo de desarrollo"
 ""
-"Santiago"
-"Braian Canal"
-".."
+"Santi Ruy Perez"
+"Benja La Canal"
 ""
 "Profesores"
 "Maria Clara Sorensen"
