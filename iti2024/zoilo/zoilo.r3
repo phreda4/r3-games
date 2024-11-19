@@ -21,6 +21,8 @@
 #sprplayer
 #sprcosas
 
+#imginicio
+
 |----
 #mapa1
 
@@ -41,6 +43,7 @@
 #llaves 0
 #vidas 100
 #zombies 0
+#tiempo 0
 
 |person array
 | x y ang anim ss vx vy ar
@@ -389,37 +392,22 @@
 
 |----------------------------------	
 :hud
-
-	512 24 2.0 100 vidas - 5 100 */ 18 + sprcosas sspritez
-
-	64 24 2.0 escopeta dup 2/ and 1 xor sprcosas sspritez
 	
-	0 ( llaves <?
-		dup 32 * 128 + 24 2.0 4 sprcosas sspritez
-		1+ ) drop
-
-|	500 63 vidas 1.0 100 */ 18 sprplayer sspritez
-
-|	$ff0000 sdlcolor
-|	800	16 vidas 32 sdlFrect
+	$7f000000 SDLColorA
+	10 8 300 80 SDLFRect
+	714 8 300 80 SDLFRect
 	
-|	0 ( balas 4 + 5 / <?
-|		dup 32 * 256 + 24 2.0 3 sprcosas sspritez
+	$ffffff SDLColor
+	512 48 4.0 100 vidas - 5 100 */ 18 + sprcosas sspritez
+	100 48 3.0 escopeta dup 2/ and 1 xor sprcosas sspritez
+	
+|	0 ( llaves <?
+|		dup 32 * 128 + 24 2.0 4 sprcosas sspritez
 |		1+ ) drop
-	
-	$ffffff bcolor
-	10 0 bat
-	balas "%d " bprint2
-|	0 32 bat vidas "V:%d " bprint2
-|	escopeta  dup " %d " bprint2
-|	1? (  ) drop	
-	
 
-|	bcr bcr	
-|	dirp "%h " bprint 
-|	btnpad "%h " bprint 
-|	'disp p.cnt "%d" bprint
-|	H2d.list "%d %h" bprint
+	$ffffff ttcolor 
+	200 24 ttat balas "%d " ttprint
+	724 24 ttat "Zoilo" ttprint
 	;
 
 |------------ colision
@@ -430,7 +418,7 @@
 	2 =? ( 10 vidas + 100 clampmax 'vidas ! )	| botiquin
 	3 =? ( 5 'balas +! 2 escopeta or 'escopeta ! 2 playsnd ) | balas 
 	4 =? ( 1 'llaves +! 3 playsnd ) | llaves
-	5 =? ( 1 'celu +! ) | celu
+	5 =? ( 1 'celu +! exit ) | celu
 	drop
 	'obj p.del
 	;
@@ -449,7 +437,7 @@
 	over <? ( ; ) swap ; 
 
 :hitdisp	
-	swap |$fff and 'obj p.adr 'obj p.del | borra bala
+	swap
 	$4000 and? ( 
 		$fff and 'obj p.adr 
 
@@ -469,9 +457,7 @@
 	2sort
 	0? ( drop hitplayer ; ) 
 	$1000 and? ( hitdisp ; ) | disparo
-	2drop |
-	|" %h %h " bprint
-	;
+	2drop ;
 
 :colisiones	
 	H2d.list 
@@ -483,6 +469,7 @@
 |----- JUGAR
 :sjugar
 	timer.
+	tiempo timer+ 'tiempo !
 	|0 SDLcls
 	immgui		| ini IMMGUI	
 
@@ -496,7 +483,6 @@
 	'fx p.draw		
 
 	hud
-|	0 0 zoom	
 
 	|--- colisiones
 	colisiones
@@ -541,15 +527,45 @@
 :sfin
 	Immgui
 	0 sdlcls
+
+	xvp yvp drawmaps
 	|0 0 800 600 imginicio SDLImages
 	
 	0 80 immat
 	1024 immwidth
-	$ff00ff 'immcolortex !
-	"Zoilo" immlabelc immdn
+	$0 'immcolortex !
+	"Zoilo Murio !!!" immlabelc immdn
 	immdn
-	zombies "Zombis muertos...%d" immlabelc
+	immdn
+	zombies "%d Zombis muertos" immlabelc immdn
+	tiempo 60 /mod swap "%d min %d seg" immlabelc
 	
+	400 immwidth
+	312 450 immat
+	
+	$ffffff 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "Continuar" immbtn
+
+	SDLredraw
+	SDLkey
+	>esc< =? ( exit )
+	drop ;
+
+:sgano
+	Immgui
+	0 sdlcls
+	xvp yvp drawmaps
+	|0 0 800 600 imginicio SDLImages
+	
+	0 80 immat
+	1024 immwidth
+	$ffffff 'immcolortex !
+	"Zoilo se salvo !!" immlabelc immdn
+	immdn
+	immdn
+	zombies "%d Zombis muertos" immlabelc immdn
+	tiempo 60 /mod swap "%d min %d seg" immlabelc
 	400 immwidth
 	312 450 immat
 	
@@ -566,6 +582,7 @@
 	'obj p.clear 'disp p.clear 'fx p.clear
 	1 'dirp ! 0 'balas ! 0 'llaves ! 0 'celu ! 
 	100 'vidas ! 0 'zombies !
+	0 'tiempo ! 0 'btnpad !
 	timer<
 	0 20 12 bmap2xy	+jugador | 0 es jugador
 	0 'dirp !
@@ -574,15 +591,18 @@
 	0 700.0 500.0 +cosa | escopeta
 	150 ( 1? 1- randzombie ) drop |	zombies
 	25 ( 1? 1- 2 randcosa ) drop |	2 botiquin
-	25 ( 1? 1- 3 randcosa ) drop |	3 balas 
-	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
+	250 ( 1? 1- 3 randcosa ) drop |	3 balas 
+|	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
 	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
+	|5 700.0 900.0 +cosa | celu
 
 	32 Mix_VolumeMusic drop
 	fondomus -1 mix_playmusic
 	'sjugar SDLshow
-	'sfin sdlshow
 	Mix_HaltMusic
+	tiempo 1000 / 'tiempo ! | pasar a segundos
+	celu 0? ( drop 'sfin sdlshow ; ) drop
+	'sgano sdlshow
 	;
 	
 
@@ -598,18 +618,17 @@
 ""
 "Zoilo" 
 ""
-"Equipo de desarrollo"
+"Curso 2er Año"
+"Itinirario formativo de"
+"asistencia en informatica"
 ""
+"Equipo de desarrollo"
 "Santi Ruy Perez"
 "Benja La Canal"
 ""
 "Profesores"
 "Maria Clara Sorensen"
 "Pablo Hugo Reda"
-""
-"Curso 2er Año"
-"Itinirario formativo de"
-"asistencia en informatica"
 ""
 "EESN 1"
 "San Cayetano"
@@ -650,7 +669,6 @@
 	immgui
 	vupdate
 	$0 SDLcls
-	
 	$ffffff ttcolor
 	drawlines
 	
@@ -674,16 +692,16 @@
 :sinicio
 	Immgui
 	0 sdlcls
-	|0 0 800 600 imginicio SDLImages
+	0 0 imginicio SDLImage
 	
-	0 80 immat
-	1024 immwidth
-	$ff00ff 'immcolortex !
-	"Zoilo" immlabelc immdn
-	immdn
+|	0 80 immat
+|	1024 immwidth
+|	$ff00ff 'immcolortex !
+|	"Zoilo" immlabelc immdn
+|	immdn
 	
-	400 immwidth
-	312 350 immat
+	420 immwidth
+	302 380 immat
 	
 	$ffffff 'immcolortex !
 	$7f00 'immcolorbtn !
@@ -697,6 +715,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
+	<f2> =? ( creditos )
 	<f> =? ( toglefs ) | fullscreen	
 	drop ;
 	
@@ -730,8 +749,8 @@
 :main
 	"r3sdl" 1024 600 SDLinit
 	SDLrenderer 1024 600 SDL_RenderSetLogicalSize | fullscreen
-
-	"r3/iti2024/zoilo/Yang Laen.otf" 48
+	SDLblend	
+	"r3/iti2024/zoilo/Crang.ttf" 42
 	TTF_OpenFont immSDL 
 	
 	"r3/iti2024/zoilo/mapa.bmap" loadmap 'mapa1 !
@@ -741,6 +760,8 @@
 	64 64 "r3/iti2024/zoilo/caballo.png" ssload 'spranimal !
 	64 64 "r3/iti2024/zoilo/jugador.png" ssload 'sprplayer !
 	32 32 "r3/iti2024/zoilo/cosas.png" ssload 'sprcosas !
+	
+	"r3/iti2024/zoilo/inicio.png" loadimg 'imginicio !
 	
 	loadsnd
 	"r3/iti2024/zoilo/fondomus.mp3" mix_loadmus 'fondomus !
