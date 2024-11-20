@@ -589,9 +589,9 @@
 	dirp 'dirq + c@ 0 0 ICS>anim anim!
 
 	0 700.0 500.0 +cosa | escopeta
-	150 ( 1? 1- randzombie ) drop |	zombies
+	250 ( 1? 1- randzombie ) drop |	zombies
 	25 ( 1? 1- 2 randcosa ) drop |	2 botiquin
-	250 ( 1? 1- 3 randcosa ) drop |	3 balas 
+	25 ( 1? 1- 3 randcosa ) drop |	3 balas 
 |	1 ( 1? 1- 4 randcosa ) drop |	4 llaves
 	1 ( 1? 1- 5 randcosa ) drop	|	5 celu
 	|5 700.0 900.0 +cosa | celu

@@ -323,6 +323,7 @@
 	4 << 8 + 'podio + @ ;
 	
 :spodio	
+	Immgui
 	vupdate
 	0 0 800 600 imgpodio SDLImages
 
@@ -331,6 +332,12 @@
 	0 npodio 420 130 gallina |1
 	1 npodio 520 210 gallina |2
 |	$ffffff ttcolor	xt yt ttat title ttprint
+
+	400 immwidth
+	300 450 immat
+	$ffffff 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "Continuar" immbtn
 	
 	sdlredraw
 	sdlkey
@@ -407,6 +414,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
+	<a> =? ( jugar )
 	<f> =? ( toglefs )
 	drop ;
 	
@@ -425,7 +433,7 @@
 	64 64 "r3/iti2024/picoteo/dibujos.png" ssload 'sprgame !
 	32 32 "r3/iti2024/picoteo/fx.png" ssload 'sprfx !
 	"r3/iti2024/picoteo/ZOMBIE.TTF" 
-	66 ttf_OpenFont immSDL
+	60 ttf_OpenFont immSDL
 	
 	1000 'maizs p.ini
 	200 'fx p.ini

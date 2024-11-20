@@ -228,6 +228,7 @@
 #podio 0 0 0 0 0 0 0 0
 
 :spodio	
+	Immgui
 	vupdate
 	0 0 800 600 imgpodio SDLImages
 	
@@ -239,6 +240,12 @@
 	150 350 ttat "3" ttprint
 	400 200 ttat "1" ttprint
 	660 290 ttat "2" ttprint
+	
+	400 immwidth
+	200 20 immat
+	$ffffff 'immcolortex !
+	$7f0000 'immcolorbtn !
+	'exit "Continuar" immbtn
 	
 	sdlredraw
 	sdlkey
@@ -314,6 +321,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
+	<a> =? ( jugar )
 	<f> =? ( toglefs )	
 	drop ;
 	
