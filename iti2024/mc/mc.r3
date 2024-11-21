@@ -202,10 +202,10 @@
 	SDLkey
 	>esc< =? ( exit )
 	
-	<a> =? ( 0 hip )
-	<s> =? ( 1 hip )
-	<d> =? ( 2 hip )
-	<f> =? ( 3 hip )
+	<up> =? ( 0 hip )
+	<dn> =? ( 1 hip )
+	<ri> =? ( 2 hip )
+	<le> =? ( 3 hip )
 	
 	drop ;
 	
@@ -250,11 +250,15 @@
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
+	<up> =? ( exit )
+	<dn> =? ( exit )
+	<ri> =? ( exit )
+	<le> =? ( exit )
 	drop
 	;
 
 :hacepodio	
-	musfin -1 mix_playmusic
+	musfin 1 mix_playmusic
 	'podio >a
 	'puntaje >b
 	0 ( 4 <? 
@@ -321,7 +325,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
-	<a> =? ( jugar )
+	<up> =? ( jugar )
 	<f> =? ( toglefs )	
 	drop ;
 	

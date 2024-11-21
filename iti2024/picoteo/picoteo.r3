@@ -283,23 +283,10 @@
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<a> =? ( 0 pico )
-	<s> =? ( 1 pico )
-	<d> =? ( 2 pico )
-	<f> =? ( 3 pico )
-	
-	<f1> =? ( 0 100.0 130.0 +maiz )
-	<f2> =? ( 1 300.0 130.0 +maiz )
-	<f3> =? ( 2 500.0 130.0 +maiz )
-	<f4> =? ( 3 700.0 130.0 +maiz )
-	<f5> =? ( 
-		50
-	7 4 $ff ICS>anim
-	|a> .l @ 200.0 * 100.0 + | x 
-	300.0
-	350.0 | y
-	+fx | time ani x y --
-		) | time ani x y --
+	<up> =? ( 0 pico )
+	<dn> =? ( 1 pico )
+	<ri> =? ( 2 pico )
+	<le> =? ( 3 pico )
 		
 	drop ;
 	
@@ -342,11 +329,15 @@
 	sdlredraw
 	sdlkey
 	>esc< =? ( exit )
+	<up> =? ( exit )
+	<dn> =? ( exit )
+	<ri> =? ( exit )
+	<le> =? ( exit )
 	drop
 	;
 	
 :hacepodio	
-	musfin -1 mix_playmusic
+	musfin 1 mix_playmusic
 	'podio >a
 	'puntaje >b
 	0 ( 4 <? 
@@ -414,7 +405,7 @@
 	SDLkey
 	>esc< =? ( exit )
 	<f1> =? ( jugar )
-	<a> =? ( jugar )
+	<up> =? ( jugar )
 	<f> =? ( toglefs )
 	drop ;
 	
