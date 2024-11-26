@@ -525,7 +525,7 @@ $"
 
 	ttf_init
 	"r3/iti2022/basura/font/ChakraPetch-Bold.ttf" 30 TTF_OpenFont dup 'font !
-	ttfont
+	ttfont!
 	
 	"r3/iti2022/basura/mapa.map" loadtilemap 'mapajuego !
 	128 128 "r3/iti2022/basura/img/sprites.png" tsload 'sprplayer !

@@ -618,7 +618,6 @@
 ""
 "Zoilo" 
 ""
-"Curso 2er Año"
 "Itinirario formativo de"
 "asistencia en informatica"
 ""
