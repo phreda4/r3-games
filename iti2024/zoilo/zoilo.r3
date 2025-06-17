@@ -10,6 +10,7 @@
 
 ^r3/util/bmap.r3
 ^r3/util/varanim.r3
+^r3/util/textb.r3
 
 #fondomus
 #sndlist * 160
