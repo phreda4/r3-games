@@ -1,0 +1,46 @@
+﻿Contrarreloj
+
+
+Integrantes: 
+González Mateo, 
+Sanso Lorenzo, 
+Peón Agustín, 
+Repetti Valentín 
+Franco Valentín.
+
+
+Colegio: Instituto Domingo Faustino Sarmiento.
+
+
+Personajes: Auto, robot, ladrones, chico.
+
+
+  
+
+
+
+Lugar: Puerto Madero, Fuerte Apache y Microcentro.
+
+
+Profesiones: Ladrón y policía.
+
+
+Evento: Persecuciones.
+
+
+Tema: Enfrentamientos entre ladrón y policía, en auto.
+
+
+Jugabilidad: El robot se encarga de manejar el auto y capturar a tanta cantidad de ladrones en un tiempo determinado (2:30 es lo disponible), distintos mapas y autos con distintas características. El auto puede subir de nivel y tener distintas habilidades. También hay obstáculos como autos, personas y edificios.
+
+
+  
+
+
+
+Historia: Había una vez un científico que crea a un robot capaz de poder manejar un auto para capturar a los ladrones y reemplazar a los policías.
+
+
+
+
+Lo ponen a prueba en una persecución en tres lugares distintos en donde los tendría que atrapar en un tiempo determinado, y a los que no llegue a capturar, se escaparán.

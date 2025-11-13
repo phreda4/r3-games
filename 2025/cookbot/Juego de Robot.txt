@@ -1,0 +1,23 @@
+﻿Trabajo práctico 
+“Cook bot”
+
+
+
+
+Integrantes: 
+Paula Rizzi, 
+Elisa Pardo, 
+Mia Sanchez 
+Milena Massa
+
+
+
+
+Trata sobre un robot que tiene que cocinar, hay platillos específicos para cada cliente, y el robot lo “prepara”
+Hay niveles y a partir de cada nivel, va desbloqueando nuevas cosas.
+
+
+•PRIMER PLATO: hamburguesas 
+•SEGUNDO PLATO: Pancho 
+•TERCER PLATO: pizza  
+•BEBIDAS: agua - jugos naturales - gaseosas

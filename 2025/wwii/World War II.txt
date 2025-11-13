@@ -1,0 +1,61 @@
+﻿World War II : Carlos Duty (WWII)
+
+
+Integrantes:
+-Roman Esteban
+-Lautaro Ulvedal
+-Francisco Trentini
+-Rata Rakitic
+-Tiziano Losada
+
+
+
+
+Historia:
+
+
+ Una de las batallas más importantes de EEUU, que ayudó a cambiar la historia del mundo entero, en esta participó el capitán Miller, líder de la artillería 14, una embarcación estadounidense que atacó las costas de Normandía.
+
+
+En la costa francesa, se desató una batalla y al capitán Miller le explotó una granada muy cerca y perdió la audición y la capacidad de pensar, mientras veía que sus camaradas se despedazaban poco a poco, volaban por el aire, se quemaban, realmente un caos.
+
+
+Comenzaron a escalar una pendiente donde se encontraba una parte del escuadron nazi con ametralladoras, un francotirador derriba a una de las ametralladoras alemanas. Luego de esto, luchan cuerpo a cuerpo, en los bunkers alemanes, utilizando un lanzallamas, granadas, etc.
+
+
+Finalmente, los estadounidenses lograron tomar control de las playas de Normandía, ya que los soldados alemanes decidieron rendirse. A pesar de haber ganado perdieron más de 3000 soldados.
+
+
+Gráficos:
+  
+  
+
+  
+  
+  
+  
+
+
+
+
+
+
+
+Jugabilidad:
+
+
+W/^ -arriba 
+A/< -izquierda
+S/v  -abajo
+D/> -derecha
+Click izquierda -Disparar
+Click Derecho -lanazar granada
+R -recargar arma
+E -agarrar item
+Q -curar
+Ruedita -cambiar arma
+1 -slot 1
+2 -slot 2
+3 -slot 3
+4 -slot 4
+5 -slot 5
