@@ -192,7 +192,7 @@
 	| ---- player control	
 	<le> =? ( -1.6 'jvx ! ) >le< =? ( 0 'jvx ! ) 
 	<ri> =? ( 1.6 'jvx ! ) >ri< =? ( 0 'jvx ! ) 
-	<esp> =? ( -6.0 'jvs ! jvs 'js +! )
+	<spc> =? ( -6.0 'jvs ! jvs 'js +! )
 	
 	<f1> =? ( +nota )
 	drop ;
@@ -273,7 +273,7 @@
 	
 	SDLredraw
 	SDLkey
-	<esp> =? ( jugar finjuego )
+	<spc> =? ( jugar finjuego )
 	>esc< =? ( exit ) 
 	drop
 	;

@@ -170,7 +170,7 @@
 	<d> =? ( 1.0 'xv ! )	>d< =? ( 0 'xv ! )	
 	<w> =? ( -1.0 'yv ! )	>w< =? ( 0 'yv ! )
 	<s> =? ( 1.0 'yv ! )	>s< =? ( 0 'yv ! )
-	<esp> =? ( +disparo )
+	<spc> =? ( +disparo )
 	>esc< =? ( exit )
 	drop ;
 

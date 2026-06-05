@@ -100,7 +100,7 @@
 	>esc< =? ( exit )
 	<le> =? ( jizq ) >le< =? ( jizqs )
 	<ri> =? ( jder ) >ri< =? ( jders ) 
-	<esp> =? ( ladra )
+	<spc> =? ( ladra )
 	drop
 	;
 

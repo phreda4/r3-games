@@ -95,7 +95,7 @@
 	<ri> =? ( 0.8 'dx ! )	>ri< =? ( 0 'dx ! )
 	<up> =? ( -0.8 'dy ! )	>up< =? ( 0 'dy ! )
 	<dn> =? ( 0.8 'dy ! )	>dn< =? ( 0 'dy ! )
-	<esp> =? ( -10.0 'jvs ! jvs 'js +! )
+	<spc> =? ( -10.0 'jvs ! jvs 'js +! )
 	drop
 	;
 

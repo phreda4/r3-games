@@ -303,7 +303,7 @@
 	>dn< =? ( btnpad %100 nand 'btnpad ! )
 	>le< =? ( btnpad %10 nand 'btnpad ! )
 	>ri< =? ( btnpad %1 nand 'btnpad ! )	
-	<esp> =? ( saltar )
+	<spc> =? ( saltar )
 |	<f1> =? ( 800 randy +perro ) 
 |	<f2> =? ( -128 randy +gato ) 
 |	<f3> =? ( 800 randy +ritem )

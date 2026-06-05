@@ -238,7 +238,7 @@
 	<dn> =? ( -0.3 'vd ! ) >dn< =? ( 0 'vd ! )
 	<le> =? ( 0.01 'vr ! ) >le< =? ( 0 'vr ! )
 	<ri> =? ( -0.01 'vr ! ) >ri< =? ( 0 'vr ! )
-	<esp> =? ( vpz 0? ( 0.4 'vpz ! ) drop )
+	<spc> =? ( vpz 0? ( 0.4 'vpz ! ) drop )
 	<w> =? ( 0.1 'zz +! )
 	<s> =? ( -0.1 'zz +! )
 	drop

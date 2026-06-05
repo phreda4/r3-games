@@ -111,7 +111,7 @@
 	<up> =? ( -0.2 'ayp ! 1 'cohete ! )	>up< =? ( 0 'ayp ! 0 'cohete ! )	
 	<le> =? ( -0.2 'axp ! 0 'nspr ! ) >le< =? ( 0 'axp ! )	
 	<ri> =? ( 0.2 'axp ! 1 'nspr ! ) >ri< =? ( 0 'axp ! )
-	<esp> =? ( xp yp +disparo )
+	<spc> =? ( xp yp +disparo )
 	drop 
 	;
 	

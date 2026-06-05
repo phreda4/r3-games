@@ -319,7 +319,7 @@
 	>le< =? ( 'pstay 'ep ! )
 	>ri< =? ( 'pstay 'ep ! )
 	
-	<esp> =? ( disparar ) 
+	<spc> =? ( disparar ) 
 	<f1> =? ( xp yp +enemigo )
 	drop 
 	;

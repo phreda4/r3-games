@@ -661,7 +661,7 @@
 	SDLRedraw
 
 	SDLkey 
-	<esp> =? ( exit )
+	<spc> =? ( exit )
 	drop
 	;
 	

@@ -121,7 +121,7 @@
 		yp $fff00000 and 'yp !  | 
 		) drop
 	sdlkey
-	<esp> =? ( -14.0 'dy ! )
+	<spc> =? ( -14.0 'dy ! )
 	drop
 	
 	;

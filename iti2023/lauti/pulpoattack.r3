@@ -207,7 +207,7 @@
 	<d> =? ( 2.0 'xv ! )	>d< =? ( 0 'xv ! )
     <LE> =? ( -2.0 'xv ! )	>LE< =? ( 0 'xv ! )
 	<RI> =? ( 2.0 'xv ! )	>RI< =? ( 0 'xv ! )
-	<esp> =? ( +disparo )
+	<spc> =? ( +disparo )
 	drop ;
 	
 :juego

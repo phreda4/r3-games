@@ -590,7 +590,7 @@
 
 	sdlkey
 	>esc< =? ( exit )
-	<esp> =? ( shoot )	
+	<spc> =? ( shoot )	
 	<up> =? ( 508.0 yjug =? ( -10.0 'yvel ! 1 playsnd ) drop )
 	<ri> =? ( 0.1 'xacc ! fogr ) >ri< =? ( 0.0 'xacc ! )
 	<le> =? ( -0.1 'xacc ! fogl ) >le< =? ( 0.0 'xacc ! )
@@ -698,7 +698,7 @@
 
 	sdlkey
 	>esc< =? ( exit )
-	<esp> =? ( shoot )	
+	<spc> =? ( shoot )	
 	<up> =? ( 508.0 yjug =? ( -10.0 'yvel ! 1 playsnd ) drop )
 	<ri> =? ( 0.1 'xacc ! fogr ) >ri< =? ( 0.0 'xacc ! )
 	<le> =? ( -0.1 'xacc ! fogl ) >le< =? ( 0.0 'xacc ! )
@@ -885,7 +885,7 @@ No venciste al Jefe final"
 	
 	vredraw
 	sdlkey
-	<esp> =? ( jugar )
+	<spc> =? ( jugar )
 	<f1> =? ( jugar )
 	<f2> =? ( opciones )
 	>esc< =? ( exit )

@@ -204,7 +204,7 @@
 	<DN> =? ( 2.0 'yv ! )	>DN< =? ( 0 'yv ! )
 	<w> =? ( -2.0 'yv ! )	>w< =? ( 0 'yv ! )
 	<s> =? ( 2.0 'yv ! )	>s< =? ( 0 'yv ! )
-	<esp> =? ( +disparo )
+	<spc> =? ( +disparo )
 	drop ;
 	
 :demo

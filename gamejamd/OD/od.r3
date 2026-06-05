@@ -262,7 +262,7 @@
 	SDLredraw
 	SDLkey 
 	>esc< =? ( exit )
-	<esp> =? ( +disparo )
+	<spc> =? ( +disparo )
 	drop ;
 
 |-------------- Pantallas

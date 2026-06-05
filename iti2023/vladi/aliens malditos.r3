@@ -137,7 +137,7 @@
 	>le< =? ( 0 'xv ! )
 	<ri> =? ( 3.0 'xv ! )
 	>ri< =? ( 0 'xv ! )	
-	<esp> =? ( +disparo )
+	<spc> =? ( +disparo )
 	drop 
 
 	muerte 1? ( drop ; ) drop

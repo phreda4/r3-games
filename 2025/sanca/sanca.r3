@@ -444,7 +444,7 @@
 
 	<dn> =? ( agacharse )
 	
-	<esp> =? ( panapress )
+	<spc> =? ( panapress )
 	>esp< =? ( panarelea ) 
 	
 	<f1> =? ( rgosth )
@@ -659,7 +659,7 @@ No logro recorrer toda la ciudad"
 	vredraw
 	sdlkey
 	<dn> =? ( jugar )
-	<esp> =? ( jugar )
+	<spc> =? ( jugar )
 	<f1> =? ( jugar )
 	<f2> =? ( opciones )
 	>esc< =? ( exit )

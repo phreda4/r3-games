@@ -341,7 +341,7 @@ Si votás el equivocado pierdes una vida."
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
-	<esp> =? ( menuj )
+	<spc> =? ( menuj )
 	drop
 	;
 	

@@ -113,7 +113,7 @@
 |	<dn> =? ( btnpad %100 or 'btnpad ! )
 	<le> =? ( -1.6 'jvx ! anirle ) >le< =? ( 0 'jvx ! aniqle ) 
 	<ri> =? ( 1.6 'jvx ! anirri ) >ri< =? ( 0 'jvx ! aniqri ) 
-	<esp> =? ( -12.0 'jvs ! jvs 'js +! )
+	<spc> =? ( -12.0 'jvs ! jvs 'js +! )
 	|<z> =? ( )
 	
 	<f1> =? ( eneder ) 

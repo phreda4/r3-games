@@ -139,7 +139,7 @@
 	<d> =? ( 1.5 'xv ! )
 	>d< =? ( 0 'xv ! )	
 	
-	<esp> =? ( lanza )
+	<spc> =? ( lanza )
 	drop ;
 
 

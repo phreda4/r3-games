@@ -179,7 +179,7 @@
 	<ri> =? ( 2.0 'vxp ! )
 	>le< =? ( 0 'vxp ! )
 	>ri< =? ( 0 'vxp ! )
-	<esp> =? ( xp yp +disp )
+	<spc> =? ( xp yp +disp )
 	<f1> =? ( 200.0 10.0 +alien )
 	
 	drop
