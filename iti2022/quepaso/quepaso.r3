@@ -1,4 +1,4 @@
-| Juego de preguntas
+﻿| Juego de preguntas
 | Itinerario de informatica
 | PHREDA 2022
 ^r3/lib/sdl2gfx.r3
@@ -142,7 +142,7 @@
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLimagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 
 |-------------------------------------------
@@ -179,7 +179,7 @@
 
 :cambioturno
 	gui
-	$0 SDLcls
+	$0 cls
 	0 0 stablero sdlimage
 	
 	mapascreen
@@ -221,7 +221,7 @@
 	
 :jugando
 	gui
-	$0 SDLcls
+	$0 cls
 	0 0 stablero sdlimage
 	
 	mapascreen
@@ -256,7 +256,7 @@
 | 109X139
 :ganador
 	gui
-	$0 SDLcls
+	$0 cls
 	0 0 spodio sdlimage
 	
 	170 300 

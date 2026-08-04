@@ -1,4 +1,4 @@
-| Animation example
+﻿| Animation example
 ^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -229,7 +229,7 @@
 	;
 	
 :juego
-	$252850 SDLcls
+	$252850 cls
 	timer.
 	'estrellas p.draw
 	'arcoiris p.draw	
@@ -274,7 +274,7 @@
 	;
 
 :finjuego
-	$252850 SDLcls
+	$252850 cls
 	Immgui timer.
 	'estrellas p.draw
 
@@ -316,7 +316,7 @@
 	;
 
 :menu
-	$252850 SDLcls
+	$252850 cls
 	Immgui
 	timer.
 	'estrellas p.draw

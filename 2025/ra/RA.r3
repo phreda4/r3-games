@@ -1,4 +1,4 @@
-| Revolucion Alien
+﻿| Revolucion Alien
 | PHREDA 2025
 | Bailon
 |--
@@ -60,8 +60,8 @@
 	xs 0? ( drop ; ) drop
 	8 'xs +!
 	xs sw >? ( 0 'xs ! drop ; ) drop
-	$ffffff SDLColor
-	xs ys 10 4 SDLFRect
+	$ffffff color
+	xs ys 10 4 frect
 	hit??
 	;
 
@@ -82,7 +82,7 @@
 
 
 :game
-	0 SDLcls
+	0 cls
 	
 	player
 	shoot

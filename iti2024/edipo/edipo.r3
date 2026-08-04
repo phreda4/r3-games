@@ -1,4 +1,4 @@
-| Edipo
+﻿| Edipo
 | IDFS 4to Soc
 | PHREDA 2024
 ^r3/lib/sdl2gfx.r3
@@ -84,7 +84,7 @@
 #yv -460
 
 :fondo
-	xv yv 2560 960 imgfondo SDLImages
+	xv yv 2560 960 imgfondo images
 	;
 
 :frente

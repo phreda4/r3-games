@@ -1,4 +1,4 @@
-| test land
+﻿| test land
 | PHREDA 2024
 |-----
 ^r3/lib/rand.r3
@@ -26,7 +26,7 @@
 |---------------------------------	
 #xop #yop
 :xxop 'yop ! 'xop ! ;
-:xxline 2dup xop yop SDLLine 'yop ! 'xop ! ;
+:xxline 2dup xop yop line 'yop ! 'xop ! ;
 
 :3dop project3d xxop ;
 :3dline project3d xxline ;

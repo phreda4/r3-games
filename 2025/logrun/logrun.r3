@@ -1,4 +1,4 @@
-| logrun
+﻿| logrun
 | PHREDA 2025
 |-------------------------
 ^r3/lib/sdl2gfx.r3
@@ -167,7 +167,7 @@
 |------------------- juego
 :dfondo
 	0 sdlcls
-	|0 0 640 480 ifondo SDLImages
+	|0 0 640 480 ifondo images
 	;
 	
 :horda

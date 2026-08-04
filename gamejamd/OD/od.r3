@@ -1,4 +1,4 @@
-| Openheimer democracy
+ï»¿| Openheimer democracy
 | Democracia Gamejam 2023
 | EESN 1 - San Cayetano
 | PHREDA
@@ -252,7 +252,7 @@
 	immgui 
 	timer. vupdate
 	disparodelay timer+ 'disparodelay !
-	$59BEE6 SDLcls
+	$59BEE6 cls
 	'listedi p.drawo
 	'listfx p.draw
 	'listbom p.draw	
@@ -268,13 +268,13 @@
 |-------------- Pantallas
 ::immbtn | 'click "" -- ; reecode button
 	plxywh guiBox
-	immcolorbtn SDLColor plxywh SDLFRect
+	immcolorbtn color plxywh frect
 	[ 3 3 immat+ ; ] guiI 
 	immlabelc
 	[ sndboton SNDplay 400 SDL_delay dup ex ; ] onClick drop ;	
 
 :finjuego
-	$59BEE6 SDLcls
+	$59BEE6 cls
 	Immgui timer.
 	'listedi p.drawo
 	'listfx p.draw
@@ -331,10 +331,10 @@
 "Brian Saenz Valiente"
 "Braian Canal"
 "Camila Pellegrini"
-"Diogo Peñalba"
+"Diogo Peï¿½alba"
 "Efrain Pardo"
 "Enzo Piacquadio"
-"Lucía Campos Hojsgaard"
+"Lucï¿½a Campos Hojsgaard"
 "Felix Klink"
 "Matias Keergaard"
 "Naiara Baptista"
@@ -344,7 +344,7 @@
 "Maria Clara Sorensen"
 "Pablo Hugo Reda"
 ""
-"Curso 3er Año"
+"Curso 3er Aï¿½o"
 "Itinirario formativo de"
 "asistencia en informatica"
 ""
@@ -408,7 +408,7 @@
 |-------------------------------------
 :menu
 	vupdate 
-	$59BEE6 SDLcls
+	$59BEE6 cls
 	immgui
 	
 	'listfx p.draw
@@ -476,7 +476,7 @@
 
 :titlestart
 	vupdate
-	$0 SDLcls
+	$0 cls
 	
 	$11 texto>
 	300 100 424 400 xywh64 

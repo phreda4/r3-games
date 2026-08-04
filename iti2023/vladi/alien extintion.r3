@@ -1,4 +1,4 @@
-^r3/lib/rand.r3
+﻿^r3/lib/rand.r3
 ^r3/lib/color.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -226,7 +226,7 @@
 	;
 	
 :juego
-	0 0 fondoj SDLImage 
+	0 0 fondoj image 
 	timer.
 	tiempo timer+ 'tiempo !
 	
@@ -270,7 +270,7 @@
 
 |----------------------------------------
 :menu
-	0 0 fondo2 SDLImage
+	0 0 fondo2 image
 	immgui
 	
 	800 immwidth
@@ -320,7 +320,7 @@
 
 :titu1
 	timer. vupdate
-	0 0 fondot SDLImage
+	0 0 fondot image
 
 	$11 titxt>
 	colm 100 300 400 xywh64 

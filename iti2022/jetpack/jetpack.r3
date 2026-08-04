@@ -1,4 +1,4 @@
-| Jetpac 
+﻿| Jetpac 
 
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -124,7 +124,7 @@
 	mapajuego tiledraws ;
 	
 :juego
-	0 SDLcls
+	0 cls
 	drawmapa
 	
 	'fx p.draw
@@ -138,12 +138,12 @@
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 		
 :gano
 	gui
-	0 0 sganaste SDLImage
+	0 0 sganaste image
 	'exit 'sbtns1 450 400 btni
 	SDLRedraw
 	
@@ -154,7 +154,7 @@
 	
 :perdio
 	gui
-	0 0 sperdiste SDLImage
+	0 0 sperdiste image
 	'exit 'sbtns1 450 400 btni
 	SDLRedraw
 	
@@ -175,7 +175,7 @@
 
 :menu
 	gui
-	0 0 sinicio SDLImage
+	0 0 sinicio image
 
 	'jugar 'sbtnj1 100 400 btni
 	'exit 'sbtns1 450 400 btni

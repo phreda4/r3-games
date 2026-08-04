@@ -1,4 +1,4 @@
-| Ulises vs Las sirenas
+﻿| Ulises vs Las sirenas
 | IDFS 4to Soc
 | PHREDA 2024
 ^r3/lib/sdl2gfx.r3
@@ -161,14 +161,14 @@
 	
 |----------------------------------
 :fondo
-	$93E2F7 SDLcls
+	$93E2F7 cls
 	'lnubes p.draw nubes 
-	0 0 640 480 imgmar SDLImages
-	0 0 640 480 imgisla SDLImages
+	0 0 640 480 imgmar images
+	0 0 640 480 imgisla images
 	550 290 2.0 40 spr sspritez	| sirena
 	msec dup 4 << sin 30 *. 200 - swap 3 << sin 10 *. 10 +
 	2dup 'ybarco ! 'xbarco !
-	640 480 imgnave SDLImages
+	640 480 imgnave images
 	xbarco 368 + ybarco 130 + msec 7 >> $3 and sprvela ssprite
 	;
 
@@ -215,9 +215,9 @@
 	
 |-----------------
 :fondo
-	$93E2F7 SDLcls
+	$93E2F7 cls
 	'lnubes p.draw nubes
-	0 0 640 480 imgmar SDLImages
+	0 0 640 480 imgmar images
 	;
 
 :btnimg | x y n --

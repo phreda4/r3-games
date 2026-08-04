@@ -1,4 +1,4 @@
-| teniente zabala
+﻿| teniente zabala
 | PHREDA 2024
 |-------------------------
 ^r3/lib/rand.r3
@@ -293,7 +293,7 @@
 |------------------- juego
 :dfondo
 	$C9BE6F sdlcls
-|	0 0 640 480 ifondo SDLImages
+|	0 0 640 480 ifondo images
 	;
 	
 :juego

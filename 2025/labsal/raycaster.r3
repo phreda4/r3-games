@@ -1,4 +1,4 @@
-| Ray casting + sprites
+﻿| Ray casting + sprites
 | PHREDA 2024
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/rand.r3
@@ -283,7 +283,7 @@
 #vesq
 
 :game
-	$0 SDLcls
+	$0 cls
 	pantalla
 
 	SDLredraw

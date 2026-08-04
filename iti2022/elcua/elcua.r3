@@ -1,4 +1,4 @@
-| ElCua
+﻿| ElCua
 |
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2poly.r3
@@ -149,7 +149,7 @@
 
 |----------------------------------------	
 :tcirc | r x y --
-	pick2 -rot SDLFEllipse ;
+	pick2 -rot fellipse ;
 	
 |----------------------------------------	
 :pv.p | a -- 'a
@@ -181,7 +181,7 @@
 
 :figura
 	8 + >a
-	a@+ SDLColor
+	a@+ color
 	a@+ pv.p 
 	a@+ dup $ffff and swap 32 >> 
 	tfigura
@@ -234,7 +234,7 @@
 	676
 	0 ( 3 <? swap
 		dup 107 
-		pick3 nvidas SDLImage 
+		pick3 nvidas image 
 		60 +
 		swap 1 + ) 2drop ;
 
@@ -257,7 +257,7 @@
 		rand8 $7f and dup 8 << over 16 << or or 
 		da!+ ) drop
 	sbuffer SDL_UnlockTexture
-	340 160 sbuffer SDLImage 	
+	340 160 sbuffer image 	
 	;
 
 :correcto
@@ -320,7 +320,7 @@
 :btnd  | n 'vecor 'i x y -- n
 	rot pick4 
 	respur =? ( swap 8 + swap ) drop
-	@ SDLImage
+	@ image
 	drop ;
 	
 | 213 x 118
@@ -328,16 +328,16 @@
 	estado 0? ( drop btnd ; ) drop
 	213 118 guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 
 :jugando
 	gui
-	$0 SDLcls
+	$0 cls
 
 	'obj p.draw
 	
-	0 0 sprincipal SDLImage 
+	0 0 sprincipal image 
 	
 	playloop
 	impvidas
@@ -377,7 +377,7 @@
 	605 56 - 
 	310 107 -
 	msec 5 << 40 xy+polar
-	ssigno SDLImage
+	ssigno image
 	;
 	
 :j1
@@ -484,7 +484,7 @@
 |--------------------------------------------------	
 :pantgano
 	gui
-	0 0 swin SDLImage 
+	0 0 swin image 
 	'obj p.draw
 	playloop
 	
@@ -509,7 +509,7 @@
 |-----------------------------------	
 :pantperdio
 	gui
-	0 0 sperdio SDLImage 
+	0 0 sperdio image 
 	'obj p.draw
 	playloop
 	
@@ -559,12 +559,12 @@
 	|435 95 guibox
 	pick2 @ SDLimagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 
 :pantini
 	gui
-	0 0 sinicio SDLImage 
+	0 0 sinicio image 
 	playloop
 	
 	[ jugar ; ] 'splay1 420 600 btnplay

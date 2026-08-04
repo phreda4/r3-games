@@ -1,4 +1,4 @@
-| Fraudecracia
+ï»¿| Fraudecracia
 | Democracia Gamejam 2023
 | EESN 1 - San Cayetano
 | PHREDA
@@ -172,7 +172,7 @@
 	$ff00ff sdlcolor
 	dup 8 + >a
 	a@+ a@+ a@+ a@+ 
-|	2over 2over SDLRect | debug
+|	2over 2over rect | debug
 	guiBox
 	'clickenplace onClick
 	drop
@@ -200,12 +200,12 @@
 
 :pantalla
 	super
-	0 0 imgmesa SDLImage
+	0 0 imgmesa image
 	'places p.drawo
-	0 0 imgmesaf SDLImage
+	0 0 imgmesaf image
 	
 	0 ( confianza <?
-		dup 50 * 10 + 10 imgurna SDLImage
+		dup 50 * 10 + 10 imgurna image
 		1 + ) drop
 	manocursor 
 	atencion 1? ( -1 'atencion +! drop ; ) drop
@@ -236,7 +236,7 @@
 :juego
 	vupdate timer. immgui 
 	$666666 sdlcls
-|	0 0 imgfondo SDLImage 	
+|	0 0 imgfondo image 	
 
 	pantalla
 	
@@ -253,7 +253,7 @@
 
 |--------------------	
 :finjuego
-	$0 SDLcls
+	$0 cls
 	Immgui timer.
 
 	800 immwidth
@@ -295,10 +295,10 @@
 "Brian Saenz Valiente"
 "Braian Canal"
 "Camila Pellegrini"
-"Diogo Peñalba"
+"Diogo Peï¿½alba"
 "Efrain Pardo"
 "Enzo Piacquadio"
-"Lucía Campos Hojsgaard"
+"Lucï¿½a Campos Hojsgaard"
 "Felix Klink"
 "Matias Keergaard"
 "Naiara Baptista"
@@ -308,7 +308,7 @@
 "Maria Clara Sorensen"
 "Pablo Hugo Reda"
 ""
-"Curso 3er Año"
+"Curso 3er Aï¿½o"
 "Itinirario formativo de"
 "asistencia en informatica"
 ""
@@ -391,7 +391,7 @@ Todo para que el nÃºmero de boletas coincida con el padrÃ³n electoral y no nos d
 	100 50 824 500 xywh64 
 	$0 font1 textbox | $vh str box color font --
 
-	100 200 imgmouse SDLImage 	
+	100 200 imgmouse image 	
 	
 	260 immwidth
 	300 50 immbox
@@ -413,7 +413,7 @@ Todo para que el nÃºmero de boletas coincida con el padrÃ³n electoral y no nos d
 "Juntos por el mambo"
 "La esclavitud avanza"
 "Union ezquimal"
-"Frente al caño"
+"Frente al caï¿½o"
 
 #cursor
 
@@ -431,7 +431,7 @@ Todo para que el nÃºmero de boletas coincida con el padrÃ³n electoral y no nos d
 	$ffffff sdlcolor
 	msec 5 >> $f and 'cursor !
 	mipartido 150 * 230 + cursor - 310 cursor - 
-	130 cursor 1 << + 150 cursor 1 << + SDLRect
+	130 cursor 1 << + 150 cursor 1 << + rect
 	
 	130 150 immbox
 	0 ( 4 <?

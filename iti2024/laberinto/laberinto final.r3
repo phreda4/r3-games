@@ -1,4 +1,4 @@
-| LABERINTO
+﻿| LABERINTO
 | PHREDA 2024
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/rand.r3
@@ -279,7 +279,7 @@
 #vmov
 
 :game
-	$0 SDLcls
+	$0 cls
 	render
 	mm 
 	1 and? ( drawmap ) 

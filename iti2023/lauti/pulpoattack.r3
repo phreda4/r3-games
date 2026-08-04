@@ -1,4 +1,4 @@
-| Pulpo Attack
+﻿| Pulpo Attack
 
 ^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
@@ -211,8 +211,8 @@
 	drop ;
 	
 :juego
-|	0 SDLcls
-	0 0 fondo SDLImage 
+|	0 cls
+	0 0 fondo image 
 
 	timer. tiempo timer+ 'tiempo !
 	'enemigos p.draw
@@ -235,7 +235,7 @@
 
 |-----------------------------
 :finjuego
-	0 0 fondo SDLImage 
+	0 0 fondo image 
 	Immgui 
 	
 	0 50 immat
@@ -278,8 +278,8 @@
 	;
 
 :menu
-|	$ff0000 SDLcls
-	0 0 fondo SDLImage 
+|	$ff0000 cls
+	0 0 fondo image 
 	
 	immgui
 	

@@ -1,4 +1,4 @@
-| Animation example
+﻿| Animation example
 ^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -144,7 +144,7 @@
 
 
 :demo
-	0 0 fondo SDLImage 
+	0 0 fondo image 
 	timer.
 	jugador
 	'npc p.draw	
@@ -158,7 +158,7 @@
 	'demo sdlshow
 ;
 :menu
-	0 SDLcls
+	0 cls
 	immgui 	| ini immgui
 	
 	800 immwidth

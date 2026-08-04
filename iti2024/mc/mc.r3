@@ -1,4 +1,4 @@
-| Malevolo cucarachon
+﻿| Malevolo cucarachon
 | PHREDA 2024
 |------------------
 ^r3/lib/sdl2gfx.r3
@@ -186,8 +186,8 @@
 |------ JUEGO
 :juego
 	vupdate
-|	$0 SDLcls
-	0 0 800 600 imgfondo SDLImages
+|	$0 cls
+	0 0 800 600 imgfondo images
 
 	'cucas p.draw
 
@@ -215,7 +215,7 @@
 :sini
 	vupdate
 |	0 sdlcls
-	0 0 800 600 imgfondo SDLImages
+	0 0 800 600 imgfondo images
 	0 player 1 player 2 player 3 player	
 	$ffffff ttcolor	xt yt ttat title ttprint
 	sdlredraw
@@ -230,7 +230,7 @@
 :spodio	
 	Immgui
 	vupdate
-	0 0 800 600 imgpodio SDLImages
+	0 0 800 600 imgpodio images
 	
 	180 510 0.11 'podio 40 + @ 9 + sprplayer sspriter
 	426 360 0.11 'podio 8 + @ 9 + sprplayer sspriter
@@ -310,7 +310,7 @@
 	
 :inicio
 	Immgui
-	0 0 800 600 imginicio SDLImages
+	0 0 800 600 imginicio images
 
 	$ffffff 'immcolortex !	
 	$0 'immcolorbtn !

@@ -1,4 +1,4 @@
-^r3/lib/sdl2gfx.r3
+﻿^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3	
 ^r3/lib/sdl2mixer.r3
 ^r3/util/bfont.r3
@@ -119,12 +119,12 @@
 #ss * 8192 | estrellas
 
 :drawback
-	$ffffff SDLColor 
+	$ffffff color 
 	'ss >a
 	1024 ( 1? 1 -
 		da@+ da@
 		600 >? ( 0 nip ) 1 + dup da!+
-		SDLPoint		
+		point		
 		) drop ;
 
 :fillback
@@ -154,7 +154,7 @@
 	;
 
 :game
-	0 SDLcls
+	0 cls
 	
 	drawback
 	
@@ -195,12 +195,12 @@
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 	
 :inicial
 	gui
-	0 0 sinicio SDLImage
+	0 0 sinicio image
 
 	'jugar 'sbtnj1 300 320 btni
 	'exit 'sbtns1 330 450 btni

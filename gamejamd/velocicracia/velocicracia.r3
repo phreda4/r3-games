@@ -1,4 +1,4 @@
-| Velocicacia
+﻿| Velocicacia
 | Democracia Gamejam 2023
 | EESN 1 - San Cayetano
 | PHREDA
@@ -146,11 +146,11 @@
 	sndvoto SNDplay ;
 
 :barratiempo
-	'colores colorclick ncell+ @ SDLColor
+	'colores colorclick ncell+ @ color
 	317 42 
 	390 tiempoclick msclick */
-	32 SDLFRect
-	317 34 sprbarra SDLImage
+	32 frect
+	317 34 sprbarra image
 	tiempoclick timer- 'tiempoclick !
 	tiempoclick 0 <? ( newcolor ) drop
 	;
@@ -172,18 +172,18 @@
 	
 :juego
 	vupdate timer.
-	$ffffff SDLcls
+	$ffffff cls
 	jueces
-	0 0 sprmesa SDLImage
+	0 0 sprmesa image
 	barratiempo
 	vidascora
 	
 	immgui	
 	90 80 immbox
-	200 360 immat [ 0 clickc ; ] immzone 	|plxywh SDLRect 
-	380 360 immat [ 1 clickc ; ] immzone 	|plxywh SDLRect 
-	560 360 immat [ 2 clickc ; ] immzone 	|plxywh SDLRect 
-	690 360 immat [ 3 clickc ; ] immzone 	|plxywh SDLRect 
+	200 360 immat [ 0 clickc ; ] immzone 	|plxywh rect 
+	380 360 immat [ 1 clickc ; ] immzone 	|plxywh rect 
+	560 360 immat [ 2 clickc ; ] immzone 	|plxywh rect 
+	690 360 immat [ 3 clickc ; ] immzone 	|plxywh rect 
 	
 	80 100 immbox
 	$0 'immcolortex !
@@ -200,16 +200,16 @@
 |-------------------------------
 ::immbtn | 'click "" -- ; reecode button
 	plxywh guiBox
-	immcolorbtn SDLColor plxywh SDLFRect
+	immcolorbtn color plxywh frect
 |	plxywh sprbarra SDLimages immcolorbtn 'immcolortex !
 	3 3 immat+ [ 3 3 immat+ ; ] guiI 
 	immlabelc
 	[ sndboton SNDplay 400 SDL_delay dup ex ; ] onClick drop ;
 	
 :finjuego
-	$ffffff SDLcls
+	$ffffff cls
 	Immgui timer.
-	0 0 imgfinalb SDLImage
+	0 0 imgfinalb image
 	400 immwidth
 	
 	$0 'immcolortex !
@@ -249,7 +249,7 @@
 	vupdate
 	$ffffff sdlcls
 	immgui
-	xp 0 pantfinal SDLImage
+	xp 0 pantfinal image
 	SDLredraw
 	SDLkey
 	>esc< =? ( exit )
@@ -275,13 +275,13 @@
 :screditos
 	immgui
 	$ffffff sdlcls
-	244 yc imgcreditos SDLImage	
+	244 yc imgcreditos image	
 	
 	yc 1 - 
 	-2323 <? ( 600 nip ) 
 	'yc !
 	
-	0 0 imgfinalb SDLImage
+	0 0 imgfinalb image
 	260 immwidth
 	$674494 'immcolorbtn !
 	760 50 immat
@@ -323,7 +323,7 @@ Si votás el equivocado pierdes una vida."
 	vupdate
 	$ffffff sdlcls
 	immgui
-	xlogo ylogo sprlogo SDLImage
+	xlogo ylogo sprlogo image
 	
 	$ffffff 'immcolortex !
 	220 60 immbox

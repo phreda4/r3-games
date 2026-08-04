@@ -1,4 +1,4 @@
-| Nave vs. Pulpo
+﻿| Nave vs. Pulpo
 ^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -208,8 +208,8 @@
 	drop ;
 	
 :demo
-|	0 SDLcls
-	0 0 fondo SDLImage 
+|	0 cls
+	0 0 fondo image 
 
 	timer.
 	'enemigos p.draw
@@ -251,7 +251,7 @@
 	;
 
 :menu
-	$ff0000 SDLcls
+	$ff0000 cls
 	immgui
 	
 	0 100 immat

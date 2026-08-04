@@ -1,4 +1,4 @@
-^r3/lib/rand.r3
+﻿^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
 ^r3/util/arr16.r3
@@ -156,7 +156,7 @@
 	;
 	
 :demo
-	0 0 fondo SDLImage 
+	0 0 fondo image 
 	timer.
 	'disparos p.draw
 	jugador	
@@ -190,7 +190,7 @@
 	;
 	
 :menu
-	0 0 fondo2 SDLImage
+	0 0 fondo2 image
 	immgui
 	0 150 immat
 	800 immwidth

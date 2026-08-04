@@ -1,4 +1,4 @@
-||MEM 1024
+﻿||MEM 1024
 | pampa zoilo
 | PHREDA 2024
 |------------------
@@ -394,11 +394,11 @@
 |----------------------------------	
 :hud
 	
-	$7f000000 SDLColorA
-	10 8 300 80 SDLFRect
-	714 8 300 80 SDLFRect
+	$7f000000 colora
+	10 8 300 80 frect
+	714 8 300 80 frect
 	
-	$ffffff SDLColor
+	$ffffff color
 	512 48 4.0 100 vidas - 5 100 */ 18 + sprcosas sspritez
 	100 48 3.0 escopeta dup 2/ and 1 xor sprcosas sspritez
 	
@@ -471,7 +471,7 @@
 :sjugar
 	timer.
 	tiempo timer+ 'tiempo !
-	|0 SDLcls
+	|0 cls
 	immgui		| ini IMMGUI	
 
 	H2d.clear
@@ -530,7 +530,7 @@
 	0 sdlcls
 
 	xvp yvp drawmaps
-	|0 0 800 600 imginicio SDLImages
+	|0 0 800 600 imginicio images
 	
 	0 80 immat
 	1024 immwidth
@@ -557,7 +557,7 @@
 	Immgui
 	0 sdlcls
 	xvp yvp drawmaps
-	|0 0 800 600 imginicio SDLImages
+	|0 0 800 600 imginicio images
 	
 	0 80 immat
 	1024 immwidth
@@ -668,7 +668,7 @@
 :screditos
 	immgui
 	vupdate
-	$0 SDLcls
+	$0 cls
 	$ffffff ttcolor
 	drawlines
 	
@@ -692,7 +692,7 @@
 :sinicio
 	Immgui
 	0 sdlcls
-	0 0 imginicio SDLImage
+	0 0 imginicio image
 	
 |	0 80 immat
 |	1024 immwidth

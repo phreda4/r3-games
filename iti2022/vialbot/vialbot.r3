@@ -1,4 +1,4 @@
-| TILEMAP + ENEMY + PLAYER
+﻿| TILEMAP + ENEMY + PLAYER
 | PHREDA 2022
 
 ^r3/lib/sdl2gfx.r3
@@ -98,7 +98,7 @@
 	'mapao >a
 	0 ( 37 <? 
 		0 ( 64 <?
-			ca@+ 1? ( over 4 << pick3 4 << 16 dup SDLRect ) drop
+			ca@+ 1? ( over 4 << pick3 4 << 16 dup rect ) drop
 			1 + ) drop
 		1 + ) drop ;
 		
@@ -225,7 +225,7 @@
 ::cursor!!	| x y -- hit?
 	SDLx pick2 - SDLy pick2 - distfast
 	32 >? ( 3drop 0 ; ) drop
-	0 SDLColor
+	0 color
 	32 dup 2swap SDLfEllipse
 	
 	sdlb 1? ( a> hotnow =? ( 2drop 0 ; ) 'hotnow ! ; ) drop
@@ -520,7 +520,7 @@
 #m1> #m2> 
 
 :fin2
-	0 0 imggover SDLImage
+	0 0 imggover image
 	
 	time.delta
 	'fx p.draw
@@ -540,7 +540,7 @@
 	;
 
 :fin1
-	0 0 imgfin SDLImage
+	0 0 imgfin image
 	
 	time.delta
 	'fx p.draw
@@ -594,8 +594,8 @@
 :boton | 'vecor "text" -- size
 	2over 2over guibox
 	$ffffff  [ $00ff00 nip ; ] guiI
-	SDLColor
-	2over 2over SDLFRect	
+	color
+	2over 2over frect	
 	xywh64 
 	$11 -rot $0 font textbox 
 	onCLick ;
@@ -603,14 +603,14 @@
 :btni | 'vecor 'ip 'i x y w h -- size
 	guibox
 	[ swap ; ] guiI nip
-	xr1 yr1 rot SDLImage
+	xr1 yr1 rot image
 	onCLick ;
 	
 #timesec
 	
 :menuprincipal
 	gui
-	0 0 imgmenu SDLImage 
+	0 0 imgmenu image 
 
 	time.delta
 	'obj p.draw
@@ -643,7 +643,7 @@
 	;
 
 :inicio
-	0 0 imginicio SDLImage 
+	0 0 imginicio image 
 |	sdlx sdly scursor SDLimage
 
 	$11 "pulse ESPACIO para continuar"

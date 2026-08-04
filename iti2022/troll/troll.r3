@@ -1,4 +1,4 @@
-| trebor en busca del oro
+﻿| trebor en busca del oro
 
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -232,11 +232,11 @@
 	tiledrawvs ;
 	
 :barra
-	$ff00 SDLColor
-	10 10 vida 10 + 20 SDLFRect ;	
+	$ff00 color
+	10 10 vida 10 + 20 frect ;	
 	
 :jugando
-	$666666 SDLcls
+	$666666 cls
 
 	viewport
 	drawmapa	
@@ -265,13 +265,13 @@
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 	
 :menu
 	gui
-|	$0 SDLcls
-	0 0 sinicio SDLImage
+|	$0 cls
+	0 0 sinicio image
 
 	'jugar 'sbtnj1 100 400 btni
 	'exit 'sbtns1 500 400 btni

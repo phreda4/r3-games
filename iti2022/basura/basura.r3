@@ -1,4 +1,4 @@
-| vialbot 
+﻿| vialbot 
 
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
@@ -339,13 +339,13 @@
 	500
 	0 ( 5 <? swap
 		dup 10 
-		pick3 nvidas SDLImage 
+		pick3 nvidas image 
 		60 +
 		swap 1 + ) 2drop ;
 		
 |------------------------------------------------
 :jugando
-	$039be5 SDLcls
+	$039be5 cls
 	time.delta
 	creador
 	ciudad
@@ -370,7 +370,7 @@
 
 |---------------------------------------
 :perdiste
-	0 0 sperdiste SDLImage
+	0 0 sperdiste image
 
 	$11
 	puntos "hiciste %d puntos!" sprint
@@ -385,7 +385,7 @@
 	;
 
 :ganaste	
-	0 0 sganaste SDLImage
+	0 0 sganaste image
 
 	$11
 	puntos "hiciste %d puntos!" sprint
@@ -459,7 +459,7 @@ $"
 	;
 	
 :inicio
-	0 0 sinicio SDLImage
+	0 0 sinicio image
 
 	msec 7 >> $3 and sprplayer
 	80 280 
@@ -495,12 +495,12 @@ $"
 :btni | 'vecor 'i x y -- 
 	pick2 @ SDLImagewh guibox
 	[ 8 + ; ] guiI 
-	@ xr1 yr1 rot SDLImage
+	@ xr1 yr1 rot image
 	onCLick ;
 	
 :inicial
 	gui
-	0 0 sinicial SDLImage
+	0 0 sinicial image
 	[ pantalla1 ; ] 'sbtnj1 200 300 btni
 	[ exit ; ] 'sbtns1 400 300 btni
 	

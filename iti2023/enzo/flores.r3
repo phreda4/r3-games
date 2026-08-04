@@ -1,4 +1,4 @@
-^r3/lib/rand.r3
+﻿^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/lib/sdl2image.r3
 ^r3/util/arr16.r3
@@ -193,7 +193,7 @@
 
 :fondos
 	1 'yscroll +!
-	0 yscroll fondo SDLImage 
+	0 yscroll fondo image 
 	yscroll +? ( 0 over 1000 - fondo sdlImage )
 	600 <? ( drop ; ) drop
 	-400 'yscroll !
@@ -259,7 +259,7 @@
 		+flor ) drop ;
 
 :finjuego
-	$0 SDLcls
+	$0 cls
 	'fx p.draw
 	Immgui 
 
@@ -290,7 +290,7 @@
 	;
 	
 :menu
-	0 SDLcls
+	0 cls
 	'fx p.draw
 	immgui
 	0 100 immat

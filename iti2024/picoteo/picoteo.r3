@@ -1,4 +1,4 @@
-| Picoteo
+﻿| Picoteo
 | PHREDA 2024
 |------------------
 ^r3/lib/sdl2gfx.r3
@@ -201,7 +201,7 @@
 	;
 
 :fondo
-	$0 SDLcls
+	$0 cls
 	16 ( 800 <?
 		16 ( 600 <?
 			2dup |2 randmax 
@@ -312,7 +312,7 @@
 :spodio	
 	Immgui
 	vupdate
-	0 0 800 600 imgpodio SDLImages
+	0 0 800 600 imgpodio images
 
 	3 npodio 100 280 gallina |4
 	2 npodio 330 270 gallina |3
@@ -384,7 +384,7 @@
 	
 :inicio
 	Immgui
-	0 0 800 600 imginicio SDLImages
+	0 0 800 600 imginicio images
 	
 |	0 80 immat
 |	800 immwidth

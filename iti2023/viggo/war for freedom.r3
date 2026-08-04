@@ -1,4 +1,4 @@
-^r3/lib/rand.r3
+﻿^r3/lib/rand.r3
 ^r3/lib/sdl2gfx.r3
 ^r3/util/arr16.r3
 ^r3/util/sdlgui.r3
@@ -147,7 +147,7 @@
 	
 #xisla 0
 :fondo
-	$0000FF SDLcls
+	$0000FF cls
 	'fondos p.draw
 	xisla 1? ( -1 'xisla +! drop ; ) drop
 	40 randmax 1? ( drop ; ) drop

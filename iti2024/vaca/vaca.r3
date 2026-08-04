@@ -1,4 +1,4 @@
-| vaca libertad
+﻿| vaca libertad
 | PHREDA 2024
 |-------------------------
 ^r3/lib/rand.r3
@@ -159,7 +159,7 @@
 |------------------- juego
 :dfondo
 |	0 sdlcls
-	0 0 640 480 ifondo SDLImages
+	0 0 640 480 ifondo images
 	;
 	
 :horda
