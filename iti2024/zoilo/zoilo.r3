@@ -83,8 +83,8 @@
 	a> .vy ! ;
 
 :zdir
-	xp a> .x @ - 	
 	yp a> .y @ - 
+	xp a> .x @ - 	
 	atan2 sincos 
 	0.3 randmax 1.0 +
 	rot over *. -rot *.

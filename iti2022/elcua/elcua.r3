@@ -177,7 +177,7 @@
 :tfigura
 	0? ( drop nip a@+ pv.p 16 >> a@+ pv.p 16 >> tcirc ; )
 	swap
-	a@+ pv.p 16 >> a@+ pv.p 16 >> SDLFngon ;
+	a@+ pv.p 16 >> a@+ pv.p 16 >> fngon ;
 
 :figura
 	8 + >a
