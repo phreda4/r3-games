@@ -5,13 +5,13 @@
 ^r3/util/vscreen.r3
 ^r3/lib/rand.r3
 
-^r3/util/ui.r3
+^r3/util/immi.r3
 ^r3/util/arr16.r3
 ^r3/util/varanim.r3
 ^r3/util/txfont.r3
 
-|#filepath "r3/2025/sanca/data/"
-#filepath "data/"
+#filepath "r3/sanca/data/"
+|#filepath "data/"
 
 :infile 'filepath "%s%s" sprint ;
 
@@ -80,34 +80,46 @@
 	0 'estado !
 	1 'jugd ! 
 	0.15 'accx !
-	8 8 $40 ICS>anim 'juga ! ; 
+	|8 8 $40 ICS>anim 
+	8 8 5.0 aniInit | ini cnt fps -
+	'juga ! ; 
 
 :jder
 	accx 1? ( drop ; ) drop
 	1 'jugd ! 
 	0.15 'accx !
-	8 8 $40 ICS>anim 'juga ! ; 
+	|8 8 $40 ICS>anim 
+	8 8 5.0 aniInit | ini cnt fps -
+	'juga !
+	; 
 
 :jizq
 	accx 1? ( drop ; ) drop
 	-1 'jugd ! 
 	-0.15 'accx ! 
-	0 8 $40 ICS>anim 'juga ! ; 
+	|0 8 $40 ICS>anim
+	0 8 5.0 aniInit | ini cnt fps -
+	'juga ! ; 
 	
 :jders	
 	accx 0.15 <>? ( drop ; ) drop
 	0 'accx !
-	8 1 1 ICS>anim 'juga ! ;
+	|8 1 1 ICS>anim 
+	8 1 5.0 aniInit | ini cnt fps -
+	'juga ! ;
 
 :jizqs	
 	accx -0.15 <>? ( drop ; ) drop
 	0 'accx !
-	0 1 1 ICS>anim 'juga ! ;	
+	|0 1 1 ICS>anim 
+	0 1 5.0 aniInit | ini cnt fps -
+	'juga ! ;	
 
 :jugador
 	jugx int. xvp -
 	jugy int. |yvp -
-	2.5 juga anim>n
+	2.5 |juga anim>n
+	'juga dup ani+timer! @ aniFrame 
 	dibjug sspritez
 
 	velx accx +
@@ -130,7 +142,9 @@
 :agacharse
 	estado 1? ( drop ; ) drop
 	0 'accx !
-	21 1 1 ICS>anim 'juga !
+	|21 1 1 ICS>anim 
+	21 1 5.0 aniInit | ini cnt fps -
+	'juga !
 	1 'estado !
 	'camina 1.0 +vexe
 	;
@@ -150,7 +164,8 @@
 	a> .y @ int. |yvp - 
 	2.0
 	|a> .ani dup @ deltatime + dup rot ! anim>n
-	a> .ani deltatime over +! @ anim>n
+	|a> .ani deltatime over +! @ anim>n
+	a> .ani dup ani+timer! @ aniFrame
 	a> .ss @ sspritez | a x y --
 	;	
 	
@@ -186,7 +201,8 @@
 	a> .x @ int. xvp - 
 	a> .y @ int. |yvp - 
 	2.0
-	a> .ani deltatime over +! @ anim>n
+	|a> .ani deltatime over +! @ anim>n
+	a> .ani dup ani+timer! @ aniFrame
 	8 =? ( 4drop 0 ; )
 	dibobj sspritez | a x y --
 	-2.0 a> .y +!
@@ -210,7 +226,8 @@
 	0.1 a> .vy +!
 	a> .y @ 530.0 >? ( drop 
 		a> .x @ a> .y @ hitobj
-		0 9 $70 ICS>anim | init cnt scale -- val
+		|0 9 $70 ICS>anim | init cnt scale -- val
+		0 9 5.0 aniInit | ini cnt fps -
 		a> .x @ a> .y @ 20.0 - +explopan
 		0 ; ) drop
 	;
@@ -223,18 +240,27 @@
 	2 playsnd ;
 
 :panapress
-	jugd 2/ not 1 and 2* 16 + 1 $80 ICS>anim 'juga ! 
+	jugd 2/ not 1 and 2* 16 + 1 
+	|$80 ICS>anim 
+	5.0 aniInit | ini cnt fps -
+	'juga ! 
 	1 'senergia !
 	0 'velx ! 0 'accx ! ;
 	
 :panarelea
-	jugd 2/ not 1 and 2* 16 + 2 $80 ICS>anim 'juga ! 
+	jugd 2/ not 1 and 2* 16 + 2 
+	|$80 ICS>anim 
+	5.0 aniInit | ini cnt fps -
+	'juga ! 
 |	jugd 2/ not 1 and 2* 16 + 2 $80 ICS>anim 'juga ! 
 	jugd 3.0 * energia 0.01 * + | vx
 	energia -0.08 * 			| vx
 	0 jugx 16.0 + jugy 16.0 - +pan 
 	0 'energia ! 0 'senergia !
-	[ jugd 2/ not 1 and 8 * 0 $40 ICS>anim 'juga ! ; ] 0.1 +vexe
+	[ jugd 2/ not 1 and 8 * 0 
+	|$40 ICS>anim 
+	5.0 aniInit | ini cnt fps -
+	'juga ! ; ] 0.1 +vexe
 	'camina 0.2 +vexe ;
 	
 |---------- nube
@@ -272,8 +298,9 @@
 :gani | vx vy -- vx vy ani
 	over 63 >> $1 and 1 xor 
 	4 *	4				| ini cnt
-	pick3 abs $40 *.	| scale
-	ICS>anim | init cnt scale -- val
+	pick3 abs 4.0 *.	| scale
+	|ICS>anim | init cnt scale -- val
+	aniInit | ini cnt fps -
 	;
 	
 :lreb
@@ -326,7 +353,8 @@
 	a> .y @ int. |yvp - 
 	1.5
 	|a> .ani dup @ deltatime + dup rot ! anim>n
-	a> .ani deltatime over +! @ anim>n
+	|a> .ani deltatime over +! @ anim>n
+	a> .ani dup ani+timer! @ aniFrame
 	dibfan sspritez | a x y --
 	;
 	
@@ -393,7 +421,9 @@
 :rfiel
 	10 randmax 1? ( drop ; ) drop
 	dibper
-	3 randmax 2* 1 0 ICS>anim	| persona
+	3 randmax 2* 1 0 
+	|ICS>anim	| persona
+	aniInit | ini cnt fps -
 	jugx 800.0 +
 	30.0 randmax 20.0 - 484.0 +
 	+obj
@@ -413,14 +443,14 @@
 	energia +
 	100 min 20 max
 	'energia ! 
-	$0 sdlcolor 259 559 82 12 sdlfRect
-	$FFE300 sdlcolor 260 560 energia 20 - 10 sdlFRect
+	$0 color 259 559 82 12 fRect
+	$FFE300 color 260 560 energia 20 - 10 FRect
 	;
 	
 :juego
 	vini
 	vupdate
-	$449FEA sdlcls
+	$449FEA cls
 	'fxnubes p.draw
 	drawfondo
 	'objetos p.draw
@@ -445,7 +475,7 @@
 	<dn> =? ( agacharse )
 	
 	<spc> =? ( panapress )
-	>esp< =? ( panarelea ) 
+	>spc< =? ( panarelea ) 
 	
 	<f1> =? ( rgosth )
 	<f2> =? ( rfiel )
@@ -481,12 +511,13 @@
 :juegoinis
 	vini
 	vupdate
-	$449FEA sdlcls
+	$449FEA cls
 	'fxnubes p.draw
 	drawfondo
 	jugx int. xvp -
 	jugy int. |yvp -
-	2.5 juga anim>n
+	2.5 |juga anim>n
+	'juga dup ani+timer! @ aniFrame
 	dibjug sspritez
 	deltatime 'juga +!
 	drawlogo
@@ -525,7 +556,7 @@ No logro recorrer toda la ciudad"
 :showfin
 	vini
 	vupdate
-	$449FEA sdlcls
+	$449FEA cls
 	$ffffff txrgb
 	'fxnubes p.draw
 	drawlogo
@@ -594,16 +625,16 @@ No logro recorrer toda la ciudad"
 :opcion
 	vini
 	vupdate
-	$449FEA sdlcls
+	$449FEA cls
 	'fxnubes p.draw
 	uiStart
 	3 4 uiPad
-	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiWin!
-	2 5 uiGridA uiv
-	0 0 uiGAt
+	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiBox
+	2 5 uiGrid 
+	0 0 uiAt
 	"Musica" uiLabelC
 	"SFX" uiLabelC
-	1 0 uiGAt
+	1 0 uiAt
 	stlink
 	0 1.0 'volmus uiProgressf
 	0 1.0 'volsfx uiProgressf
@@ -637,14 +668,14 @@ No logro recorrer toda la ciudad"
 :inicio
 	vini
 	vupdate
-	$449FEA sdlcls
+	$449FEA cls
 	$ffffff txrgb
 	'fxnubes p.draw
 	
 	uiStart
 	3 4 uiPad
-	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiWin!
-	1 5 uiGridA uiv
+	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiBox |
+	1 5 uiGrid
 	stlink
 	'jugar "Jugar" uiRBtn
 	'opciones "Opciones" uiRBtn

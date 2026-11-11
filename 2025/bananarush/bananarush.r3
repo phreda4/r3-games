@@ -8,11 +8,11 @@
 
 ^r3/lib/rand.r3
 
-^r3/util/ui.r3
+^r3/util/immi.r3
 ^r3/util/arr16.r3
 ^r3/util/varanim.r3
 
-#filepath "r3/2025/bananarush/data/"
+#filepath "r3/bananarush/data/"
 |#filepath "data/"
 
 :infile 'filepath "%s%s" sprint ;
@@ -117,7 +117,10 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	3.0
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	
+	a> .ani dup ani+timer! @ aniFrame 
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	
 	dibujos sspritez | a x y --
 	;
 
@@ -185,7 +188,9 @@
 	a> .y @ int. 
 	msec 5 <<
 	4.0
-	a> .ani @ anim>n
+	|a> .ani @ anim>n
+	a> .ani dup ani+timer! @ aniFrame 
+
 	dibujos sspriterz | a x y --
 	;
 	
@@ -207,7 +212,9 @@
 	|**********
 	30
 	0.0 -1.0
-	33 1 1 ICS>anim | init cnt scale -- val
+	
+	33 1 1.0 aniInit | ini cnt fps -
+|	33 1 1 ICS>anim | init cnt scale -- val
 	a> .x @ a> .y @
 	+fx
 	2 playsnd
@@ -228,7 +235,8 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	3.0
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	a> .ani dup ani+timer! @ aniFrame 
 	dibujos sspritez | a x y --
 	;
 	
@@ -245,8 +253,8 @@
 	over 63 >> $1 and 1 xor 
 	4 * 9 + r> 8 * +	| init
 	4					| cnt
-	pick3 abs $40 *.	| scale
-	ICS>anim | init cnt scale -- val
+	pick3 abs 3.0 *.	| scale
+	aniInit | ini cnt fps -	
 	;
 	
 :lshoot
@@ -254,7 +262,10 @@
 	100 >? ( drop ; ) drop	| cerca del jugador
 	80 randmax 1? ( drop ; ) drop | 1/70 prob
 	a> .vx @ 2.0 randmax 1.0 - + 0
-	36 2 randmax + 1 0 ICS>anim
+	
+	36 2 randmax + 1 1.0 aniInit | ini cnt fps -
+|	36 2 randmax + 1 0 ICS>anim
+	
 	a> .x @ a> .y @
 	+nuez
 	;
@@ -265,8 +276,8 @@
 :lreby
 	a> .vx dup @ neg swap ! 
 	a> .vx @ a> .vy @
-	a> .ani @ anim>n 9 - 8 / $3 and | inv ani
-	lani a> .ani !
+	a> .ani @ aniFrame 9 - 8 / $3 and | tipo de paaro
+	lani a> .ani ! | inv ani
 	2drop
 	|1.0 randmax 0.5 + *. a> .vx ! | cambia velocidad?
 	;
@@ -304,7 +315,8 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	4.0
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	a> .ani dup ani+timer! @ aniFrame 
 	dibujos sspritez | a x y --
 	
 	lshoot
@@ -337,8 +349,10 @@
 :aani | vx vy -- vx vy ani
 	over 63 >> $1 and 4 * | ini
 	4					| cnt
-	pick3 abs $20 *.	| scale
-	ICS>anim | init cnt scale -- val
+	|pick3 abs $20 *.	| scale
+	|ICS>anim | init cnt scale -- val
+	pick3 abs 4.0 *.	| scale
+	aniInit | ini cnt fps -	
 	;
 
 :lrebya
@@ -376,7 +390,8 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	4.0
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	a> .ani dup ani+timer! @ aniFrame 
 	dibaguila sspritez
 	;
 	
@@ -491,20 +506,20 @@
 
 	estado 1? ( drop ; ) drop
 	|.... barra
-	$ffea00 sdlcolor 
+	$ffea00 color 
 	696 30
 	xjug int. xjugv - clamp0 5 >>
-	25 sdlfrect
-	$0 sdlcolor 
-	696 30 240 25 sdlrect
-	697 31 238 23 sdlrect
+	25 frect
+	$0 color 
+	696 30 240 25 rect
+	697 31 238 23 rect
 	;
 
 #amm | anima muerte mono
 :mmono
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 	planos
 	'dis p.draw	
 	'obj p.draw
@@ -512,7 +527,8 @@
 	
 	xjugv 
 	yjug int. 4.0 
-	amm deltatime + dup 'amm ! anim>n
+	|amm deltatime + dup 'amm ! anim>n
+	'amm dup ani+timer! @ aniFrame 
 	dibujos sspritez
 	
 	'fx p.draw		
@@ -530,7 +546,8 @@
 	'yjug 470.0 yjug 1 0.5 0.0 +vanim
 	'yjug 630.0 470.0 1 1.0 0.5 +vanim
 	
-	4 3 $4f ICS>anim | init cnt scale -- val
+	|4 3 $4f ICS>anim | init cnt scale -- val
+	4 3 4.0 aniInit | ini cnt fps -
 	'amm !
 	'mmono sdlshow
 	;
@@ -540,7 +557,8 @@
 	7 randmax 1? ( drop ; ) drop
 	30
 	0.2 0.0
-	40 5 $7f ICS>anim | init cnt scale -- val
+	|40 5 $7f ICS>anim | init cnt scale -- val
+	40 5 4.0 aniInit | ini cnt fps -
 	xjug xjugv fix. + yjug 4.0 + 5.0 randmax +
 	+fx
 	;
@@ -549,7 +567,8 @@
 	7 randmax 1? ( drop ; ) drop
 	30
 	-0.2 0.0
-	45 5 $7f ICS>anim | init cnt scale -- val
+	|45 5 $7f ICS>anim | init cnt scale -- val
+	45 5 4.0 aniInit
 	xjug xjugv fix. + yjug 4.0 + 5.0 randmax +
 	+fx
 	;
@@ -576,7 +595,7 @@
 :juego
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 
 	planos
 	'dis p.draw	
@@ -618,7 +637,8 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	2.6
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	a> .ani dup ani+timer! @ aniFrame 
 	11 =? ( 4drop 0 
 		hitjug
 		; )
@@ -632,7 +652,9 @@
 	swap a!+ a! ;
 
 :setrayo
-	0 0 0 12 $80 ICS>anim 
+	0 0 
+	|0 12 $80 ICS>anim 
+	0 12 10.0 aniInit
 	a> .x @ ||xjug xjugv fix. + 128.0 randmax + 64.0 -
 	280.0 +rayo ;
 	
@@ -643,7 +665,8 @@
 	a> .x @ xjug - int. 
 	a> .y @ int. 
 	1.6
-	a> .ani dup @ deltatime + dup rot ! anim>n
+	|a> .ani dup @ deltatime + dup rot ! anim>n
+	a> .ani dup ani+timer! @ aniFrame 
 	4 =? ( 4drop 0 
 		setrayo
 		5 playsnd
@@ -658,7 +681,9 @@
 	swap a!+ a! ;
 
 :setcruz2
-	0 0 0 12 $20 ICS>anim 
+	0 0 
+|	0 12 $20 ICS>anim 
+	0 12 10.0 aniInit
 	xjug xjugv fix. + 128.0 randmax + 64.0 -
 	200.0 +cruz 	
 	;
@@ -681,7 +706,7 @@
 :juegofinal
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 
 	planos
 	'dis p.draw	
@@ -712,7 +737,7 @@
 
 :flash
 	vupdate
-	0 sdlcls
+	0 cls
 	sw 2/ sh 2/ 4.0 msec 4 >> 11 mod dibrayos sspritez
 	sdlredraw ;
 	
@@ -763,7 +788,7 @@ No venciste al Jefe final"
 :showfin
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 	planos
 
 	0.5 %w 0.2 %h 1.0 logo spritez		
@@ -781,8 +806,6 @@ No venciste al Jefe final"
 	sdlkey
 	>esc< =? ( exit )
 	drop ;
-	;
-	
 
 :jugar
 	0 'estado !
@@ -802,18 +825,18 @@ No venciste al Jefe final"
 :opcion
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 	planos
 	uiStart
 	3 4 uiPad
-	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiWin!
+	0.2 %w 0.5 %h 0.6 %w 0.4 %h uiBox |uiWin!
 	
-	2 5 uiGridA uiv
-	0 0 uiGAt
+	2 5 uiGrid 
+	0 0 uiAt
 	"Musica" uiLabelC
 	"SFX" uiLabelC
 |	"Pantalla" uiLabelC
-	1 0 uiGAt
+	1 0 uiAt
 	stlink
 	0 1.0 'volmus uiProgressf
 	0 1.0 'volsfx uiProgressf
@@ -857,19 +880,19 @@ No venciste al Jefe final"
 	'logoin 5.0 +vexe
 	;	
 
-:stJu $ffFBE800ffCAB900 'cifil ! ;	| Jugar
-:stOp $ff40C87Cff288153 'cifil ! ;	| Opciones
-:stCr $ff734300ff402000 'cifil ! ;	| Creditos
+:stJu $ffFBE800ffCAB900 'colfil ! ;	| Jugar
+:stOp $ff40C87Cff288153 'colfil ! ;	| Opciones
+:stCr $ff734300ff402000 'colfil ! ;	| Creditos
 	
 :inicio
 	vini
 	vupdate
-	$40C87C sdlcls
+	$40C87C cls
 	planos
 	uiStart
 	3 4 uiPad
-	0.3 %w 0.5 %h 0.4 %w 0.4 %h uiWin!
-	1 5 uiGridA uiv
+	0.3 %w 0.5 %h 0.4 %w 0.4 %h uiBox |uiWin!
+	1 5 uiGrid
 	stJu
 	'jugar "Jugar" uiRBtn
 	stOp
@@ -911,7 +934,7 @@ No venciste al Jefe final"
 
 "PressStart2P-Regular.ttf" infile 24 txload 'font !
 font txfont
-0 'cifoc !
+0 'colfoc !
 64 vaini
 
 50 'obj p.ini
